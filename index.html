@@ -10,7 +10,6 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 
 <style>
 html,body{
@@ -41,6 +40,39 @@ border:3px solid #ffffff;
 border-radius:50%;
 box-shadow:0 0 6px rgba(0,0,0,0.3);
 }
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large{
+
+background:transparent !important;
+
+}
+
+.marker-cluster div{
+
+width:42px !important;
+height:42px !important;
+
+margin-left:4px;
+margin-top:4px;
+
+background:#2563EB !important;
+
+border:3px solid #FFFFFF;
+
+border-radius:50%;
+
+color:#FFFFFF;
+
+font-size:15px;
+font-weight:700;
+line-height:36px;
+text-align:center;
+
+box-shadow:0 4px 12px rgba(0,0,0,0.25);
+
+}  
   
 </style>
 </head>
@@ -67,8 +99,16 @@ maxZoom:19
 
 /* CSV读取 */
 
-var markerCluster = L.markerClusterGroup();
+var markerCluster = L.markerClusterGroup({
 
+showCoverageOnHover:false,
+
+spiderfyOnMaxZoom:true,
+
+zoomToBoundsOnClick:true
+
+});
+  
 var stateCount = {};
 
 function getStateColor(count){
