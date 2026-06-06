@@ -9,6 +9,9 @@ rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+
 <style>
 html,body{
 height:100%;
@@ -28,6 +31,7 @@ height:100vh;
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 
 var map = L.map('map').setView([51.1657,10.4515],6);
@@ -84,6 +88,8 @@ fillOpacity:0.05
 
 /* CSV读取 */
 
+var markerCluster = L.markerClusterGroup();
+
 Papa.parse('VPL门店地图信息_0606.csv', {
 
     download: true,
@@ -99,18 +105,22 @@ Papa.parse('VPL门店地图信息_0606.csv', {
                 return;
             }
 
-            L.marker([
+            var marker = L.marker([
                 parseFloat(store.Latitude),
                 parseFloat(store.Longitude)
-            ])
-            .addTo(map)
-            .bindPopup(
+            ]);
+
+            marker.bindPopup(
                 '<b>' + store.StoreName + '</b><br>' +
                 store.Address + '<br>' +
                 store.StoreType
             );
 
+            markerCluster.addLayer(marker);
+
         });
+
+        map.addLayer(markerCluster);
 
     }
 
