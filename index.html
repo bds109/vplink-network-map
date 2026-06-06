@@ -63,52 +63,30 @@ maxZoom:19
 }
 ).addTo(map);
   
-fetch('2_hoch.geo_1.4M.json')
-.then(response => response.json())
-.then(data => {
 
-const activeStates = [
-'Berlin',
-'Brandenburg',
-'Nordrhein-Westfalen',
-'Baden-Württemberg',
-'Hessen',
-'Rheinland-Pfalz',
-'Mecklenburg-Vorpommern',
-'Hamburg'
-];
-
-L.geoJSON(data,{
-
-style:function(feature){
-
-if(activeStates.includes(feature.properties.name)){
-
-return{
-color:'#2563eb',
-weight:2,
-fillColor:'#3b82f6',
-fillOpacity:0.25
-};
-
-}
-
-return{
-color:'#cccccc',
-weight:1,
-fillColor:'#ffffff',
-fillOpacity:0.05
-};
-
-}
-
-}).addTo(map);
-
-});
 
 /* CSV读取 */
 
 var markerCluster = L.markerClusterGroup();
+
+var stateCount = {};
+
+var stateNameMap = {
+'柏林':'Berlin',
+'勃兰登堡州':'Brandenburg',
+'北威州':'Nordrhein-Westfalen',
+'巴符州':'Baden-Württemberg',
+'黑森州':'Hessen',
+'莱法州':'Rheinland-Pfalz',
+'梅前州':'Mecklenburg-Vorpommern',
+'汉堡州':'Hamburg',
+'汉堡':'Hamburg',
+'巴伐利亚州':'Bayern',
+'石荷州':'Schleswig-Holstein',
+'下萨克森州':'Niedersachsen',
+'萨安州':'Sachsen-Anhalt'
+};
+
 var storeIcon = L.divIcon({
     className: 'store-marker',
     html: '<div class="store-dot"></div>',
@@ -127,9 +105,21 @@ Papa.parse('VPL门店地图信息_0606.csv', {
 
         results.data.forEach(function(store) {
 
-            if (!store.Latitude || !store.Longitude) {
-                return;
-            }
+    var germanState = stateNameMap[store.State];
+
+    if(germanState){
+
+        if(!stateCount[germanState]){
+            stateCount[germanState] = 0;
+        }
+
+        stateCount[germanState]++;
+
+    }
+
+    if (!store.Latitude || !store.Longitude) {
+        return;
+    }
 
 var marker = L.marker(
     [
@@ -152,6 +142,40 @@ var marker = L.marker(
         });
 
         map.addLayer(markerCluster);
+
+fetch('2_hoch.geo_1.4M.json')
+.then(response => response.json())
+.then(data => {
+
+L.geoJSON(data, {
+
+style:function(feature){
+
+var stateName = feature.properties.name;
+
+if(stateCount[stateName]){
+
+return{
+color:'#2563eb',
+weight:2,
+fillColor:'#3b82f6',
+fillOpacity:0.18
+};
+
+}
+
+return{
+color:'#bfc5ce',
+weight:1,
+fillColor:'#dde2e8',
+fillOpacity:0.08
+};
+
+}
+
+}).addTo(map);
+
+});
 
     }
 
