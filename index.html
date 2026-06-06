@@ -27,7 +27,7 @@ height:100vh;
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 
 var map = L.map('map').setView([51.1657,10.4515],6);
@@ -81,6 +81,41 @@ fillOpacity:0.05
 }).addTo(map);
 
 });
+
+/* CSV读取 */
+
+Papa.parse('VPL门店地图信息_0606.csv', {
+
+    download: true,
+    header: true,
+
+    complete: function(results) {
+
+        console.log(results.data);
+
+        results.data.forEach(function(store) {
+
+            if (!store.Latitude || !store.Longitude) {
+                return;
+            }
+
+            L.marker([
+                parseFloat(store.Latitude),
+                parseFloat(store.Longitude)
+            ])
+            .addTo(map)
+            .bindPopup(
+                '<b>' + store.StoreName + '</b><br>' +
+                store.Address + '<br>' +
+                store.StoreType
+            );
+
+        });
+
+    }
+
+});
+
 </script>
 
 </body>
