@@ -22,6 +22,26 @@ margin:0;
 width:100%;
 height:100vh;
 }
+
+html,body{
+height:100%;
+margin:0;
+}
+
+#map{
+width:100%;
+height:100vh;
+}
+
+.store-dot{
+width:16px;
+height:16px;
+background:#007BFF;
+border:3px solid #ffffff;
+border-radius:50%;
+box-shadow:0 0 6px rgba(0,0,0,0.3);
+}
+  
 </style>
 </head>
 
@@ -89,6 +109,12 @@ fillOpacity:0.05
 /* CSV读取 */
 
 var markerCluster = L.markerClusterGroup();
+var storeIcon = L.divIcon({
+    className: 'store-marker',
+    html: '<div class="store-dot"></div>',
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
+});
 
 Papa.parse('VPL门店地图信息_0606.csv', {
 
@@ -105,10 +131,15 @@ Papa.parse('VPL门店地图信息_0606.csv', {
                 return;
             }
 
-            var marker = L.marker([
-                parseFloat(store.Latitude),
-                parseFloat(store.Longitude)
-            ]);
+var marker = L.marker(
+    [
+        parseFloat(store.Latitude),
+        parseFloat(store.Longitude)
+    ],
+    {
+        icon: storeIcon
+    }
+);
 
             marker.bindPopup(
                 '<b>' + store.StoreName + '</b><br>' +
