@@ -73,20 +73,20 @@ var stateCount = {};
 
 function getStateColor(count){
 
-    if(count >= 30){
-        return '#F783AC';
-    }
-
     if(count >= 20){
-        return '#DA77F2';
+        return '#D946EF';
     }
 
     if(count >= 10){
-        return '#9775FA';
+        return '#8B5CF6';
+    }
+
+    if(count >= 5){
+        return '#3B82F6';
     }
 
     if(count >= 1){
-        return '#A5D8FF';
+        return '#8ECDF8';
     }
 
     return '#E5E7EB';
@@ -176,7 +176,7 @@ console.log(feature.properties);
 
 var stateName = feature.properties.name;
 
-if(stateCount[stateName]){
+if(stateCount[stateName] > 0){
 
 var count = stateCount[stateName];
 
@@ -184,7 +184,7 @@ return{
 color:'#64748B',
 weight:2,
 fillColor:getStateColor(count),
-fillOpacity:0.12
+fillOpacity:0.25
 };
 
 }
