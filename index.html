@@ -74,7 +74,7 @@ var stateCount = {};
 function getStateColor(count){
 
     if(count >= 20){
-        return '#D946EF';
+        return '#EC4899';
     }
 
     if(count >= 10){
@@ -86,10 +86,10 @@ function getStateColor(count){
     }
 
     if(count >= 1){
-        return '#8ECDF8';
+        return '#14B8A6';
     }
 
-    return '#E5E7EB';
+    return 'transparent';
 }
 
 var stateNameMap = {
@@ -172,29 +172,27 @@ L.geoJSON(data, {
 
 style:function(feature){
 
-console.log(feature.properties);
+    var stateName = feature.properties.name;
 
-var stateName = feature.properties.name;
+    if(stateCount[stateName] > 0){
 
-if(stateCount[stateName] > 0){
+        var count = stateCount[stateName];
 
-var count = stateCount[stateName];
+        return{
+            color:'#94A3B8',
+            weight:2,
+            fillColor:getStateColor(count),
+            fillOpacity:0.28
+        };
 
-return{
-color:'#64748B',
-weight:2,
-fillColor:getStateColor(count),
-fillOpacity:0.25
-};
+    }
 
-}
-
-return{
-color:'#BFC5CE',
-weight:1,
-fillColor:'#E5E7EB',
-fillOpacity:0.08
-};
+    return{
+        color:'#94A3B8',
+        weight:2,
+        fillColor:'transparent',
+        fillOpacity:0
+    };
 
 }
 
