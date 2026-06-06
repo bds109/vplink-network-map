@@ -168,27 +168,37 @@ fetch('Germany_border_sehr_hoch.geo.json')
 .then(response => response.json())
 .then(data => {
 
-    // 外层发光
+    // 最外层光晕
     L.geoJSON(data,{
         style:{
-            color:'#93C5FD',
-            weight:30,
-            opacity:0.06,
+            color:'#60A5FA',
+            weight:60,
+            opacity:0.02,
             fillOpacity:0
         }
     }).addTo(map);
 
-    // 内层发光
+    // 第二层光晕
     L.geoJSON(data,{
         style:{
-            color:'#93C5FD',
-            weight:16,
-            opacity:0.12,
+            color:'#60A5FA',
+            weight:40,
+            opacity:0.04,
             fillOpacity:0
         }
     }).addTo(map);
 
-    // 德国边界主体
+    // 第三层光晕
+    L.geoJSON(data,{
+        style:{
+            color:'#60A5FA',
+            weight:20,
+            opacity:0.08,
+            fillOpacity:0
+        }
+    }).addTo(map);
+
+    // 德国边界
     L.geoJSON(data,{
         style:{
             color:'#475569',
