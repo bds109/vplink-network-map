@@ -83,13 +83,13 @@ left:20px;
 
 z-index:9999;
 
-background:rgba(255,255,255,0.75);
-backdrop-filter:blur(20px);
+background:rgba(255,255,255,0.55);
+backdrop-filter:blur(40px);
+-webkit-backdrop-filter:blur(40px);
 padding:12px;
--webkit-backdrop-filter:blur(20px);
 border-radius:10px;
 border:1px solid rgba(255,255,255,0.6);
-box-shadow:0 8px 32px rgba(15,23,42,0.12);
+box-shadow:0 12px 40px rgba(15,23,42,0.16);
 }
 
 #stateFilter,
@@ -124,7 +124,7 @@ margin-bottom:6px;
 
 #stateFilter{
 
-max-height:240px;
+max-height:260px;
 
 overflow-y:auto;
 
@@ -223,9 +223,9 @@ text-align:center;
 
 .stat-value{
 
-font-size:28px;
+font-size:34px;
 
-font-weight:700;
+font-weight:900;
 
 color:#2563EB;
 
@@ -284,7 +284,7 @@ pointer-events:none;
 
 position:absolute;
 
-left:20px;
+right:20px;
 bottom:20px;
 
 z-index:9999;
@@ -341,13 +341,15 @@ box-shadow:
 
 font-size:14px;
 
-font-weight:700;
-
-letter-spacing:1px;
+font-weight:900;
 
 color:#0F172A;
 
 margin-bottom:16px;
+
+letter-spacing:2px;
+
+text-shadow:0 1px 2px rgba(255,255,255,.8),0 0 8px rgba(255,255,255,.5);
 
 }
   
@@ -558,7 +560,6 @@ Clear
 
 </div>
 
-<br><br>
 
 <div id="categoryFilterContainer">
 
@@ -599,7 +600,7 @@ VPLINK NETWORK MAP
 
 var map = L.map('map', {
     zoomControl:false
-}).setView([51.1657,10.4515],5.3);
+}).setView([51.1657,10.4515],6.1);
 
 L.tileLayer(
 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -1212,7 +1213,7 @@ return{
     weight:1.2,
     opacity:0.9,
     fillColor:getStateColor(count),
-    fillOpacity:0.30
+    fillOpacity:0.22
 };
 
     }
