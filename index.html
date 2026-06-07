@@ -79,7 +79,7 @@ box-shadow:none;
 position:absolute;
 
 top:20px;
-left:20px;
+left:70px;
 
 z-index:9999;
 
@@ -164,6 +164,56 @@ font-size:13px;
 background:#E5E7EB;
 }  
 
+#statsPanel{
+
+display:flex;
+
+gap:10px;
+
+margin-bottom:16px;
+
+}
+
+.stat-card{
+
+flex:1;
+
+background:#F8FAFC;
+
+border:1px solid #E2E8F0;
+
+border-radius:10px;
+
+padding:10px;
+
+text-align:center;
+
+}
+
+.stat-value{
+
+font-size:28px;
+
+font-weight:700;
+
+color:#2563EB;
+
+line-height:1;
+
+}
+
+.stat-label{
+
+font-size:11px;
+
+color:#64748B;
+
+margin-top:6px;
+
+text-transform:uppercase;
+
+}
+  
 #clearCategoryFilter{
 width:100%;
 margin-top:8px;
@@ -183,21 +233,52 @@ background:#E5E7EB;
 
 position:absolute;
 
-top:10px;
-right:10px;
+top:20px;
+left:-22px;
 
-width:28px;
-height:28px;
+width:22px;
+height:60px;
 
 border:none;
 
-border-radius:6px;
+border-radius:8px 0 0 8px;
 
-background:#F3F4F6;
+background:#2563EB;
+
+color:white;
+
+font-size:16px;
+font-weight:700;
 
 cursor:pointer;
 
-font-size:14px;
+box-shadow:0 2px 8px rgba(0,0,0,0.15);
+
+}
+
+#togglePanel:hover{
+
+background:#1D4ED8;
+
+}
+
+.panel-collapsed{
+
+width:0 !important;
+
+padding:0 !important;
+
+border:none !important;
+
+background:transparent !important;
+
+box-shadow:none !important;
+
+}
+
+.panel-collapsed .panel-content{
+
+display:none;
 
 }
 
@@ -239,6 +320,25 @@ font-size:13px;
 ◀
 </button>
 <div class="panel-content">
+<div id="statsPanel">
+
+<div class="stat-card">
+<div class="stat-value" id="storeCount">0</div>
+<div class="stat-label">Stores</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-value" id="stateCountDisplay">0</div>
+<div class="stat-label">States</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-value" id="categoryCountDisplay">0</div>
+<div class="stat-label">Categories</div>
+</div>
+
+</div>
+
   
 <div id="stateFilterContainer">
 
@@ -656,6 +756,21 @@ Object.keys(stateCount)
 
 });
 
+document.getElementById(
+'storeCount'
+).innerHTML =
+allMarkers.length;
+
+document.getElementById(
+'stateCountDisplay'
+).innerHTML =
+Object.keys(stateCount).length;
+
+document.getElementById(
+'categoryCountDisplay'
+).innerHTML =
+Object.keys(categoryCount).length;
+      
 // Category Filter
 
 Object.keys(categoryCount)
