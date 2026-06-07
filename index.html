@@ -124,7 +124,7 @@ margin-bottom:6px;
 
 #stateFilter{
 
-max-height:260px;
+max-height:300px;
 
 overflow-y:auto;
 
@@ -148,15 +148,23 @@ font-size:13px;
 
 }
 
-#clearStateFilter{
-width:100%;
-margin-top:8px;
-padding:8px;
-border:none;
-border-radius:6px;
-background:#F3F4F6;
+#clearStateFilter,
+#clearCategoryFilter{
+
+width:auto;
+
+padding:2px 8px;
+
+font-size:12px;
+
+background:transparent;
+
+border:1px solid #CBD5E1;
+
+border-radius:4px;
+
 cursor:pointer;
-font-size:13px;
+
 }
 
 #clearStateFilter:hover{
@@ -477,19 +485,20 @@ position:absolute;
 top:18px;
 right:120px;
 
-font-size:clamp(18px,1.5vw,28px);
+z-index:9999;
+
+font-size:clamp(22px,1.8vw,34px);
 
 font-weight:900;
 
-letter-spacing:4px;
+letter-spacing:3px;
 
-color:rgba(15,23,42,.72);
+color:#1E293B;
 
 text-transform:uppercase;
 
 text-shadow:
-0 0 20px rgba(255,255,255,.95),
-0 0 40px rgba(255,255,255,.6);
+0 2px 6px rgba(255,255,255,.95);
 
 }
 
@@ -550,11 +559,15 @@ VPLINK NETWORK MAP
   
 <div id="stateFilterContainer">
 
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+">
+
 <div class="filter-title">
 States
-</div>
-
-<div id="stateFilter">
 </div>
 
 <button id="clearStateFilter">
@@ -563,19 +576,33 @@ Clear
 
 </div>
 
+<div id="stateFilter">
+</div>
+
+</div>
+
 
 <div id="categoryFilterContainer">
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+">
 
 <div class="filter-title">
 Categories
 </div>
 
-<div id="categoryFilter">
-</div>
-
 <button id="clearCategoryFilter">
 Clear
 </button>
+
+</div>
+
+<div id="categoryFilter">
+</div>
 
 </div>
 
