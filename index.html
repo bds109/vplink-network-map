@@ -578,6 +578,10 @@ markerCluster.addLayer(marker);
         });
 
 map.addLayer(markerCluster);
+
+updateStats(
+allMarkers
+);
       
 document
 .getElementById(
@@ -794,6 +798,8 @@ cb.value
 );
 
 });
+
+var filteredMarkers = [];
   
 markerCluster.clearLayers();
 
@@ -822,7 +828,17 @@ categoryMatch
     item.marker
     );
 
+    filteredMarkers.push(
+    item
+    );
+
 }
+
+});
+
+updateStats(
+filteredMarkers
+);
 
 });
 
@@ -874,6 +890,52 @@ document.getElementById(
 'categoryCountDisplay'
 ).innerHTML =
 Object.keys(categoryCount).length;
+
+function updateStats(filteredMarkers){
+
+var states = [];
+var categories = [];
+
+filteredMarkers.forEach(function(item){
+
+var state =
+stateNameMap[item.store.State];
+
+var category =
+item.store.Category;
+
+if(
+state &&
+!states.includes(state)
+){
+states.push(state);
+}
+
+if(
+category &&
+!categories.includes(category)
+){
+categories.push(category);
+}
+
+});
+
+document.getElementById(
+'storeCount'
+).innerHTML =
+filteredMarkers.length;
+
+document.getElementById(
+'stateCountDisplay'
+).innerHTML =
+states.length;
+
+document.getElementById(
+'categoryCountDisplay'
+).innerHTML =
+categories.length;
+
+}
       
 // Category Filter
 
