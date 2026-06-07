@@ -96,11 +96,11 @@ box-shadow:0 4px 12px rgba(0,0,0,0.15);
 #stateFilter,
 #categoryFilter{
 
-width:220px;
+width:170px;
 
 padding:8px;
 
-font-size:14px;
+font-size:13px;
 
 border:1px solid #D1D5DB;
 
@@ -121,7 +121,7 @@ margin-bottom:8px;
 
 #stateFilter{
 
-max-height:220px;
+max-height:170px;
 
 overflow-y:auto;
 
@@ -266,7 +266,7 @@ background:#E5E7EB;
 .category-item,
 .state-item{
 
-margin-bottom:8px;
+margin-bottom:4px;
 
 }
 
@@ -275,12 +275,13 @@ margin-bottom:8px;
 display:flex;
 align-items:center;
 cursor:pointer;
-padding:10px 12px;
+padding:6px 10px;
 border:1px solid #E2E8F0;
-border-radius:12px;
+border-radius:10px;
 background:#FFFFFF;
 transition:all .2s ease;
-font-size:14px;
+font-size:13px;
+line-height:1.2;
 
 }
 
@@ -297,9 +298,35 @@ display:none;
 
 }
 
-.filter-chip span{
+.chip-name{
 
-width:100%;
+flex:1;
+
+}
+
+.chip-count{
+
+min-width:20px;
+
+height:20px;
+
+padding:0 6px;
+
+border-radius:999px;
+
+background:#E2E8F0;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:11px;
+
+font-weight:700;
+
+color:#475569;
 
 }
 
@@ -309,6 +336,14 @@ background:#2563EB;
 border-color:#2563EB;
 color:white;
 font-weight:600;
+
+}
+
+.filter-chip:has(input:checked) .chip-count{
+
+background:white;
+
+color:#2563EB;
 
 }
   
@@ -848,11 +883,12 @@ Object.keys(stateCount)
 'class="stateCheckbox" ' +
 'value="' + state + '">' +
 
-'<span>' +
+'<span class="chip-name">' +
 state +
-' (' +
+'</span>' +
+
+'<span class="chip-count">' +
 stateCount[state] +
-')' +
 '</span>' +
 
 '</label>';
@@ -943,11 +979,12 @@ Object.keys(categoryCount)
 'class="categoryCheckbox" ' +
 'value="' + category + '">' +
 
-'<span>' +
+'<span class="chip-name">' +
 category +
-' (' +
+'</span>' +
+
+'<span class="chip-count">' +
 categoryCount[category] +
-')' +
 '</span>' +
 
 '</label>';
