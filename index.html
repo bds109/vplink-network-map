@@ -83,13 +83,13 @@ left:20px;
 
 z-index:9999;
 
-background:rgba(255,255,255,0.55);
-backdrop-filter:blur(40px);
--webkit-backdrop-filter:blur(40px);
+background:rgba(248,250,252,0.42);
+backdrop-filter:blur(50px);
+-webkit-backdrop-filter:blur(50px);
 padding:12px;
 border-radius:10px;
-border:1px solid rgba(255,255,255,0.6);
-box-shadow:0 12px 40px rgba(15,23,42,0.16);
+border:1px solid rgba(255,255,255,0.75);
+box-shadow:0 10px 40px rgba(15,23,42,.12);
 }
 
 #stateFilter,
@@ -227,16 +227,20 @@ font-size:34px;
 
 font-weight:900;
 
-color:#2563EB;
+color:#1D4ED8;
 
 line-height:1;
-
+  
+text-shadow:
+0 1px 2px rgba(255,255,255,.5);
+  
 }
 
 .stat-label{
 
 font-size:11px;
-
+font-weight:600;
+letter-spacing:.5px;  
 color:#64748B;
 
 margin-top:6px;
@@ -339,15 +343,17 @@ box-shadow:
   
 #mapTitle{
 
-font-size:14px;
+font-size:15px;
 
 font-weight:900;
 
-color:#0F172A;
+letter-spacing:1.5px;
+
+margin-bottom:20px;  
+
+color:#111827;
 
 margin-bottom:16px;
-
-letter-spacing:2px;
 
 text-shadow:0 1px 2px rgba(255,255,255,.8),0 0 8px rgba(255,255,255,.5);
 
@@ -469,26 +475,23 @@ color:#2563EB;
 position:absolute;
 
 top:18px;
-right:90px;
-
-z-index:9999;
+right:120px;
 
 font-size:clamp(18px,1.5vw,28px);
 
-font-weight:700;
+font-weight:900;
 
-letter-spacing:3px;
+letter-spacing:4px;
 
-color:#0F172A;
+color:rgba(15,23,42,.72);
 
 text-transform:uppercase;
 
-pointer-events:none;
-
 text-shadow:
-0 1px 2px rgba(255,255,255,.9);
+0 0 20px rgba(255,255,255,.95),
+0 0 40px rgba(255,255,255,.6);
 
-}  
+}
 
   
 </style>
@@ -1213,7 +1216,7 @@ return{
     weight:1.2,
     opacity:0.9,
     fillColor:getStateColor(count),
-    fillOpacity:0.22
+    fillOpacity:0.18
 };
 
     }
