@@ -148,6 +148,21 @@ margin-bottom:6px;
 font-size:13px;
 
 }
+
+#clearStateFilter{
+width:100%;
+margin-top:8px;
+padding:8px;
+border:none;
+border-radius:6px;
+background:#F3F4F6;
+cursor:pointer;
+font-size:13px;
+}
+
+#clearStateFilter:hover{
+background:#E5E7EB;
+}  
   
 </style>
 </head>
@@ -168,31 +183,7 @@ States
 <button id="clearStateFilter">
 Clear
 </button>
-#clearStateFilter{
 
-width:100%;
-
-margin-top:8px;
-
-padding:8px;
-
-border:none;
-
-border-radius:6px;
-
-background:#F3F4F6;
-
-cursor:pointer;
-
-font-size:13px;
-
-}
-
-#clearStateFilter:hover{
-
-background:#E5E7EB;
-
-}
 </div>
 
 <br><br>
@@ -441,6 +432,10 @@ item.marker
 
 });
 
+document.addEventListener(
+'change',
+function(e){
+
 if(
 !e.target.classList.contains(
 'stateCheckbox'
@@ -460,6 +455,34 @@ document
 selectedStates.push(
 cb.value
 );
+
+});
+
+markerCluster.clearLayers();
+
+allMarkers.forEach(function(item){
+
+var state =
+stateNameMap[item.store.State];
+
+if(selectedStates.length === 0){
+
+markerCluster.addLayer(
+item.marker
+);
+
+}
+else if(
+selectedStates.includes(state)
+){
+
+markerCluster.addLayer(
+item.marker
+);
+
+}
+
+});
 
 });
 
