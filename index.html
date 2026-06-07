@@ -671,29 +671,6 @@ item.marker
 
 });
 
-document
-.getElementById(
-'clearCategoryFilter'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.querySelectorAll(
-'.categoryCheckbox'
-)
-.forEach(function(cb){
-
-cb.checked = false;
-
-});
-
-document.dispatchEvent(
-new Event('change')
-);
-
-});
       
 document.addEventListener(
 'change',
@@ -724,6 +701,62 @@ cb.value
 );
 
 });
+
+document
+.getElementById(
+'clearCategoryFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.categoryCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
+});
+
+markerCluster.clearLayers();
+
+var selectedStates = [];
+
+document
+.querySelectorAll(
+'.stateCheckbox:checked'
+)
+.forEach(function(cb){
+
+selectedStates.push(
+cb.value
+);
+
+});
+
+allMarkers.forEach(function(item){
+
+var state =
+stateNameMap[item.store.State];
+
+var stateMatch =
+selectedStates.length === 0 ||
+selectedStates.includes(state);
+
+if(stateMatch){
+
+markerCluster.addLayer(
+item.marker
+);
+
+}
+
+});
+
+});
+  
 
 var selectedCategories = [];
 
@@ -771,34 +804,6 @@ categoryMatch
 });
 
 });
-
-// ===== Category Checkbox =====
-
-document
-.getElementById(
-'clearCategoryFilter'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.querySelectorAll(
-'.categoryCheckbox'
-)
-.forEach(function(cb){
-
-cb.checked = false;
-
-});
-
-document.dispatchEvent(
-new Event('change')
-);
-
-});   
-
-
 
 
 
