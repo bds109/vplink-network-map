@@ -163,6 +163,35 @@ font-size:13px;
 #clearStateFilter:hover{
 background:#E5E7EB;
 }  
+
+#clearCategoryFilter{
+width:100%;
+margin-top:8px;
+padding:8px;
+border:none;
+border-radius:6px;
+background:#F3F4F6;
+cursor:pointer;
+font-size:13px;
+}
+
+#clearCategoryFilter:hover{
+background:#E5E7EB;
+}
+
+.category-item{
+
+display:flex;
+
+align-items:center;
+
+gap:6px;
+
+margin-bottom:6px;
+
+font-size:13px;
+
+}  
   
 </style>
 </head>
@@ -188,9 +217,20 @@ Clear
 
 <br><br>
 
-<select id="categoryFilter">
-<option value="All">All Categories</option>
-</select>
+<div id="categoryFilterContainer">
+
+<div class="filter-title">
+Categories
+</div>
+
+<div id="categoryFilter">
+</div>
+
+<button id="clearCategoryFilter">
+Clear
+</button>
+
+</div>
 
 </div>
 
@@ -496,6 +536,28 @@ item.marker
 
 });
 
+// ===== Category Checkbox =====
+
+document
+.getElementById(
+'clearCategoryFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.categoryCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
+});
+
+});      
+
 // State Filter
 
 // State Filter
@@ -534,20 +596,27 @@ Object.keys(categoryCount)
 .sort()
 .forEach(function(category){
 
-    var option =
-    document.createElement('option');
+    var row =
+    document.createElement('div');
 
-    option.value = category;
+    row.className = 'category-item';
 
-    option.textContent =
+    row.innerHTML =
+
+    '<input type="checkbox" ' +
+    'class="categoryCheckbox" ' +
+    'value="' + category + '">' +
+
+    '<label>' +
     category +
     ' (' +
     categoryCount[category] +
-    ')';
+    ')' +
+    '</label>';
 
     document
     .getElementById('categoryFilter')
-    .appendChild(option);
+    .appendChild(row);
 
 });
 
