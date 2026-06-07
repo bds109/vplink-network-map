@@ -401,7 +401,16 @@ markerCluster.addLayer(marker);
         });
 
 map.addLayer(markerCluster);
+markerCluster.clearLayers();
 
+allMarkers.forEach(function(item){
+
+    markerCluster.addLayer(
+        item.marker
+    );
+
+});
+      
 document
 .getElementById(
 'clearStateFilter'
@@ -458,33 +467,6 @@ cb.value
 
 });
 
-markerCluster.clearLayers();
-
-allMarkers.forEach(function(item){
-
-var state =
-stateNameMap[item.store.State];
-
-if(selectedStates.length === 0){
-
-markerCluster.addLayer(
-item.marker
-);
-
-}
-else if(
-selectedStates.includes(state)
-){
-
-markerCluster.addLayer(
-item.marker
-);
-
-}
-
-});
-
-});
 
 markerCluster.clearLayers();
 
