@@ -73,11 +73,61 @@ text-align:center;
 box-shadow:none;
 
 }
+
+#filter-panel{
+
+position:absolute;
+
+top:20px;
+left:20px;
+
+z-index:9999;
+
+background:white;
+
+padding:12px;
+
+border-radius:10px;
+
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+
+}
+
+#stateFilter,
+#categoryFilter{
+
+width:220px;
+
+padding:8px;
+
+font-size:14px;
+
+border:1px solid #D1D5DB;
+
+border-radius:6px;
+
+background:white;
+
+}
   
 </style>
 </head>
 
 <body>
+
+<div id="filter-panel">
+
+<select id="stateFilter">
+<option value="All">All States</option>
+</select>
+
+<br><br>
+
+<select id="categoryFilter">
+<option value="All">All Categories</option>
+</select>
+
+</div>
 
 <div id="map"></div>
 
@@ -150,6 +200,8 @@ var markerCluster = L.markerClusterGroup({
   
 var stateCount = {};
 
+var categoryCount = {};
+
 function getStateColor(count){
 
     if(count >= 20){
@@ -207,15 +259,25 @@ Papa.parse('VPL门店地图信息_0606.csv', {
 
     var germanState = stateNameMap[store.State];
 
-    if(germanState){
+if(germanState){
 
-        if(!stateCount[germanState]){
-            stateCount[germanState] = 0;
-        }
-
-        stateCount[germanState]++;
-
+    if(!stateCount[germanState]){
+        stateCount[germanState] = 0;
     }
+
+    stateCount[germanState]++;
+
+}
+
+if(store.Category){
+
+    if(!categoryCount[store.Category]){
+        categoryCount[store.Category] = 0;
+    }
+
+    categoryCount[store.Category]++;
+
+}
 
     if (!store.Latitude || !store.Longitude) {
         return;
@@ -272,7 +334,53 @@ store.StoreName +
         });
 
         map.addLayer(markerCluster);
+// State Filter
 
+Object.keys(stateCount)
+.sort()
+.forEach(function(state){
+
+    var option =
+    document.createElement('option');
+
+    option.value = state;
+
+    option.textContent =
+    state +
+    ' (' +
+    stateCount[state] +
+    ')';
+
+    document
+    .getElementById('stateFilter')
+    .appendChild(option);
+
+});
+
+// Category Filter
+
+Object.keys(categoryCount)
+.sort()
+.forEach(function(category){
+
+    var option =
+    document.createElement('option');
+
+    option.value = category;
+
+    option.textContent =
+    category +
+    ' (' +
+    categoryCount[category] +
+    ')';
+
+    document
+    .getElementById('categoryFilter')
+    .appendChild(option);
+
+});
+
+  
 fetch('Germany_border_sehr_hoch.geo.json')
 .then(response => response.json())
 .then(data => {
