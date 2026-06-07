@@ -79,7 +79,7 @@ box-shadow:none;
 position:absolute;
 
 top:20px;
-left:70px;
+left:20px;
 
 z-index:9999;
 
@@ -233,15 +233,15 @@ background:#E5E7EB;
 
 position:absolute;
 
-top:20px;
-left:-22px;
+top:14px;
+right:14px;
 
-width:22px;
-height:60px;
+width:32px;
+height:32px;
 
 border:none;
 
-border-radius:8px 0 0 8px;
+border-radius:8px;
 
 background:#2563EB;
 
@@ -252,27 +252,25 @@ font-weight:700;
 
 cursor:pointer;
 
-box-shadow:0 2px 8px rgba(0,0,0,0.15);
+z-index:10000;
+
+box-shadow:0 2px 8px rgba(0,0,0,0.18);
 
 }
 
 #togglePanel:hover{
-
 background:#1D4ED8;
-
 }
 
 .panel-collapsed{
 
-width:0 !important;
+width:52px !important;
+
+height:52px !important;
 
 padding:0 !important;
 
-border:none !important;
-
-background:transparent !important;
-
-box-shadow:none !important;
+overflow:visible !important;
 
 }
 
@@ -383,7 +381,9 @@ Clear
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 
-var map = L.map('map').setView([51.1657,10.4515],6);
+var map = L.map('map', {
+    zoomControl:false
+}).setView([51.1657,10.4515],6);
 
 L.tileLayer(
 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -391,7 +391,10 @@ L.tileLayer(
 maxZoom:19
 }
 ).addTo(map);
-  
+
+L.control.zoom({
+    position:'topright'
+}).addTo(map);
 
 
 /* CSV读取 */
