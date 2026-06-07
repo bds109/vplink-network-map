@@ -261,69 +261,7 @@ font-size:13px;
 background:#E5E7EB;
 }
 
-#togglePanel{
 
-position:absolute;
-
-top:14px;
-right:14px;
-
-width:32px;
-height:32px;
-
-border:none;
-
-border-radius:8px;
-
-background:#2563EB;
-
-color:white;
-
-font-size:16px;
-font-weight:700;
-
-cursor:pointer;
-
-z-index:10000;
-
-box-shadow:0 2px 8px rgba(0,0,0,0.18);
-
-}
-
-#togglePanel:hover{
-background:#1D4ED8;
-}
-
-.panel-collapsed{
-
-width:52px !important;
-
-height:52px !important;
-
-padding:0 !important;
-
-overflow:visible !important;
-
-}
-
-.panel-collapsed .panel-content{
-
-display:none;
-
-}
-
-.panel-collapsed{
-
-width:50px !important;
-overflow:hidden;
-
-}
-
-.panel-collapsed .panel-content{
-
-display:none;
-
-}
   
 .category-item{
 
@@ -549,29 +487,7 @@ var storeIcon = L.divIcon({
     iconAnchor: [8, 8]
 });
 
-document
-.getElementById('togglePanel')
-.addEventListener(
-'click',
-function(){
 
-var panel =
-document.getElementById(
-'filter-panel'
-);
-
-panel.classList.toggle(
-'panel-collapsed'
-);
-
-this.innerHTML =
-panel.classList.contains(
-'panel-collapsed'
-)
-? '▶'
-: '◀';
-
-});
   
 Papa.parse('VPL门店地图信息_0606.csv', {
 
@@ -832,11 +748,7 @@ cb.checked = false;
 
 
 
-#openFilterBtn:hover{
 
-background:#F8FAFC;
-
-}
 
 // State Filter
 
