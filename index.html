@@ -96,7 +96,7 @@ box-shadow:0 4px 12px rgba(0,0,0,0.15);
 #stateFilter,
 #categoryFilter{
 
-width:170px;
+width:300px;
 
 padding:8px;
 
@@ -271,9 +271,9 @@ margin-bottom:4px;
 }
 
 .filter-chip{
-
 display:flex;
 align-items:center;
+justify-content:space-between;
 cursor:pointer;
 padding:6px 10px;
 border:1px solid #E2E8F0;
@@ -301,12 +301,17 @@ display:none;
 .chip-name{
 
 flex:1;
+white-space:nowrap;
 
 }
 
 .chip-count{
 
-min-width:20px;
+min-width:32px;
+
+text-align:center;
+
+flex-shrink:0;
 
 height:20px;
 
