@@ -657,15 +657,38 @@ cb.checked = false;
 
 });
 
+var selectedCategories = [];
 
+document
+.querySelectorAll(
+'.categoryCheckbox:checked'
+)
+.forEach(function(cb){
+
+selectedCategories.push(
+cb.value
+);
+
+});
 
 markerCluster.clearLayers();
 
 allMarkers.forEach(function(item){
 
+var category =
+item.store.Category;
+
+var categoryMatch =
+selectedCategories.length === 0 ||
+selectedCategories.includes(category);
+
+if(categoryMatch){
+
 markerCluster.addLayer(
 item.marker
 );
+
+}
 
 });
 
