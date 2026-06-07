@@ -109,6 +109,45 @@ border-radius:6px;
 background:white;
 
 }
+
+  .filter-title{
+
+font-size:14px;
+font-weight:700;
+
+margin-bottom:8px;
+
+}
+
+#stateFilter{
+
+max-height:220px;
+
+overflow-y:auto;
+
+border:1px solid #E5E7EB;
+
+padding:8px;
+
+border-radius:8px;
+
+background:#ffffff;
+
+}
+
+.state-item{
+
+display:flex;
+
+align-items:center;
+
+gap:6px;
+
+margin-bottom:6px;
+
+font-size:13px;
+
+}
   
 </style>
 </head>
@@ -117,9 +156,16 @@ background:white;
 
 <div id="filter-panel">
 
-<select id="stateFilter">
-<option value="All">All States</option>
-</select>
+<div id="stateFilterContainer">
+
+<div class="filter-title">
+States
+</div>
+
+<div id="stateFilter">
+</div>
+
+</div>
 
 <br><br>
 
@@ -341,22 +387,50 @@ markerCluster.addLayer(marker);
 .addEventListener('change', function(){
 
     var selectedState = this.value;
+document.addEventListener(
+'change',
+function(e){
 
-    markerCluster.clearLayers();
+if(
+!e.target.classList.contains(
+'stateCheckbox'
+)
+){
+return;
+}
 
-    allMarkers.forEach(function(item){
+var selectedStates = [];
 
-        if(
-            selectedState === 'All'
-            ||
-            stateNameMap[item.store.State] === selectedState
-        ){
+document
+.querySelectorAll(
+'.stateCheckbox:checked'
+)
+.forEach(function(cb){
 
-            markerCluster.addLayer(item.marker);
+selectedStates.push(
+cb.value
+);
 
-        }
+});
 
-    });
+markerCluster.clearLayers();
+
+allMarkers.forEach(function(item){
+
+var state =
+stateNameMap[item.store.State];
+
+if(
+selectedStates.includes(state)
+){
+
+markerCluster.addLayer(
+item.marker
+);
+
+}
+
+});
 
 });
 // State Filter
@@ -365,20 +439,27 @@ Object.keys(stateCount)
 .sort()
 .forEach(function(state){
 
-    var option =
-    document.createElement('option');
+    var row =
+    document.createElement('div');
 
-    option.value = state;
+    row.className = 'state-item';
 
-    option.textContent =
+    row.innerHTML =
+
+    '<input type="checkbox" ' +
+    'class="stateCheckbox" ' +
+    'value="' + state + '" checked>' +
+
+    '<label>' +
     state +
     ' (' +
     stateCount[state] +
-    ')';
+    ')' +
+    '</label>';
 
     document
     .getElementById('stateFilter')
-    .appendChild(option);
+    .appendChild(row);
 
 });
 
