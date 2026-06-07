@@ -96,7 +96,7 @@ box-shadow:0 4px 12px rgba(0,0,0,0.15);
 #stateFilter,
 #categoryFilter{
 
-width:300px;
+width:220px;
 
 padding:8px;
 
@@ -266,23 +266,33 @@ background:#E5E7EB;
 .category-item,
 .state-item{
 
-margin-bottom:4px;
+margin-bottom:3px;
 
 }
 
 .filter-chip{
+
 display:flex;
+
 align-items:center;
+
 justify-content:space-between;
-cursor:pointer;
-padding:4px 12px;
-min-height:34px;
+
+padding:2px 10px;
+
+height:32px;
+
 border:1px solid #E2E8F0;
-border-radius:16px;
+
+border-radius:14px;
+
 background:#FFFFFF;
-transition:all .2s ease;
+
+cursor:pointer;
+
+transition:.2s;
+
 font-size:13px;
-line-height:1.2;
 
 }
 
@@ -316,9 +326,11 @@ white-space:nowrap;
 
 .chip-count{
 
-min-width:28px;
+min-width:24px;
 
-height:28px;
+height:24px;
+
+padding:0 6px;
 
 display:flex;
 
@@ -326,11 +338,11 @@ align-items:center;
 
 justify-content:center;
 
-border-radius:14px;
+border-radius:12px;
 
-background:#DDE3EE;
+background:#E2E8F0;
 
-font-size:13px;
+font-size:12px;
 
 font-weight:700;
 
@@ -885,7 +897,11 @@ Object.keys(stateCount)
 
     row.innerHTML =
 
-'<div class="filter-chip">' +
+'<label class="filter-chip">' +
+
+'<input type="checkbox" ' +
+'class="stateCheckbox" ' +
+'value="' + state + '">' +
 
 '<span class="chip-name">' +
 state +
@@ -895,7 +911,13 @@ state +
 stateCount[state] +
 '</span>' +
 
-'</div>';
+'</label>';
+
+    document
+    .getElementById('stateFilter')
+    .appendChild(row);
+
+});
 
     document
     .getElementById('stateFilter')
