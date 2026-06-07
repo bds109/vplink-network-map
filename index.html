@@ -164,6 +164,38 @@ font-size:13px;
 background:#E5E7EB;
 }  
 
+
+  
+#openFilterBtn{
+
+position:absolute;
+
+top:20px;
+left:20px;
+
+z-index:10000;
+
+padding:10px 14px;
+
+border:none;
+
+border-radius:10px;
+
+background:white;
+
+font-size:14px;
+
+font-weight:600;
+
+cursor:pointer;
+
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+
+display:none;
+
+}
+
+  
 #statsPanel{
 
 display:flex;
@@ -311,12 +343,32 @@ font-size:13px;
 </head>
 
 <body>
-
+  
+<button id="openFilterBtn">
+☰ Filters
+</button>
+  
 <div id="filter-panel">
 
-<button id="togglePanel">
-◀
+<div style="
+display:flex;
+justify-content:flex-end;
+">
+
+<button
+id="closeFilterBtn"
+style="
+border:none;
+background:none;
+font-size:22px;
+cursor:pointer;
+">
+✕
 </button>
+
+</div>
+
+
 <div class="panel-content">
 <div id="statsPanel">
 
@@ -610,6 +662,57 @@ markerCluster.addLayer(marker);
         });
 
 map.addLayer(markerCluster);
+      
+document
+.getElementById(
+'closeFilterBtn'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.getElementById(
+'filter-panel'
+)
+.style.display =
+'none';
+
+document
+.getElementById(
+'openFilterBtn'
+)
+.style.display =
+'block';
+
+}
+);
+
+document
+.getElementById(
+'openFilterBtn'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.getElementById(
+'filter-panel'
+)
+.style.display =
+'block';
+
+document
+.getElementById(
+'openFilterBtn'
+)
+.style.display =
+'none';
+
+}
+);
+      
 markerCluster.clearLayers();
 
 allMarkers.forEach(function(item){
@@ -727,7 +830,13 @@ cb.checked = false;
 
 });      
 
-// State Filter
+
+
+#openFilterBtn:hover{
+
+background:#F8FAFC;
+
+}
 
 // State Filter
 
