@@ -257,7 +257,74 @@ font-size:13px;
 background:#E5E7EB;
 }
 
+#mapHeader{
 
+position:absolute;
+
+top:20px;
+
+left:50%;
+
+transform:translateX(-50%);
+
+z-index:9998;
+
+text-align:center;
+
+pointer-events:none;
+
+}
+
+#mapTitleBar{
+
+font-size:24px;
+
+font-weight:700;
+
+letter-spacing:1px;
+
+color:#0F172A;
+
+text-shadow:
+0 1px 4px rgba(255,255,255,.9);
+
+}
+
+#locationCounter{
+
+margin-top:4px;
+
+font-size:14px;
+
+font-weight:500;
+
+color:#475569;
+
+background:rgba(255,255,255,.85);
+
+padding:4px 12px;
+
+border-radius:20px;
+
+display:inline-block;
+
+backdrop-filter:blur(8px);
+
+}
+  
+#mapTitle{
+
+font-size:20px;
+
+font-weight:700;
+
+letter-spacing:1px;
+
+color:#0F172A;
+
+margin-bottom:16px;
+
+}
   
 .category-item,
 .state-item{
@@ -284,7 +351,7 @@ padding:0 8px;
 
 border:1px solid #E2E8F0;
 
-border-radius:12px;
+border-radius:0px;
 
 background:#FFFFFF;
 
@@ -341,7 +408,7 @@ align-items:center;
 
 justify-content:center;
 
-border-radius:9px;
+border-radius:0px;
 
 background:#E2E8F0;
 
@@ -403,6 +470,9 @@ cursor:pointer;
 
 
 <div class="panel-content">
+  <div id="mapTitle">
+VPLINK NETWORK MAP
+</div>
 <div id="statsPanel">
 
 <div class="stat-card">
@@ -455,6 +525,18 @@ Clear
 
 </div>
 
+</div>
+
+</div>
+
+<div id="mapHeader">
+
+<div id="mapTitleBar">
+VPLINK NETWORK MAP
+</div>
+
+<div id="locationCounter">
+Showing 0 Locations
 </div>
 
 </div>
@@ -961,6 +1043,13 @@ document.getElementById(
 ).innerHTML =
 filteredMarkers.length;
 
+document.getElementById(
+'locationCounter'
+).innerHTML =
+'Showing ' +
+filteredMarkers.length +
+' Locations';
+  
 document.getElementById(
 'stateCountDisplay'
 ).innerHTML =
