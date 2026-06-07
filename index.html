@@ -165,6 +165,34 @@ States
 <div id="stateFilter">
 </div>
 
+<button id="clearStateFilter">
+Clear
+</button>
+#clearStateFilter{
+
+width:100%;
+
+margin-top:8px;
+
+padding:8px;
+
+border:none;
+
+border-radius:6px;
+
+background:#F3F4F6;
+
+cursor:pointer;
+
+font-size:13px;
+
+}
+
+#clearStateFilter:hover{
+
+background:#E5E7EB;
+
+}
 </div>
 
 <br><br>
@@ -383,9 +411,35 @@ markerCluster.addLayer(marker);
 
 map.addLayer(markerCluster);
 
-document.addEventListener(
-'change',
-function(e){
+document
+.getElementById(
+'clearStateFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.stateCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
+});
+
+markerCluster.clearLayers();
+
+allMarkers.forEach(function(item){
+
+markerCluster.addLayer(
+item.marker
+);
+
+});
+
+});
 
 if(
 !e.target.classList.contains(
@@ -416,7 +470,14 @@ allMarkers.forEach(function(item){
 var state =
 stateNameMap[item.store.State];
 
-if(
+if(selectedStates.length === 0){
+
+markerCluster.addLayer(
+item.marker
+);
+
+}
+else if(
 selectedStates.includes(state)
 ){
 
@@ -444,7 +505,7 @@ Object.keys(stateCount)
 
     '<input type="checkbox" ' +
     'class="stateCheckbox" ' +
-    'value="' + state + '" checked>' +
+    'value="' + state + '">' +
 
     '<label>' +
     state +
