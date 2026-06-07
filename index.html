@@ -77,6 +77,7 @@ box-shadow:none;
 #filter-panel{
 
 position:absolute;
+width:min(380px,90vw);
 
 top:20px;
 left:20px;
@@ -239,7 +240,7 @@ text-align:center;
 
 .stat-value{
 
-font-size:34px;
+font-size:clamp(28px,2vw,42px);
 
 font-weight:900;
 
@@ -537,7 +538,7 @@ right:120px;
 
 z-index:9999;
 
-font-size:clamp(22px,1.8vw,34px);
+font-size:clamp(20px,2vw,42px);
 
 font-weight:900;
 
@@ -553,6 +554,74 @@ text-shadow:
 
 }
 
+/* ==========================
+   Responsive Layout
+========================== */
+
+@media (max-width: 768px){
+
+#filter-panel{
+
+width:90vw;
+width:min(360px,90vw);
+left:50%;
+
+transform:translateX(-50%);
+
+top:10px;
+
+padding:10px;
+
+}
+
+#stateFilter,
+#categoryFilter{
+
+width:auto;
+
+}
+
+.stat-value{
+
+font-size:28px;
+
+}
+
+.stat-label{
+
+font-size:10px;
+
+}
+
+#mapTitle{
+
+font-size:14px;
+
+}
+
+#mapFloatingTitle{
+
+font-size:20px;
+
+letter-spacing:1px;
+
+right:80px;
+
+}
+
+#locationCounter{
+
+font-size:12px;
+
+padding:10px 12px;
+
+right:10px;
+
+bottom:10px;
+
+}
+
+}
   
 </style>
 </head>
