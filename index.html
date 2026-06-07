@@ -643,77 +643,7 @@ allMarkers.forEach(function(item){
 
 });
       
-document
-.getElementById(
-'clearStateFilter'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.querySelectorAll(
-'.stateCheckbox'
-)
-.forEach(function(cb){
-
-cb.checked = false;
-
-});
-
-var selectedCategories = [];
-
-document
-.querySelectorAll(
-'.categoryCheckbox:checked'
-)
-.forEach(function(cb){
-
-selectedCategories.push(
-cb.value
-);
-
-});
-
-markerCluster.clearLayers();
-
-allMarkers.forEach(function(item){
-
-var category =
-item.store.Category;
-
-var categoryMatch =
-selectedCategories.length === 0 ||
-selectedCategories.includes(category);
-
-if(categoryMatch){
-
-markerCluster.addLayer(
-item.marker
-);
-
-}
-
-});
-
-});
-
-      
-document.addEventListener(
-'change',
-function(e){
-
-if(
-!e.target.classList.contains(
-'stateCheckbox'
-)
-&&
-!e.target.classList.contains(
-'categoryCheckbox'
-)
-){
-return;
-}
+function applyFilters(){
 
 var selectedStates = [];
 
@@ -728,62 +658,6 @@ cb.value
 );
 
 });
-
-document
-.getElementById(
-'clearCategoryFilter'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.querySelectorAll(
-'.categoryCheckbox'
-)
-.forEach(function(cb){
-
-cb.checked = false;
-
-});
-
-markerCluster.clearLayers();
-
-var selectedStates = [];
-
-document
-.querySelectorAll(
-'.stateCheckbox:checked'
-)
-.forEach(function(cb){
-
-selectedStates.push(
-cb.value
-);
-
-});
-
-allMarkers.forEach(function(item){
-
-var state =
-stateNameMap[item.store.State];
-
-var stateMatch =
-selectedStates.length === 0 ||
-selectedStates.includes(state);
-
-if(stateMatch){
-
-markerCluster.addLayer(
-item.marker
-);
-
-}
-
-});
-
-});
-  
 
 var selectedCategories = [];
 
@@ -800,7 +674,7 @@ cb.value
 });
 
 var filteredMarkers = [];
-  
+
 markerCluster.clearLayers();
 
 allMarkers.forEach(function(item){
@@ -824,13 +698,13 @@ stateMatch &&
 categoryMatch
 ){
 
-    markerCluster.addLayer(
-    item.marker
-    );
+markerCluster.addLayer(
+item.marker
+);
 
-    filteredMarkers.push(
-    item
-    );
+filteredMarkers.push(
+item
+);
 
 }
 
@@ -840,10 +714,71 @@ updateStats(
 filteredMarkers
 );
 
-});
+}
+
+document
+.getElementById(
+'clearStateFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.stateCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
 
 });
 
+applyFilters();
+
+});
+
+document
+.getElementById(
+'clearCategoryFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.categoryCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
+});
+
+applyFilters();
+
+});
+
+document.addEventListener(
+'change',
+function(e){
+
+if(
+!e.target.classList.contains(
+'stateCheckbox'
+)
+&&
+!e.target.classList.contains(
+'categoryCheckbox'
+)
+){
+return;
+}
+
+applyFilters();
+
+});
 
 
 // State Filter
