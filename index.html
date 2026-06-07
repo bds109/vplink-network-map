@@ -201,6 +201,7 @@ var markerCluster = L.markerClusterGroup({
 var stateCount = {};
 
 var categoryCount = {};
+var allMarkers = [];
 
 function getStateColor(count){
 
@@ -325,11 +326,39 @@ store.StoreName +
 
 );
 
-            markerCluster.addLayer(marker);
+    allMarkers.push({
+    marker: marker,
+    store: store
+});
+
+markerCluster.addLayer(marker);
 
         });
 
         map.addLayer(markerCluster);
+      document
+.getElementById('stateFilter')
+.addEventListener('change', function(){
+
+    var selectedState = this.value;
+
+    markerCluster.clearLayers();
+
+    allMarkers.forEach(function(item){
+
+        if(
+            selectedState === 'All'
+            ||
+            stateNameMap[item.store.State] === selectedState
+        ){
+
+            markerCluster.addLayer(item.marker);
+
+        }
+
+    });
+
+});
 // State Filter
 
 Object.keys(stateCount)
