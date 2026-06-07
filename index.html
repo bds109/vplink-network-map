@@ -83,7 +83,7 @@ left:20px;
 
 z-index:9999;
 
-background:rgba(248,250,252,0.42);
+background:rgba(248,250,252,0.68);
 backdrop-filter:blur(50px);
 -webkit-backdrop-filter:blur(50px);
 padding:12px;
@@ -343,13 +343,7 @@ box-shadow:
   
 #mapTitle{
 
-font-size:17px;
-
-font-weight:900;
-
-letter-spacing:1.8px;
-
-color:#0F172A;
+position:relative;
 
 display:flex;
 
@@ -359,11 +353,17 @@ align-items:center;
 
 width:100%;
 
-text-align:center;
+margin-top:10px;
 
-margin-top:0;
+margin-bottom:14px;
 
-margin-bottom:12px;
+font-size:17px;
+
+font-weight:900;
+
+letter-spacing:1.5px;
+
+color:#0F172A;
 
 }
   
@@ -517,8 +517,8 @@ text-shadow:
 
 <div style="
 position:absolute;
-top:12px;
-right:12px;
+top:16px;
+right:18px;
 z-index:10;
 ">
 
@@ -527,18 +527,20 @@ id="closeFilterBtn"
 style="
 border:none;
 background:none;
-font-size:22px;
+font-size:34px;
+font-weight:300;
+color:#475569;
 cursor:pointer;
+line-height:1;
+padding:0;
 ">
-✕
+×
 </button>
-
-</div>
 
 
 <div class="panel-content">
   <div id="mapTitle">
-VPLINK NETWORK MAP
+<span>VPLINK NETWORK MAP</span>
 </div>
 <div id="statsPanel">
 
@@ -586,7 +588,7 @@ Clear
 
 
 <div id="categoryFilterContainer"
-style="margin-top:20px;">
+style="margin-top:12px;">
 
 <div style="
 display:flex;
