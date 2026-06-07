@@ -343,21 +343,27 @@ box-shadow:
   
 #mapTitle{
 
-font-size:16px;
+font-size:17px;
+
 font-weight:900;
+
 letter-spacing:1.8px;
 
 color:#0F172A;
 
-display:block;
+display:flex;
+
+justify-content:center;
+
+align-items:center;
 
 width:100%;
 
 text-align:center;
 
-margin-top:-12px;
+margin-top:0;
 
-margin-bottom:10px;
+margin-bottom:12px;
 
 }
   
@@ -510,8 +516,10 @@ text-shadow:
 <div id="filter-panel">
 
 <div style="
-display:flex;
-justify-content:flex-end;
+position:absolute;
+top:12px;
+right:12px;
+z-index:10;
 ">
 
 <button
