@@ -179,6 +179,41 @@ font-size:13px;
 background:#E5E7EB;
 }
 
+#togglePanel{
+
+position:absolute;
+
+top:10px;
+right:10px;
+
+width:28px;
+height:28px;
+
+border:none;
+
+border-radius:6px;
+
+background:#F3F4F6;
+
+cursor:pointer;
+
+font-size:14px;
+
+}
+
+.panel-collapsed{
+
+width:50px !important;
+overflow:hidden;
+
+}
+
+.panel-collapsed .panel-content{
+
+display:none;
+
+}
+  
 .category-item{
 
 display:flex;
@@ -200,6 +235,11 @@ font-size:13px;
 
 <div id="filter-panel">
 
+<button id="togglePanel">
+◀
+</button>
+<div class="panel-content">
+  
 <div id="stateFilterContainer">
 
 <div class="filter-title">
@@ -229,6 +269,8 @@ Categories
 <button id="clearCategoryFilter">
 Clear
 </button>
+
+</div>
 
 </div>
 
@@ -352,6 +394,30 @@ var storeIcon = L.divIcon({
     iconAnchor: [8, 8]
 });
 
+document
+.getElementById('togglePanel')
+.addEventListener(
+'click',
+function(){
+
+var panel =
+document.getElementById(
+'filter-panel'
+);
+
+panel.classList.toggle(
+'panel-collapsed'
+);
+
+this.innerHTML =
+panel.classList.contains(
+'panel-collapsed'
+)
+? '▶'
+: '◀';
+
+});
+  
 Papa.parse('VPL门店地图信息_0606.csv', {
 
     download: true,
