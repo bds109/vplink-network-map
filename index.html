@@ -231,11 +231,37 @@ var marker = L.marker(
     }
 );
 
-            marker.bindPopup(
-                '<b>' + store.StoreName + '</b><br>' +
-                store.Address + '<br>' +
-                store.StoreType
-            );
+         marker.bindPopup(
+
+'<div style="min-width:260px;">' +
+
+'<h3 style="margin:0 0 10px 0;">' +
+store.StoreName +
+'</h3>' +
+
+'<div><b>🏙 City</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.City || '-') +
+'</div>' +
+
+'<div><b>📂 Category</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.Category || '-') +
+'</div>' +
+
+'<div><b>🏪 Store Type</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.StoreType || '-') +
+'</div>' +
+
+'<div><b>📍 Address</b></div>' +
+'<div>' +
+(store.Address || '-') +
+'</div>' +
+
+'</div>'
+
+);
 
             markerCluster.addLayer(marker);
 
