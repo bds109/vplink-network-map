@@ -263,7 +263,55 @@ background:#E5E7EB;
 
 
   
-.category-item{
+.category-item,
+.state-item{
+
+margin-bottom:8px;
+
+}
+
+.filter-chip{
+
+display:flex;
+align-items:center;
+cursor:pointer;
+padding:10px 12px;
+border:1px solid #E2E8F0;
+border-radius:12px;
+background:#FFFFFF;
+transition:all .2s ease;
+font-size:14px;
+
+}
+
+.filter-chip:hover{
+
+background:#F8FAFC;
+border-color:#CBD5E1;
+
+}
+
+.filter-chip input{
+
+display:none;
+
+}
+
+.filter-chip span{
+
+width:100%;
+
+}
+
+.filter-chip:has(input:checked){
+
+background:#2563EB;
+border-color:#2563EB;
+color:white;
+font-weight:600;
+
+}
+  
 
 display:flex;
 
@@ -794,16 +842,20 @@ Object.keys(stateCount)
 
     row.innerHTML =
 
-    '<input type="checkbox" ' +
-    'class="stateCheckbox" ' +
-    'value="' + state + '">' +
+'<label class="filter-chip">' +
 
-    '<label>' +
-    state +
-    ' (' +
-    stateCount[state] +
-    ')' +
-    '</label>';
+'<input type="checkbox" ' +
+'class="stateCheckbox" ' +
+'value="' + state + '">' +
+
+'<span>' +
+state +
+' (' +
+stateCount[state] +
+')' +
+'</span>' +
+
+'</label>';
 
     document
     .getElementById('stateFilter')
@@ -885,16 +937,20 @@ Object.keys(categoryCount)
 
     row.innerHTML =
 
-    '<input type="checkbox" ' +
-    'class="categoryCheckbox" ' +
-    'value="' + category + '">' +
+'<label class="filter-chip">' +
 
-    '<label>' +
-    category +
-    ' (' +
-    categoryCount[category] +
-    ')' +
-    '</label>';
+'<input type="checkbox" ' +
+'class="categoryCheckbox" ' +
+'value="' + category + '">' +
+
+'<span>' +
+category +
+' (' +
+categoryCount[category] +
+')' +
+'</span>' +
+
+'</label>';
 
     document
     .getElementById('categoryFilter')
