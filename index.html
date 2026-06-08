@@ -1732,12 +1732,10 @@ const data =
 wrapper.querySelector('.photo-data');
 
 currentPhotos = [
-
 data.dataset.p1,
 data.dataset.p2,
 data.dataset.p3,
 data.dataset.p4
-
 ].filter(Boolean);
 
 currentPhotoIndex =
@@ -1755,6 +1753,12 @@ currentPhotos[currentPhotoIndex];
 }
 
 function closePhoto(){
+
+document.getElementById(
+'photoModal'
+).style.display = 'none';
+
+}
 
 function modalNextPhoto(e){
 
@@ -1788,20 +1792,13 @@ return;
 currentPhotoIndex--;
 
 if(currentPhotoIndex < 0){
-currentPhotoIndex =
-currentPhotos.length - 1;
+currentPhotoIndex = currentPhotos.length - 1;
 }
 
 document.getElementById(
 'photoModalImg'
 ).src =
 currentPhotos[currentPhotoIndex];
-
-}  
-  
-document.getElementById(
-'photoModal'
-).style.display = 'none';
 
 }
 
@@ -1810,42 +1807,25 @@ document.addEventListener(
 function(e){
 
 if(
-document.getElementById(
-'photoModal'
-).style.display === 'flex'
+document.getElementById('photoModal').style.display === 'flex'
 ){
 
 if(e.key === 'ArrowRight'){
-modalNextPhoto(
-{stopPropagation:function(){}}
-);
+modalNextPhoto({stopPropagation:function(){}});
 }
 
 if(e.key === 'ArrowLeft'){
-modalPrevPhoto(
-{stopPropagation:function(){}}
-);
+modalPrevPhoto({stopPropagation:function(){}});
 }
 
 }
 
 if(e.key === 'Escape'){
-
 closePhoto();
-
 }
 
 }
 );
-
-if(e.key === 'Escape'){
-
-closePhoto();
-
-}
-
-}
-);  
   
 </script>
 
