@@ -1202,8 +1202,8 @@ function(e){
 map.setView(
 e.latlng,
 Math.min(
-map.getZoom() + 2,
-9
+map.getZoom() + 3,
+16
 )
 );
 
@@ -1581,8 +1581,8 @@ function(){
 map.setView(
 pointMarker.getLatLng(),
 Math.max(
-map.getZoom(),
-9
+map.getZoom() + 3,
+16
 )
 );
 
