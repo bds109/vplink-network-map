@@ -975,22 +975,68 @@ store.StoreName +
 '<div style="margin-bottom:10px;">' +
 (store.Address || '-') +
 '</div>' +
-
-'<div style="color:red;font-size:12px;">' +
-(store.PhotoURL1 || 'NO PHOTO') +
-'</div>' +           
+      
            
-(store.PhotoURL1 ?
+(
+(store.PhotoURL1 || store.PhotoURL2 || store.PhotoURL3 || store.PhotoURL4)
 
-'<img src="' +
-store.PhotoURL1 +
-'" style="width:100%;border-radius:8px;">'
+?
 
-: '')
+'<div style="position:relative;margin-top:12px;">'
+
++
+
+'<img id="popupImage" src="' +
+
+(
+store.PhotoURL1 ||
+store.PhotoURL2 ||
+store.PhotoURL3 ||
+store.PhotoURL4
+)
+
++
+
+'" style="width:100%;height:260px;object-fit:cover;border-radius:10px;">'
+
++
+
+'<button onclick="prevPhoto(this)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;border-radius:50%;background:rgba(0,0,0,.55);color:white;font-size:18px;cursor:pointer;">❮</button>'
+
++
+
+'<button onclick="nextPhoto(this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;border-radius:50%;background:rgba(0,0,0,.55);color:white;font-size:18px;cursor:pointer;">❯</button>'
+
++
+
+'<div style="display:none" class="photo-data"'
+
++
+
+' data-p1="' + (store.PhotoURL1 || '') + '"'
+
++
+
+' data-p2="' + (store.PhotoURL2 || '') + '"'
+
++
+
+' data-p3="' + (store.PhotoURL3 || '') + '"'
+
++
+
+' data-p4="' + (store.PhotoURL4 || '') + '"'
+
++
+
+' data-index="0"></div>'
 
 +
 
 '</div>'
+
+: ''
+)
 
 );
 
@@ -1446,6 +1492,76 @@ return{
 
 });
 
+function nextPhoto(btn){
+
+const wrapper =
+btn.parentElement;
+
+const data =
+wrapper.querySelector('.photo-data');
+
+const img =
+wrapper.querySelector('img');
+
+const photos = [
+
+data.dataset.p1,
+data.dataset.p2,
+data.dataset.p3,
+data.dataset.p4
+
+].filter(Boolean);
+
+let index =
+parseInt(data.dataset.index);
+
+index++;
+
+if(index >= photos.length){
+index = 0;
+}
+
+img.src = photos[index];
+
+data.dataset.index = index;
+
+}
+
+function prevPhoto(btn){
+
+const wrapper =
+btn.parentElement;
+
+const data =
+wrapper.querySelector('.photo-data');
+
+const img =
+wrapper.querySelector('img');
+
+const photos = [
+
+data.dataset.p1,
+data.dataset.p2,
+data.dataset.p3,
+data.dataset.p4
+
+].filter(Boolean);
+
+let index =
+parseInt(data.dataset.index);
+
+index--;
+
+if(index < 0){
+index = photos.length - 1;
+}
+
+img.src = photos[index];
+
+data.dataset.index = index;
+
+}  
+  
 </script>
 
 </body>
