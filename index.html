@@ -1121,8 +1121,6 @@ var markerCluster = L.markerClusterGroup({
 
     zoomToBoundsOnClick:false,
 
-    disableClusteringAtZoom:1,
-
     iconCreateFunction:function(cluster){
 
         var count = cluster.getChildCount();
@@ -1251,16 +1249,15 @@ className:'',
 
 html:
 '<div style="' +
-'width:12px;' +
-'height:12px;' +
+'width:8px;' +
+'height:8px;' +
 'background:#2563EB;' +
-'border:1px solid white;' +
+'border:2px solid white;' +
 'border-radius:50%;' +
-'box-shadow:0 0 4px rgba(37,99,235,.45);' +
 '">' +
 '</div>',
 
-iconAnchor:[10,10]
+iconAnchor:[4,4]
 
 });
 
