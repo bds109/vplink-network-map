@@ -1097,7 +1097,7 @@ document.getElementById(
 ).innerHTML = isClusterMode ? '◉' : '◎';
 
 renderMarkers(
-currentFilteredMarkers.length ? currentFilteredMarkers : allMarkers
+currentFilteredMarkers
 );
 
 }
@@ -1218,7 +1218,32 @@ var stateNameMap = {
 '萨安州':'Sachsen-Anhalt'
 };
 
-var storeIcon = L.divIcon({
+var clusterSingleIcon = L.divIcon({
+
+className:'',
+
+html:
+'<div style="' +
+'width:32px;' +
+'height:32px;' +
+'background:#2563EB;' +
+'border-radius:50%;' +
+'color:white;' +
+'font-weight:700;' +
+'font-size:14px;' +
+'display:flex;' +
+'align-items:center;' +
+'justify-content:center;' +
+'box-shadow:0 2px 8px rgba(0,0,0,.15);' +
+'">' +
+'1' +
+'</div>',
+
+iconAnchor:[16,16]
+
+});
+
+var pointIcon = L.divIcon({
 
 className:'',
 
@@ -1233,7 +1258,7 @@ html:
 '">' +
 '</div>',
 
-iconAnchor:[6,6]
+iconAnchor:[10,10]
 
 });
 
@@ -1285,7 +1310,7 @@ var marker = L.marker(
         parseFloat(store.Longitude)
     ],
     {
-        icon: storeIcon
+        icon: clusterSingleIcon
     }
 );
 
@@ -1492,6 +1517,10 @@ if(isClusterMode){
 
 items.forEach(function(item){
 
+item.marker.setIcon(
+clusterSingleIcon
+);
+
 markerCluster.addLayer(
 item.marker
 );
@@ -1503,6 +1532,10 @@ map.addLayer(markerCluster);
 }else{
 
 items.forEach(function(item){
+
+item.marker.setIcon(
+pointIcon
+);
 
 normalMarkerLayer.addLayer(
 item.marker
