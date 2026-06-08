@@ -547,7 +547,7 @@ box-shadow:
 position:fixed;
 
 right:20px;
-top:20px;
+top:80px;
 
 width:40px;
 height:40px;
@@ -651,11 +651,6 @@ box-shadow:
 cursor:default;
 
 }
-  
-@media (max-width: 768px){
-#mapFloatingTitle{
-display:none;
-}
 
 /* Popup Glass */
 
@@ -663,14 +658,13 @@ display:none;
 
 background:rgba(255,255,255,0.22) !important;
 
-backdrop-filter:blur(60px);
+backdrop-filter:blur(110px);
 
--webkit-backdrop-filter:blur(60px);
+-webkit-backdrop-filter:blur(110px);
 
-border:1px solid rgba(255,255,255,0.8);
+border:1px solid rgba(255,255,255,0.95);
 
-box-shadow:
-0 12px 40px rgba(15,23,42,.10);
+box-shadow:0 12px 40px rgba(15,23,42,.06);
 
 border-radius:20px;
 
@@ -680,9 +674,9 @@ border-radius:20px;
 
 background:rgba(255,255,255,0.22) !important;
 
-backdrop-filter:blur(60px);
+backdrop-filter:blur(110px);
 
--webkit-backdrop-filter:blur(60px);
+-webkit-backdrop-filter:blur(110px);
 
 }
 
@@ -705,6 +699,21 @@ right:12px;
 top:10px;
 
 }
+  
+@media (max-width: 768px){
+#mapFloatingTitle{
+display:none;
+}
+
+#modalPrev{
+left:12px !important;
+}
+
+#modalNext{
+right:12px !important;
+}
+
+}  
   
 #filter-panel{
 max-height:80vh;
@@ -794,7 +803,7 @@ id="modalPrev"
 onclick="modalPrevPhoto(event)"
 style="
 position:absolute;
-left:-60px;
+left:12px;
 top:50%;
 transform:translateY(-50%);
 width:48px;
@@ -819,7 +828,7 @@ id="modalNext"
 onclick="modalNextPhoto(event)"
 style="
 position:absolute;
-right:-60px;
+right:12px;
 top:50%;
 transform:translateY(-50%);
 width:48px;
