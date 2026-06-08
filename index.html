@@ -306,20 +306,19 @@ bottom:20px;
 
 z-index:9999;
 
-padding:10px 14px;
+padding:8px 12px;
 
-background:rgba(255,255,255,.72);
+background:rgba(255,255,255,0.22);
 
-backdrop-filter:blur(16px);
+backdrop-filter:blur(110px);
 
--webkit-backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(110px);
 
-border:1px solid rgba(255,255,255,.7);
+border:1px solid rgba(255,255,255,0.95);
 
-box-shadow:
-0 8px 24px rgba(15,23,42,.10);
+box-shadow:0 12px 40px rgba(15,23,42,.06);
 
-font-size:13px;
+font-size:12px;
 
 line-height:1.5;
 
@@ -722,7 +721,7 @@ right:12px !important;
 }
 
 #filter-panel{
-display:none;
+display:block;
 max-height:80vh;
 overflow-y:auto;
 width:min(220px,82vw);
@@ -734,6 +733,10 @@ padding:10px;
 
 #openFilterBtn{
 display:block;
+position:absolute;
+top:10px;
+left:10px;
+z-index:10001;
 }
 
 #stateFilter,
