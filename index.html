@@ -1096,6 +1096,8 @@ document.getElementById(
 'clusterToggleBtn'
 ).innerHTML = isClusterMode ? '◉' : '◎';
 
+if(window.renderMarkers){
+
 window.renderMarkers(
 currentFilteredMarkers
 );
@@ -1442,6 +1444,7 @@ map.addLayer(markerCluster);
 updateStats(
 allMarkers
 );
+currentFilteredMarkers = allMarkers;
       
 document
 .getElementById(
@@ -1493,7 +1496,7 @@ document
 }
 );
       
-renderMarkers(
+window.renderMarkers(
 allMarkers
 );
 
@@ -1620,7 +1623,7 @@ item
 
 });
 
-renderMarkers(
+window.renderMarkers(
 filteredMarkers
 );
 
