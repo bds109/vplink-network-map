@@ -1121,6 +1121,8 @@ var markerCluster = L.markerClusterGroup({
 
     zoomToBoundsOnClick:false,
 
+    disableClusteringAtZoom:1,
+
     iconCreateFunction:function(cluster){
 
         var count = cluster.getChildCount();
@@ -1533,12 +1535,19 @@ map.addLayer(markerCluster);
 
 items.forEach(function(item){
 
-item.marker.setIcon(
-pointIcon
+var pointMarker = L.marker(
+item.marker.getLatLng(),
+{
+icon: pointIcon
+}
+);
+
+pointMarker.bindPopup(
+item.marker.getPopup()
 );
 
 normalMarkerLayer.addLayer(
-item.marker
+pointMarker
 );
 
 });
