@@ -566,6 +566,41 @@ text-shadow:
 #mapFloatingTitle{
 display:none;
 }
+
+#photoModal{
+
+display:none;
+
+position:fixed;
+
+left:0;
+top:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.85);
+
+z-index:999999;
+
+justify-content:center;
+align-items:center;
+
+}
+
+#photoModalImg{
+
+max-width:90vw;
+max-height:90vh;
+
+border-radius:12px;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,.5);
+
+cursor:default;
+
+}
   
 #filter-panel{
 max-height:80vh;
@@ -635,7 +670,19 @@ bottom:10px;
 </head>
 
 <body>
-  
+
+<div
+id="photoModal"
+onclick="closePhoto()"
+>
+
+<img
+id="photoModalImg"
+onclick="event.stopPropagation()"
+>
+
+</div>
+
 <button id="openFilterBtn">
 ☰ Filters
 </button>
@@ -997,10 +1044,14 @@ store.PhotoURL4
 
 +
 
-'" style="width:100%;height:260px;object-fit:cover;border-radius:10px;">'
+'" onclick="openPhoto(this.src)" ' +
+
+'style="width:100%;height:260px;object-fit:cover;border-radius:10px;cursor:pointer;">'
 
 +
 
+  
+  
 '<button onclick="prevPhoto(this)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;border-radius:50%;background:rgba(0,0,0,.55);color:white;font-size:18px;cursor:pointer;">❮</button>'
 
 +
@@ -1559,6 +1610,28 @@ index = photos.length - 1;
 img.src = photos[index];
 
 data.dataset.index = index;
+
+}  
+
+function openPhoto(src){
+
+let modal =
+document.getElementById('photoModal');
+
+let img =
+document.getElementById('photoModalImg');
+
+img.src = src;
+
+modal.style.display = 'flex';
+
+}
+
+function closePhoto(){
+
+document.getElementById(
+'photoModal'
+).style.display = 'none';
 
 }  
   
