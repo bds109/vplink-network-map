@@ -739,7 +739,7 @@ line-height:34px;
 
 text-align:center;
 
-font-size:26px;
+font-size:30px;
 
 font-weight:900;
 
@@ -1017,6 +1017,15 @@ var map = L.map('map', {
     zoomControl:false
 }).setView([51.1657,10.4515],6.4);
 
+if(window.innerWidth <= 768){
+
+map.setView(
+[51.1657,10.4515],
+5.4
+);
+
+}
+
 L.tileLayer(
 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 {
@@ -1036,7 +1045,7 @@ homeControl.onAdd = function(){
 
 var div = L.DomUtil.create(
 'div',
-'leaflet-bar leaflet-control'
+'leaflet-control leaflet-control-zoom'
 );
 
 div.innerHTML =
