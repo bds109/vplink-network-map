@@ -1345,6 +1345,25 @@ var marker = L.marker(
     }
 );
 
+marker.on(
+'click',
+function(){
+
+if(isClusterMode){
+
+map.setView(
+marker.getLatLng(),
+Math.min(
+map.getZoom() + 3,
+16
+)
+);
+
+}
+
+}
+);
+          
 marker.bindPopup(
 
 '<div style="min-width:260px;">' +
@@ -1580,11 +1599,10 @@ function(){
 
 map.setView(
 pointMarker.getLatLng(),
-Math.max(
-map.getZoom() + 3,
+Math.min(
+map.getZoom() + 2,
 16
 )
-);
 
 }
 );  
