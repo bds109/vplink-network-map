@@ -741,7 +741,7 @@ backdrop-filter:blur(24px);
 width:30px !important;
 
 height:30px !important;
-
+border-bottom:none !important;
 line-height:30px !important;
 
 display:flex !important;
@@ -767,7 +767,7 @@ box-shadow:none !important;
 
 #homeMapBtn{
 
-font-size:22px;
+font-size:28px;
 
 font-weight:700;
 
@@ -775,7 +775,7 @@ font-weight:700;
 
 #clusterToggleBtn{
 
-font-size:22px;
+font-size:20px;
 
 font-weight:700;
 
@@ -1274,29 +1274,30 @@ className:'',
 
 html:
 '<div style="' +
-'width:12px;' +
-'height:18px;' +
+'width:22px;' +
+'height:22px;' +
 'background:#2563EB;' +
 'border-radius:50% 50% 50% 0;' +
-'transform:rotate(-45deg);' +
+'transform:
+rotate(-45deg)
+translateY(-2px);' +
 'box-shadow:0 2px 6px rgba(0,0,0,.25);' +
 '">' +
 '<div style="' +
-'width:6px;' +
-'height:6px;' +
+'width:8px;' +
+'height:8px;' +
 'background:rgba(255,255,255,.85);' +
 'border-radius:50%;' +
 'position:absolute;' +
-'left:3px;' +
-'top:4px;' +
+'left:7px;' +
+'top:7px;' +
 '">' +
 '</div>' +
 '</div>',
 
-iconSize:[12,18],
-iconAnchor:[6,18],
-
-popupAnchor:[0,-16]
+iconSize:[22,30],
+iconAnchor:[11,30],
+popupAnchor:[0,-30]
 
 });
 
