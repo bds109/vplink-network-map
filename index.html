@@ -742,6 +742,8 @@ width:30px !important;
 
 height:30px !important;
 border-bottom:none !important;
+border-top:none !important;
+box-shadow:none !important;  
 line-height:30px !important;
 
 display:flex !important;
@@ -764,6 +766,9 @@ box-shadow:none !important;
 
 }
 
+.leaflet-control-zoom a{
+border:none !important;
+}  
 
 #homeMapBtn{
 
@@ -1278,11 +1283,9 @@ html:
 '<circle cx="12" cy="12" r="4" fill="white"/>' +
 '</svg>',
 
-iconSize:[22,30],
-
-iconAnchor:[11,30],
-
-popupAnchor:[0,-30]
+iconSize:[18,25],
+iconAnchor:[9,25],
+popupAnchor:[0,-25]
 
 });
 
