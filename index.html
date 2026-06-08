@@ -899,7 +899,7 @@ iconAnchor:[16,16]
 
 
   
-Papa.parse('VPL门店地图信息_0606.csv', {
+Papa.parse('VPL门店地图信息_0607.csv', {
 
     download: true,
     header: true,
@@ -970,9 +970,19 @@ store.StoreName +
 '</div>' +
 
 '<div><b>📍 Address</b></div>' +
-'<div>' +
+'<div style="margin-bottom:10px;">' +
 (store.Address || '-') +
 '</div>' +
+
+(store.PhotoURL1 ?
+
+'<img src="' +
+store.PhotoURL1 +
+'" style="width:100%;border-radius:8px;">'
+
+: '')
+
++
 
 '</div>'
 
