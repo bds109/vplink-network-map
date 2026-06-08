@@ -731,17 +731,17 @@ box-shadow:0 12px 40px rgba(15,23,42,.06);
 
 color:#0F172A !important;
 
-width:30px;
+width:34px;
 
-height:30px;
+height:34px;
 
-line-height:30px;
+line-height:34px;
 
 text-align:center;
 
-font-size:18px;
+font-size:26px;
 
-font-weight:700;
+font-weight:900;
 
 }
 
@@ -1040,7 +1040,7 @@ var div = L.DomUtil.create(
 );
 
 div.innerHTML =
-'<a id="homeMapBtn" href="#" title="Reset View">⌂</a>';
+'<a id="homeMapBtn" href="#" title="Reset View">⟳</a>';
 
 return div;
 };
@@ -1076,7 +1076,7 @@ var markerCluster = L.markerClusterGroup({
 
     spiderfyOnMaxZoom:true,
 
-    zoomToBoundsOnClick:true,
+    zoomToBoundsOnClick:false,
 
     iconCreateFunction:function(cluster){
 
@@ -1120,6 +1120,18 @@ var markerCluster = L.markerClusterGroup({
     }
 
 });
+
+markerCluster.on(
+'clusterclick',
+function(e){
+
+map.setView(
+e.latlng,
+map.getZoom() + 1
+);
+
+}
+);
   
 var stateCount = {};
 
