@@ -733,6 +733,13 @@ id="photoModal"
 onclick="closePhoto()"
 >
 
+<div
+class="photo-close"
+onclick="closePhoto()"
+>
+×
+</div>
+
 <img
 id="photoModalImg"
 onclick="event.stopPropagation()"
@@ -1671,10 +1678,36 @@ data.dataset.index = index;
 
 function openPhoto(img){
 
-img.classList.add('photo-zoom');
+document.getElementById(
+'photoModal'
+).style.display = 'flex';
+
+document.getElementById(
+'photoModalImg'
+).src = img.src;
 
 }
 
+function closePhoto(){
+
+document.getElementById(
+'photoModal'
+).style.display = 'none';
+
+}
+
+document.addEventListener(
+'keydown',
+function(e){
+
+if(e.key === 'Escape'){
+
+closePhoto();
+
+}
+
+}
+);  
   
 </script>
 
