@@ -215,17 +215,23 @@ display:none;
 #statsPanel{
 
 display:grid;
-grid-template-columns:1fr 1fr 1fr;
 
-gap:8px;
+grid-template-columns:
+repeat(3,minmax(0,1fr));
 
-margin-bottom:16px;
+gap:6px;
 
+width:100%;
 }
 
 .stat-card{
 
 background:rgba(255,255,255,0.18);
+box-sizing:border-box;
+
+width:100%;
+
+min-width:0;
 
 border:1px solid rgba(255,255,255,0.35);
 
@@ -243,7 +249,7 @@ text-align:center;
 
 .stat-value{
 
-font-size:clamp(28px,2vw,42px);
+font-size:clamp(22px,2vw,34px);
 
 font-weight:900;
 
@@ -258,9 +264,9 @@ text-shadow:
 
 .stat-label{
 
-font-size:11px;
+font-size:9px;
 font-weight:600;
-letter-spacing:.5px;  
+letter-spacing:0px;  
 color:#64748B;
 
 margin-top:6px;
@@ -720,7 +726,7 @@ display:none;
 max-height:80vh;
 overflow-y:auto;
 width:min(220px,82vw);
-left:10;
+left:10px;
 transform:none;
 top:10px;
 padding:10px;
