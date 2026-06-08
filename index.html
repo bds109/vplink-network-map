@@ -1105,7 +1105,7 @@ currentFilteredMarkers
 }
 
 }
-);
+});
   
 /* CSV读取 */
 
@@ -1496,9 +1496,7 @@ document
 }
 );
       
-window.renderMarkers(
-allMarkers
-);
+
 
 window.renderMarkers = function(items){
 
@@ -1556,7 +1554,9 @@ map.addLayer(normalMarkerLayer);
 
 }
 
-}
+window.renderMarkers(
+allMarkers
+);
       
 function applyFilters(){
 
