@@ -241,7 +241,17 @@ backdrop-filter:blur(30px);
 
 border-radius:10px;
 
-padding:10px;
+height:86px;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+padding:0;
 
 text-align:center;
 
@@ -705,6 +715,49 @@ right:12px;
 top:10px;
 
 }
+
+.leaflet-control-zoom a,
+#homeMapBtn{
+
+background:rgba(255,255,255,0.22) !important;
+
+backdrop-filter:blur(110px);
+
+-webkit-backdrop-filter:blur(110px);
+
+border:1px solid rgba(255,255,255,0.95) !important;
+
+box-shadow:0 12px 40px rgba(15,23,42,.06);
+
+color:#0F172A !important;
+
+width:30px;
+
+height:30px;
+
+line-height:30px;
+
+text-align:center;
+
+font-size:18px;
+
+font-weight:700;
+
+}
+
+.leaflet-control-zoom{
+
+border:none !important;
+
+box-shadow:none !important;
+
+overflow:hidden;
+
+border-radius:12px;
+
+}
+
+  
   
 @media (max-width: 768px){
 
@@ -732,7 +785,7 @@ padding:10px;
 }
 
 #openFilterBtn{
-display:block;
+display:none;
 position:absolute;
 top:10px;
 left:10px;
@@ -753,7 +806,9 @@ font-size:10px;
 }
 
 #mapTitle{
-font-size:12px;
+font-size:10px;
+
+padding-right:40px;
 }
 
 #locationCounter{
@@ -973,7 +1028,46 @@ L.control.zoom({
     position:'topright'
 }).addTo(map);
 
+var homeControl = L.control({
+position:'topright'
+});
 
+homeControl.onAdd = function(){
+
+var div = L.DomUtil.create(
+'div',
+'leaflet-bar leaflet-control'
+);
+
+div.innerHTML =
+'<a id="homeMapBtn" href="#" title="Reset View">⌂</a>';
+
+return div;
+};
+
+homeControl.addTo(map);
+
+document.addEventListener(
+'click',
+function(e){
+
+if(
+e.target &&
+e.target.id === 'homeMapBtn'
+){
+
+e.preventDefault();
+
+map.setView(
+[51.1657,10.4515],
+6.4
+);
+
+}
+
+}
+);
+  
 /* CSV读取 */
 
 var markerCluster = L.markerClusterGroup({
