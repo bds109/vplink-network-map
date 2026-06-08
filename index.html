@@ -717,7 +717,8 @@ top:10px;
 }
 
 .leaflet-control-zoom a,
-#homeMapBtn{
+#homeMapBtn,
+#clusterToggleBtn{
 
 background:rgba(255,255,255,0.22) !important;
 
@@ -1049,7 +1050,15 @@ var div = L.DomUtil.create(
 );
 
 div.innerHTML =
-'<a id="homeMapBtn" href="#" title="Reset View">⟳</a>';
+
+'<a id="homeMapBtn" href="#" title="Reset View">⟳</a>' +
+
+'<a id="clusterToggleBtn" href="#" title="Toggle Cluster">◉</a>';
+
+div.style.display = 'flex';
+
+div.style.flexDirection = 'column';
+  
 
 return div;
 };
@@ -1069,7 +1078,26 @@ e.preventDefault();
 
 map.setView(
 [51.1657,10.4515],
-6.4
+window.innerWidth <= 768 ? 5.4 : 6.4
+);
+
+}
+
+if(
+e.target &&
+e.target.id === 'clusterToggleBtn'
+){
+
+e.preventDefault();
+
+isClusterMode = !isClusterMode;
+
+document.getElementById(
+'clusterToggleBtn'
+).innerHTML = isClusterMode ? '◉' : '◎';
+
+renderMarkers(
+currentFilteredMarkers.length ? currentFilteredMarkers : allMarkers
 );
 
 }
@@ -1079,6 +1107,12 @@ map.setView(
   
 /* CSV读取 */
 
+var normalMarkerLayer = L.layerGroup();
+
+var isClusterMode = true;
+
+var currentFilteredMarkers = [];
+  
 var markerCluster = L.markerClusterGroup({
 
     showCoverageOnHover:false,
@@ -1442,15 +1476,52 @@ document
 }
 );
       
+renderMarkers(
+allMarkers
+);
+
+function renderMarkers(items){
+
+currentFilteredMarkers = items;
+
 markerCluster.clearLayers();
+normalMarkerLayer.clearLayers();
 
-allMarkers.forEach(function(item){
+if(map.hasLayer(markerCluster)){
+map.removeLayer(markerCluster);
+}
 
-    markerCluster.addLayer(
-        item.marker
-    );
+if(map.hasLayer(normalMarkerLayer)){
+map.removeLayer(normalMarkerLayer);
+}
+
+if(isClusterMode){
+
+items.forEach(function(item){
+
+markerCluster.addLayer(
+item.marker
+);
 
 });
+
+map.addLayer(markerCluster);
+
+}else{
+
+items.forEach(function(item){
+
+normalMarkerLayer.addLayer(
+item.marker
+);
+
+});
+
+map.addLayer(normalMarkerLayer);
+
+}
+
+}
       
 function applyFilters(){
 
@@ -1486,6 +1557,8 @@ var filteredMarkers = [];
 
 markerCluster.clearLayers();
 
+normalMarkerLayer.clearLayers();
+
 allMarkers.forEach(function(item){
 
 var state =
@@ -1507,10 +1580,6 @@ stateMatch &&
 categoryMatch
 ){
 
-markerCluster.addLayer(
-item.marker
-);
-
 filteredMarkers.push(
 item
 );
@@ -1518,6 +1587,10 @@ item
 }
 
 });
+
+renderMarkers(
+filteredMarkers
+);
 
 updateStats(
 filteredMarkers
