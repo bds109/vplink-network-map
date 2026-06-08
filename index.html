@@ -1096,7 +1096,7 @@ document.getElementById(
 'clusterToggleBtn'
 ).innerHTML = isClusterMode ? '◉' : '◎';
 
-renderMarkers(
+window.renderMarkers(
 currentFilteredMarkers
 );
 
@@ -1497,7 +1497,7 @@ renderMarkers(
 allMarkers
 );
 
-function renderMarkers(items){
+window.renderMarkers = function(items){
 
 currentFilteredMarkers = items;
 
