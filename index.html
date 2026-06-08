@@ -1201,7 +1201,10 @@ function(e){
 
 map.setView(
 e.latlng,
-map.getZoom() + 1
+Math.min(
+map.getZoom() + 2,
+9
+)
 );
 
 }
@@ -1571,6 +1574,21 @@ pointMarker.bindPopup(
 item.marker.getPopup()
 );
 
+pointMarker.on(
+'click',
+function(){
+
+map.setView(
+pointMarker.getLatLng(),
+Math.max(
+map.getZoom(),
+9
+)
+);
+
+}
+);  
+  
 normalMarkerLayer.addLayer(
 pointMarker
 );
