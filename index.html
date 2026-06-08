@@ -657,7 +657,54 @@ cursor:default;
 display:none;
 }
 
+/* Popup Glass */
 
+.leaflet-popup-content-wrapper{
+
+background:rgba(255,255,255,0.22) !important;
+
+backdrop-filter:blur(60px);
+
+-webkit-backdrop-filter:blur(60px);
+
+border:1px solid rgba(255,255,255,0.8);
+
+box-shadow:
+0 12px 40px rgba(15,23,42,.10);
+
+border-radius:20px;
+
+}
+
+.leaflet-popup-tip{
+
+background:rgba(255,255,255,0.22) !important;
+
+backdrop-filter:blur(60px);
+
+-webkit-backdrop-filter:blur(60px);
+
+}
+
+.leaflet-popup-content{
+
+margin:18px !important;
+
+}
+
+.leaflet-container a.leaflet-popup-close-button{
+
+font-size:32px;
+
+font-weight:300;
+
+color:#475569;
+
+right:12px;
+
+top:10px;
+
+}
   
 #filter-panel{
 max-height:80vh;
@@ -1103,30 +1150,30 @@ var marker = L.marker(
     }
 );
 
-         marker.bindPopup(
+marker.bindPopup(
 
-'<div style="min-width:220px;">' +
+'<div style="min-width:260px;">' +
 
-'<h3 style="margin:0 0 8px 0;font-size:20px;line-height:1.2;">' +
+'<h3 style="margin:0 0 12px 0;font-size:32px;font-weight:800;line-height:1.1;color:#0F172A;">' +
 store.StoreName +
 '</h3>' +
 
-'<div><b>🏙 City</b></div>' +
+'<div><bstyle="font-size:15px;">🏙 City</b></div>' +
 '<div style="margin-bottom:8px;">' +
 (store.City || '-') +
 '</div>' +
 
-'<div><b>📂 Category</b></div>' +
+'<div><b style="font-size:15px;">📂 Category</b></div>' +
 '<div style="margin-bottom:8px;">' +
 (store.Category || '-') +
 '</div>' +
 
-'<div><b>🏪 Store Type</b></div>' +
+'<div><b style="font-size:15px;">🏪 Store Type</b></div>' +
 '<div style="margin-bottom:8px;">' +
 (store.StoreType || '-') +
 '</div>' +
 
-'<div><b>📍 Address</b></div>' +
+'<div><b style="font-size:15px;">📍 Address</b></div>' +
 '<div style="margin-bottom:10px;">' +
 (store.Address || '-') +
 '</div>' +
