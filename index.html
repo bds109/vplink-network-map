@@ -899,7 +899,9 @@ iconAnchor:[16,16]
 
 
   
-Papa.parse('VPL门店地图信息_0607.csv', {
+Papa.parse(
+'VPL门店地图信息_0607.csv?v=' + Date.now(),
+{
 
     download: true,
     header: true,
