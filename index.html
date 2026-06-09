@@ -285,8 +285,6 @@ text-transform:uppercase;
 
 }
   
-
-
 #mapHeader{
 
 position:absolute;
@@ -305,7 +303,37 @@ pointer-events:none;
 
 }
 
+#mapStyleBar{
+position:absolute;
+left:20px;
+bottom:20px;
+z-index:9999;
+display:flex;
+gap:6px;
+padding:8px;
+background:rgba(255,255,255,0.22);
+backdrop-filter:blur(110px);
+-webkit-backdrop-filter:blur(110px);
+border:1px solid rgba(255,255,255,0.95);
+border-radius:12px;
+box-shadow:0 12px 40px rgba(15,23,42,.06);
+}
+  
+#mapStyleBar button{
+border:none;
+padding:6px 10px;
+border-radius:8px;
+background:rgba(255,255,255,.45);
+cursor:pointer;
+font-size:11px;
+font-weight:700;
+color:#0F172A;
+}
 
+#mapStyleBar button:hover{
+
+background:white;
+}  
 
 #locationCounter{
 
@@ -841,61 +869,7 @@ font-size:10px;
 padding-right:40px;
 }
 
-#mapStyleBar{
 
-position:absolute;
-
-left:20px;
-
-bottom:20px;
-
-z-index:9999;
-
-display:flex;
-
-gap:6px;
-
-padding:8px;
-
-background:rgba(255,255,255,0.22);
-
-backdrop-filter:blur(110px);
-
--webkit-backdrop-filter:blur(110px);
-
-border:1px solid rgba(255,255,255,0.95);
-
-border-radius:12px;
-
-box-shadow:0 12px 40px rgba(15,23,42,.06);
-
-}
-
-#mapStyleBar button{
-
-border:none;
-
-padding:6px 10px;
-
-border-radius:8px;
-
-background:rgba(255,255,255,.45);
-
-cursor:pointer;
-
-font-size:11px;
-
-font-weight:700;
-
-color:#0F172A;
-
-}
-
-#mapStyleBar button:hover{
-
-background:white;
-
-}  
   
 #locationCounter{
 font-size:12px;
@@ -1187,7 +1161,7 @@ maxZoom:19
 if(type === 'AMAP'){
 
 currentBaseLayer = L.tileLayer(
-'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+'https://webrd0{s}.is.autonavi.com/appmaptile?lang=en&size=1&scale=1&style=7&x={x}&y={y}&z={z}',
 {
 subdomains:['1','2','3','4'],
 maxZoom:19
