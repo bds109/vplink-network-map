@@ -1762,25 +1762,15 @@ document.getElementById(
 
 setTimeout(function(){
 
-const point = map.project(
-e.popup._latlng
-);
-
-const popupHeight =
-window.innerWidth <= 768
-? 500
-: 650;
-
-point.y -= popupHeight / 2;
-
-map.panTo(
-map.unproject(point),
+map.panInside(
+e.popup.getLatLng(),
 {
-animate:true
+paddingTopLeft:[420,120],
+paddingBottomRight:[420,120]
 }
 );
 
-},100);
+},50);
 
 }
 );
