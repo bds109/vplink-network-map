@@ -1948,16 +1948,52 @@ item.marker.getPopup()
 );
 
 pointMarker.on(
-'click',
+'popupopen',
+function(e){
+
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'none';
+
+setTimeout(function(){
+
+const popupHeight =
+e.popup._container.offsetHeight || 520;
+
+const point =
+map.project(
+e.popup.getLatLng(),
+map.getZoom()
+);
+
+point.y -= popupHeight / 2;
+
+map.panTo(
+map.unproject(
+point,
+map.getZoom()
+),
+{
+animate:true
+}
+);
+
+},100);
+
+}
+);
+
+pointMarker.on(
+'popupclose',
 function(){
 
-map.setView(
-pointMarker.getLatLng(),
-Math.min(
-map.getZoom() + 2,
-16
-)
-);
+if(window.innerWidth > 768){
+
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'block';
+
+}
 
 }
 );
