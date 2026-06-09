@@ -1105,8 +1105,6 @@ Clear
 
 <button data-map="LIGHT">L</button>
 
-<button data-map="STREET">S</button>
-
 <button data-map="DARK">D</button>
 
 <button data-map="SAT">🛰</button>
@@ -1193,17 +1191,6 @@ maxZoom:19
 
 }
 
-if(type === 'STREET'){
-
-currentBaseLayer = L.tileLayer(
-'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-{
-subdomains:'abcd',
-maxZoom:19
-}
-);
-
-}
 
 if(type === 'DARK'){
 
