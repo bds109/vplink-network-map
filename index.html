@@ -1154,7 +1154,8 @@ currentBaseLayer
 );
 
 }
-
+var tileErrorCount = 0;
+  
 if(type === 'OSM'){
 
 currentBaseLayer = L.tileLayer(
@@ -1239,7 +1240,55 @@ maxZoom:19
 }
 
 currentBaseLayer.addTo(map);
+if(type !== 'AMAP'){
 
+currentBaseLayer.on(
+'tileerror',
+function(){
+
+tileErrorCount++;
+
+if(tileErrorCount < 5){
+return;
+}
+
+console.log(
+'Map Tile Failed:',
+type
+);
+
+if(type === 'OSM'){
+
+switchBaseMap('LIGHT');
+
+document
+.querySelectorAll('#mapStyleBar button')
+.forEach(btn=>btn.classList.remove('active'));
+
+document
+.querySelector('[data-map="LIGHT"]')
+.classList.add('active');
+
+}
+
+else if(type === 'LIGHT'){
+
+switchBaseMap('AMAP');
+
+document
+.querySelectorAll('#mapStyleBar button')
+.forEach(btn=>btn.classList.remove('active'));
+
+document
+.querySelector('[data-map="AMAP"]')
+.classList.add('active');
+
+}
+
+}
+);
+
+}
 }
 
 switchBaseMap('OSM');
