@@ -379,7 +379,7 @@ background:white;
 position:absolute;
 
 right:20px;
-bottom:20px;
+top:20px;
 
 z-index:9999;
 
@@ -914,7 +914,7 @@ padding-right:40px;
 font-size:12px;
 padding:10px 12px;
 right:10px;
-bottom:10px;
+top:10px;
 }
 
 }
@@ -1302,11 +1302,11 @@ document
 .classList.add('active');
   
 L.control.zoom({
-    position:'topright'
+    position:'bottomright'
 }).addTo(map);
 
 var homeControl = L.control({
-position:'topright'
+position:'bottomright'
 });
 
 homeControl.onAdd = function(){
