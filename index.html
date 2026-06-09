@@ -330,6 +330,17 @@ font-weight:700;
 color:#0F172A;
 }
 
+#mapStyleBar button.active{
+
+background:#2563EB;
+
+color:white;
+
+box-shadow:
+0 4px 12px rgba(37,99,235,.35);
+
+}  
+  
 #mapStyleBar button:hover{
 
 background:white;
@@ -1045,6 +1056,7 @@ Clear
 
 
 </div>
+
 <div id="mapStyleBar">
 
 <button data-map="OSM">OSM</button>
@@ -1055,7 +1067,11 @@ Clear
 
 <button data-map="DARK">DARK</button>
 
+<button data-map="SAT">SAT</button>
+
 <button data-map="AMAP">AMAP</button>
+
+</div>
 
 </div>
   
@@ -1158,6 +1174,18 @@ maxZoom:19
 
 }
 
+if(type === 'SAT'){
+
+currentBaseLayer = L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{
+maxZoom:19,
+attribution:'Esri'
+}
+);
+
+}  
+  
 if(type === 'AMAP'){
 
 currentBaseLayer = L.tileLayer(
@@ -1176,6 +1204,12 @@ currentBaseLayer.addTo(map);
 
 switchBaseMap('OSM');
 
+document
+.querySelector(
+'#mapStyleBar button[data-map="OSM"]'
+)
+.classList.add('active');
+  
 L.control.zoom({
     position:'topright'
 }).addTo(map);
@@ -1215,6 +1249,16 @@ e.target &&
 e.target.dataset &&
 e.target.dataset.map
 ){
+
+document
+.querySelectorAll('#mapStyleBar button')
+.forEach(function(btn){
+
+btn.classList.remove('active');
+
+});
+
+e.target.classList.add('active');
 
 switchBaseMap(
 e.target.dataset.map
