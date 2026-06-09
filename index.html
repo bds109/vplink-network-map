@@ -893,13 +893,13 @@ z-index:10001;
 
 #mapStyleBar{
 
-left:50%;
+left:10px;
 
-transform:translateX(-50%);
+transform:none;
 
-bottom:8px;
+bottom:6px;
 
-max-width:90vw;
+max-width:calc(100vw - 120px);
 
 }
   
@@ -1756,18 +1756,24 @@ marker.on(
 'popupopen',
 function(){
 
-const latlng = marker.getLatLng();
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'none';
 
-map.panTo(
-[
-latlng.lat -
-(window.innerWidth <= 768 ? 0.03 : 0.015),
-latlng.lng
-],
-{
-animate:true
 }
 );
+
+marker.on(
+'popupclose',
+function(){
+
+if(window.innerWidth > 768){
+
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'block';
+
+}
 
 }
 );
