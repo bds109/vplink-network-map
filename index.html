@@ -1640,7 +1640,14 @@ marker.bindPopup(
 
 '<div style="min-width:260px;">' +
 
-'<h3 style="margin:0 0 12px 0;font-size:16px;font-weight:700;line-height:1.2;color:#0F172A;">' +
+'<h3 style="
+margin:0 0 12px 0;
+font-size:16px;
+font-weight:700;
+line-height:1.2;
+word-break:break-word;
+color:#0F172A;
+">' +
 store.StoreName +
 '</h3>' +
 
@@ -1764,8 +1771,11 @@ if(window.innerWidth > 768){
 
 setTimeout(function(){
 
-map.panBy(
-[-180,-120],
+map.panTo(
+[
+e.popup._latlng.lat - 0.05,
+e.popup._latlng.lng - 0.02
+],
 {
 animate:true
 }
