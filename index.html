@@ -1754,11 +1754,26 @@ store.PhotoURL4
 
 marker.on(
 'popupopen',
-function(){
+function(e){
 
 document.getElementById(
 'mapFloatingTitle'
 ).style.display = 'none';
+
+if(window.innerWidth > 768){
+
+setTimeout(function(){
+
+map.panBy(
+[-180,-120],
+{
+animate:true
+}
+);
+
+},150);
+
+}
 
 }
 );
