@@ -1686,8 +1686,7 @@ store.PhotoURL4
 +
 
 '" onclick="openPhoto(this)" ' +
-'style="width:100%;height:260px;object-fit:cover;border-radius:10px;cursor:pointer;">'
-
+'style="width:100%;height:220px;object-fit:cover;border-radius:10px;cursor:pointer;">'
 +
 
   
@@ -1753,6 +1752,26 @@ store.PhotoURL4
 
 );
 
+marker.on(
+'popupopen',
+function(){
+
+const latlng = marker.getLatLng();
+
+map.panTo(
+[
+latlng.lat -
+(window.innerWidth <= 768 ? 0.03 : 0.015),
+latlng.lng
+],
+{
+animate:true
+}
+);
+
+}
+);
+          
 allMarkers.push({
 marker: marker,
 store: store
