@@ -1567,6 +1567,22 @@ Papa.parse(
         console.log(results.data);
 
         results.data.forEach(function(store) {
+          const STORE_ID = parseInt(store.ID);
+
+const R2_BASE =
+'https://pub-3575d79a89e1428486f35743798eab42.r2.dev';
+
+const photo1 =
+`${R2_BASE}/${STORE_ID}-01.jpg`;
+
+const photo2 =
+`${R2_BASE}/${STORE_ID}-02.jpg`;
+
+const photo3 =
+`${R2_BASE}/${STORE_ID}-03.jpg`;
+
+const photo4 =
+`${R2_BASE}/${STORE_ID}-04.jpg`;
 
     var germanState = stateNameMap[store.State];
 
@@ -1653,8 +1669,7 @@ store.StoreName +
       
            
 (
-(store.PhotoURL1 || store.PhotoURL2 || store.PhotoURL3 || store.PhotoURL4)
-
+(photo1)
 ?
 
 '<div style="position:relative;margin-top:12px;">'
@@ -1663,12 +1678,7 @@ store.StoreName +
 
 '<img id="popupImage" src="' +
 
-(
-store.PhotoURL1 ||
-store.PhotoURL2 ||
-store.PhotoURL3 ||
-store.PhotoURL4
-)
+photo1
 
 +
 
@@ -1712,19 +1722,19 @@ store.PhotoURL4
 
 +
 
-' data-p1="' + (store.PhotoURL1 || '') + '"'
+' data-p1="' + photo1 + '"'
 
 +
 
-' data-p2="' + (store.PhotoURL2 || '') + '"'
+' data-p2="' + photo2 + '"'
 
 +
 
-' data-p3="' + (store.PhotoURL3 || '') + '"'
+' data-p3="' + photo3 + '"'
 
 +
 
-' data-p4="' + (store.PhotoURL4 || '') + '"'
+' data-p4="' + photo4 + '"'
 
 +
 
