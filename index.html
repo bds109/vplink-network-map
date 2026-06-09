@@ -1760,17 +1760,62 @@ document.getElementById(
 'mapFloatingTitle'
 ).style.display = 'none';
 
-setTimeout(function(){
+let popupCentered = false;
 
-map.panInside(
+function centerPopupCard(){
+
+if(popupCentered){
+return;
+}
+
+if(
+!e.popup ||
+!e.popup._container
+){
+return;
+}
+
+popupCentered = true;
+
+const popupHeight =
+e.popup._container.offsetHeight || 520;
+
+const point =
+map.project(
 e.popup.getLatLng(),
+map.getZoom()
+);
+
+point.y -= popupHeight / 2;
+
+map.panTo(
+map.unproject(
+point,
+map.getZoom()
+),
 {
-paddingTopLeft:[420,120],
-paddingBottomRight:[420,120]
+animate:true
 }
 );
 
-},50);
+}
+
+map.once(
+'moveend',
+function(){
+
+setTimeout(
+centerPopupCard,
+120
+);
+
+}
+);
+
+setTimeout(
+centerPopupCard,
+700
+);
 
 }
 );
