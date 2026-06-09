@@ -1572,17 +1572,10 @@ Papa.parse(
 const R2_BASE =
 'https://pub-3575d79a89e1428486f35743798eab42.r2.dev';
 
+const STORE_ID = parseInt(store.ID);
+
 const photo1 =
 `${R2_BASE}/${STORE_ID}-01.jpg`;
-
-const photo2 =
-`${R2_BASE}/${STORE_ID}-02.jpg`;
-
-const photo3 =
-`${R2_BASE}/${STORE_ID}-03.jpg`;
-
-const photo4 =
-`${R2_BASE}/${STORE_ID}-04.jpg`;
 
     var germanState = stateNameMap[store.State];
 
@@ -1669,7 +1662,7 @@ store.StoreName +
       
            
 (
-(photo1)
+STORE_ID
 ?
 
 '<div style="position:relative;margin-top:12px;">'
@@ -1722,19 +1715,7 @@ photo1
 
 +
 
-' data-p1="' + photo1 + '"'
-
-+
-
-' data-p2="' + photo2 + '"'
-
-+
-
-' data-p3="' + photo3 + '"'
-
-+
-
-' data-p4="' + photo4 + '"'
+' data-storeid="' + STORE_ID + '"'
 
 +
 
@@ -2389,25 +2370,21 @@ return{
 
 });
 
-function nextPhoto(btn){
+async function nextPhoto(btn){
 
-const wrapper =
-btn.parentElement;
+const wrapper = btn.parentElement;
 
 const data =
 wrapper.querySelector('.photo-data');
 
-const img =
-wrapper.querySelector('img');
+if(!data.dataset.photos){
 
-const photos = [
+await loadStorePhotos(data);
 
-data.dataset.p1,
-data.dataset.p2,
-data.dataset.p3,
-data.dataset.p4
+}
 
-].filter(Boolean);
+const photos =
+JSON.parse(data.dataset.photos);
 
 let index =
 parseInt(data.dataset.index);
@@ -2418,31 +2395,28 @@ if(index >= photos.length){
 index = 0;
 }
 
-img.src = photos[index];
+wrapper.querySelector('img').src =
+photos[index];
 
 data.dataset.index = index;
 
 }
 
-function prevPhoto(btn){
+async function prevPhoto(btn){
 
-const wrapper =
-btn.parentElement;
+const wrapper = btn.parentElement;
 
 const data =
 wrapper.querySelector('.photo-data');
 
-const img =
-wrapper.querySelector('img');
+if(!data.dataset.photos){
 
-const photos = [
+await loadStorePhotos(data);
 
-data.dataset.p1,
-data.dataset.p2,
-data.dataset.p3,
-data.dataset.p4
+}
 
-].filter(Boolean);
+const photos =
+JSON.parse(data.dataset.photos);
 
 let index =
 parseInt(data.dataset.index);
@@ -2453,16 +2427,62 @@ if(index < 0){
 index = photos.length - 1;
 }
 
-img.src = photos[index];
+wrapper.querySelector('img').src =
+photos[index];
 
 data.dataset.index = index;
 
-}  
+} 
 
 let currentPhotos = [];
 let currentPhotoIndex = 0;
 
-function openPhoto(img){
+async function loadStorePhotos(data){
+
+const storeId =
+data.dataset.storeid;
+
+const photos = [];
+
+for(let i=1;i<=20;i++){
+
+const url =
+`https://pub-3575d79a89e1428486f35743798eab42.r2.dev/${storeId}-${String(i).padStart(2,'0')}.jpg`;
+
+try{
+
+const res =
+await fetch(
+url,
+{
+method:'HEAD'
+}
+);
+
+if(res.ok){
+
+photos.push(url);
+
+}else{
+
+break;
+
+}
+
+}catch(e){
+
+break;
+
+}
+
+}
+
+data.dataset.photos =
+JSON.stringify(photos);
+
+}
+
+async function openPhoto(img){
 
 const wrapper =
 img.closest('div');
@@ -2470,12 +2490,16 @@ img.closest('div');
 const data =
 wrapper.querySelector('.photo-data');
 
-currentPhotos = [
-data.dataset.p1,
-data.dataset.p2,
-data.dataset.p3,
-data.dataset.p4
-].filter(Boolean);
+if(!data.dataset.photos){
+
+await loadStorePhotos(data);
+
+}
+
+currentPhotos =
+JSON.parse(
+data.dataset.photos
+);
 
 currentPhotoIndex =
 parseInt(data.dataset.index) || 0;
