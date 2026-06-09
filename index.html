@@ -2384,6 +2384,10 @@ await loadStorePhotos(data);
 const photos =
 JSON.parse(data.dataset.photos);
 
+if(photos.length <= 1){
+return;
+}  
+  
 let index =
 parseInt(data.dataset.index);
 
@@ -2416,6 +2420,10 @@ await loadStorePhotos(data);
 const photos =
 JSON.parse(data.dataset.photos);
 
+if(photos.length <= 1){
+return;
+}
+
 let index =
 parseInt(data.dataset.index);
 
@@ -2442,32 +2450,39 @@ data.dataset.storeid;
 
 const photos = [];
 
+function checkImage(url){
+
+return new Promise(function(resolve){
+
+const img = new Image();
+
+img.onload = function(){
+resolve(true);
+};
+
+img.onerror = function(){
+resolve(false);
+};
+
+img.src = url + '?v=' + Date.now();
+
+});
+
+}
+
 for(let i=1;i<=20;i++){
 
 const url =
 `https://pub-3575d79a89e1428486f35743798eab42.r2.dev/${storeId}-${String(i).padStart(2,'0')}.jpg`;
 
-try{
+const exists =
+await checkImage(url);
 
-const res =
-await fetch(
-url,
-{
-method:'HEAD'
-}
-);
-
-if(res.ok){
+if(exists){
 
 photos.push(url);
 
 }else{
-
-break;
-
-}
-
-}catch(e){
 
 break;
 
