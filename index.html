@@ -1674,6 +1674,7 @@ photo1
 +
 
 '" onclick="openPhoto(this)" ' +
+'onerror="this.parentElement.style.display=\'none\'" ' +
 'style="width:100%;height:220px;object-fit:cover;border-radius:10px;cursor:pointer;">'
 +
 
@@ -2443,10 +2444,21 @@ data.dataset.index = index;
 let currentPhotos = [];
 let currentPhotoIndex = 0;
 
+const storePhotoCache = {};
+
 async function loadStorePhotos(data){
 
 const storeId =
 data.dataset.storeid;
+
+if(storePhotoCache[storeId]){
+
+data.dataset.photos =
+JSON.stringify(storePhotoCache[storeId]);
+
+return;
+
+}
 
 const photos = [];
 
@@ -2489,6 +2501,8 @@ break;
 }
 
 }
+
+storePhotoCache[storeId] = photos;
 
 data.dataset.photos =
 JSON.stringify(photos);
