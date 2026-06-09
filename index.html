@@ -308,26 +308,54 @@ position:absolute;
 left:20px;
 bottom:20px;
 z-index:9999;
+
 display:flex;
+
 gap:6px;
+
 padding:8px;
+
+max-width:calc(100vw - 150px);
+
+overflow-x:auto;
+
 background:rgba(255,255,255,0.22);
+
 backdrop-filter:blur(110px);
+
 -webkit-backdrop-filter:blur(110px);
+
 border:1px solid rgba(255,255,255,0.95);
+
 border-radius:12px;
+
 box-shadow:0 12px 40px rgba(15,23,42,.06);
 }
   
 #mapStyleBar button{
+
 border:none;
-padding:6px 10px;
+
+width:34px;
+
+height:34px;
+
+padding:0;
+
 border-radius:8px;
+
 background:rgba(255,255,255,.45);
+
 cursor:pointer;
-font-size:11px;
+
+font-size:14px;
+
 font-weight:700;
+
 color:#0F172A;
+
+flex-shrink:0;
+
 }
 
 #mapStyleBar button.active{
@@ -1059,17 +1087,17 @@ Clear
 
 <div id="mapStyleBar">
 
-<button data-map="OSM">OSM</button>
+<button data-map="OSM">O</button>
 
-<button data-map="LIGHT">LIGHT</button>
+<button data-map="LIGHT">L</button>
 
-<button data-map="STREET">STREET</button>
+<button data-map="STREET">S</button>
 
-<button data-map="DARK">DARK</button>
+<button data-map="DARK">D</button>
 
-<button data-map="SAT">SAT</button>
+<button data-map="SAT">🛰</button>
 
-<button data-map="AMAP">AMAP</button>
+<button data-map="AMAP">A</button>
 
 </div>
 
@@ -1176,7 +1204,7 @@ maxZoom:19
 
 if(type === 'SAT'){
 
-currentBaseLayer = L.tileLayer(
+var satBase = L.tileLayer(
 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 {
 maxZoom:19,
@@ -1184,7 +1212,19 @@ attribution:'Esri'
 }
 );
 
-}  
+var satLabel = L.tileLayer(
+'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+{
+maxZoom:19
+}
+);
+
+currentBaseLayer = L.layerGroup([
+satBase,
+satLabel
+]);
+
+}
   
 if(type === 'AMAP'){
 
