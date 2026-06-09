@@ -1760,23 +1760,27 @@ document.getElementById(
 'mapFloatingTitle'
 ).style.display = 'none';
 
-if(window.innerWidth > 768){
-
 setTimeout(function(){
 
+const point = map.project(
+e.popup._latlng
+);
+
+const popupHeight =
+window.innerWidth <= 768
+? 500
+: 650;
+
+point.y -= popupHeight / 2;
+
 map.panTo(
-[
-e.popup._latlng.lat - 0.05,
-e.popup._latlng.lng - 0.02
-],
+map.unproject(point),
 {
 animate:true
 }
 );
 
-},150);
-
-}
+},100);
 
 }
 );
