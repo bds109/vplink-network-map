@@ -1589,11 +1589,13 @@ if(germanState){
 
 if(store.Category){
 
-    if(!categoryCount[store.Category]){
-        categoryCount[store.Category] = 0;
+if(store.StoreType){
+
+    if(!categoryCount[store.StoreType]){
+        categoryCount[store.StoreType] = 0;
     }
 
-    categoryCount[store.Category]++;
+    categoryCount[store.StoreType]++;
 
 }
 
@@ -1643,12 +1645,12 @@ store.StoreName +
 (store.City || '-') +
 '</div>' +
 
-'<div><b style="font-size:15px;">📂 Category</b></div>' +
+'<div><b style="font-size:15px;">🏪 ID</b></div>' +
 '<div style="margin-bottom:8px;">' +
-(store.Category || '-') +
+(store.ID || '-') +
 '</div>' +
 
-'<div><b style="font-size:15px;">🏪 Store Type</b></div>' +
+'<div><b style="font-size:15px;"> 📂 Category</b></div>' +
 '<div style="margin-bottom:8px;">' +
 (store.StoreType || '-') +
 '</div>' +
@@ -2032,7 +2034,7 @@ var state =
 stateNameMap[item.store.State];
 
 var category =
-item.store.Category;
+item.store.StoreType;
 
 var stateMatch =
 selectedStates.length === 0 ||
@@ -2192,7 +2194,7 @@ var state =
 stateNameMap[item.store.State];
 
 var category =
-item.store.Category;
+item.store.StoreType;
 
 if(
 state &&
