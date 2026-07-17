@@ -71,6 +71,10 @@ Key approved behavior:
 
 The current CSV is the operational source of truth and is periodically replaced or updated in GitHub.
 
+Operational filename used by the live map:
+
+`VPL门店地图信息.csv`
+
 Important fields include:
 
 - `ID` — location identifier and photo association key.
