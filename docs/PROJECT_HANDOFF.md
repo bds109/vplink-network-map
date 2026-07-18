@@ -236,3 +236,24 @@ For any code optimization, display adjustment, or behavior change:
 - The test environment must be separate from the live production page.
 - Production publication is the last step, not the first validation step.
 - If test verification is incomplete, do not publish.
+
+## 12. GitHub preview environment
+
+The repository now supports a fixed GitHub Pages preview path:
+
+- Production: `https://map.vplink-automaten.de/`
+- Preview: `https://map.vplink-automaten.de/preview/`
+
+### How preview is generated
+
+- `index.html` remains the production entry file at repository root.
+- `preview/index.html` is the preview entry file.
+- `scripts/build_preview.py` regenerates `preview/index.html` from the current production page structure.
+- The preview page keeps the same business data and GeoJSON sources through relative parent-path references unless a future task explicitly needs preview-only data files.
+
+### Required future release order
+
+1. Implement the requested change.
+2. Regenerate `preview/index.html`.
+3. Push preview updates first so Steve can review the preview URL.
+4. Publish the approved version to the production root only after preview approval.

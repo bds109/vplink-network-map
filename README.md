@@ -32,3 +32,10 @@ Future code changes should be implemented and verified in Codex using the curren
 - Produce a test environment first and verify the requested change there.
 - Publish to the production environment only after the test result is confirmed.
 - Do not send unverified code changes directly to the live GitHub Pages deployment.
+
+## Preview environment
+
+- Fixed preview URL: `https://map.vplink-automaten.de/preview/`
+- Production URL remains the site root: `https://map.vplink-automaten.de/`
+- The preview page is generated from the current map page by `scripts/build_preview.py`.
+- Future code-change flow: update preview first, review the preview URL, then publish the approved version to production root.

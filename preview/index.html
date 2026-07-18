@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+<title>VPL Germany Network Map Preview</title>
+<meta name="robots" content="noindex,nofollow">
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+
+<style>
+html,body{
+height:100%;
+margin:0;
+}
+
+#map{
+width:100%;
+height:100vh;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large{
+background:transparent !important;
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div{
+
+background:#2563EB !important;
+
+width:32px !important;
+height:32px !important;
+
+margin:0 auto;
+
+border:none;
+
+border-radius:50%;
+
+color:#ffffff;
+
+font-size:14px;
+font-weight:700;
+
+line-height:32px;
+text-align:center;
+
+box-shadow:none;
+
+}
+
+#filter-panel{
+
+position:absolute;
+width:min(240px,90vw);
+
+top:20px;
+left:20px;
+
+z-index:9999;
+
+background:rgba(255,255,255,0.22);
+backdrop-filter:blur(110px);
+-webkit-backdrop-filter:blur(110px);
+padding:12px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.95);
+box-shadow:0 12px 40px rgba(15,23,42,.06);
+}
+
+#stateFilter,
+#categoryFilter{
+
+width:100%;
+  
+max-height:170px;
+
+overflow-y:auto;
+
+padding:8px;
+
+font-size:13px;
+
+border:1px solid rgba(255,255,255,0.45);
+
+border-radius:6px;
+
+background:rgba(255,255,255,0.18);
+
+backdrop-filter:blur(40px);
+
+-webkit-backdrop-filter:blur(40px);
+
+}
+
+  .filter-title{
+
+font-size:14px;
+font-weight:700;
+
+margin-bottom:6px;
+
+}
+
+#stateFilter{
+
+max-height:300px;
+
+overflow-y:auto;
+
+border:1px solid rgba(255,255,255,0.28);
+
+padding:8px;
+
+border-radius:8px;
+
+background:rgba(255,255,255,0.12);
+
+}
+
+.state-item{
+
+width:100%;
+
+margin-bottom:0;
+
+font-size:13px;
+
+}
+
+#clearStateFilter,
+#clearCategoryFilter{
+
+width:auto;
+
+padding:2px 8px;
+
+font-size:12px;
+
+background:transparent;
+
+border:1px solid #CBD5E1;
+
+border-radius:4px;
+
+cursor:pointer;
+
+}
+
+#clearStateFilter:hover{
+background:#E5E7EB;
+}  
+
+
+  
+#openFilterBtn{
+
+position:absolute;
+
+top:20px;
+left:20px;
+
+z-index:10000;
+
+padding:10px 14px;
+
+border:none;
+
+border-radius:10px;
+
+background:white;
+
+font-size:14px;
+
+font-weight:600;
+
+cursor:pointer;
+
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+
+display:none;
+
+}
+
+  
+#statsPanel{
+
+display:grid;
+
+grid-template-columns:
+repeat(3,minmax(0,1fr));
+
+gap:6px;
+
+width:100%;
+}
+
+.stat-card{
+
+background:rgba(255,255,255,0.18);
+box-sizing:border-box;
+
+width:100%;
+
+min-width:0;
+
+border:1px solid rgba(255,255,255,0.35);
+
+backdrop-filter:blur(30px);
+
+-webkit-backdrop-filter:blur(30px);
+
+border-radius:10px;
+
+height:86px;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+padding:0;
+
+text-align:center;
+
+}
+
+.stat-value{
+
+font-size:clamp(22px,2vw,34px);
+
+font-weight:900;
+
+color:#1D4ED8;
+
+line-height:1;
+  
+text-shadow:
+0 1px 2px rgba(255,255,255,.5);
+  
+}
+
+.stat-label{
+
+font-size:9px;
+font-weight:600;
+letter-spacing:0px;  
+color:#64748B;
+
+margin-top:6px;
+
+text-transform:uppercase;
+
+}
+  
+#mapHeader{
+
+position:absolute;
+
+top:20px;
+
+left:50%;
+
+transform:translateX(-50%);
+
+z-index:9998;
+
+text-align:center;
+
+pointer-events:none;
+
+}
+
+#mapStyleBar{
+position:absolute;
+left:20px;
+bottom:20px;
+z-index:9999;
+
+display:flex;
+
+gap:6px;
+
+padding:8px;
+
+max-width:calc(100vw - 150px);
+
+overflow-x:auto;
+
+background:rgba(255,255,255,0.22);
+
+backdrop-filter:blur(110px);
+
+-webkit-backdrop-filter:blur(110px);
+
+border:1px solid rgba(255,255,255,0.95);
+
+border-radius:12px;
+
+box-shadow:0 12px 40px rgba(15,23,42,.06);
+}
+  
+#mapStyleBar button{
+
+border:none;
+
+width:34px;
+
+height:34px;
+
+padding:0;
+
+border-radius:8px;
+
+background:rgba(255,255,255,.45);
+
+cursor:pointer;
+
+font-size:14px;
+
+font-weight:700;
+
+color:#0F172A;
+
+flex-shrink:0;
+
+}
+
+#mapStyleBar button.active{
+
+background:#2563EB;
+
+color:white;
+
+box-shadow:
+0 4px 12px rgba(37,99,235,.35);
+
+}  
+  
+#mapStyleBar button:hover{
+
+background:white;
+}  
+
+#locationCounter{
+
+position:absolute;
+
+right:20px;
+top:20px;
+
+z-index:9999;
+
+padding:8px 12px;
+
+background:rgba(255,255,255,0.22);
+
+backdrop-filter:blur(110px);
+
+-webkit-backdrop-filter:blur(110px);
+
+border:1px solid rgba(255,255,255,0.95);
+
+box-shadow:0 12px 40px rgba(15,23,42,.06);
+
+font-size:12px;
+
+line-height:1.5;
+
+color:#334155;
+
+font-weight:600;
+
+min-width:auto;
+
+}
+
+position:absolute;
+
+top:95px;
+left:50%;
+
+transform:translateX(-50%);
+
+z-index:999;
+
+padding:10px 24px;
+
+background:rgba(255,255,255,.85);
+
+backdrop-filter:blur(8px);
+
+border-radius:30px;
+
+font-size:18px;
+
+font-weight:700;
+
+color:#475569;
+
+box-shadow:
+0 4px 12px rgba(0,0,0,.08);
+
+}
+  
+#panelHeader{
+
+position:relative;
+
+height:36px;
+
+margin-bottom:24px;
+
+}
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+height:34px;
+
+margin-bottom:22px;
+
+}
+
+#mapTitle{
+
+text-align:center;
+
+font-size:12px;
+
+font-weight:900;
+
+letter-spacing:.8px;
+
+color:#0F172A;
+
+line-height:36px;
+
+}
+
+#closeFilterBtn{
+
+position:absolute;
+
+top:0;
+
+right:0;
+
+width:28px;
+
+height:28px;
+
+border:none;
+
+background:transparent;
+
+color:#475569;
+
+font-size:30px;
+
+font-weight:300;
+
+line-height:28px;
+
+cursor:pointer;
+
+padding:0;
+
+}
+  
+.category-item,
+.state-item{
+
+margin-bottom:0px;
+
+}
+
+.filter-chip{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+width:100%;
+
+box-sizing:border-box;
+
+height:20px;
+
+padding:0 6px;
+
+border-radius:0px;
+
+background:rgba(255,255,255,0.25);
+
+border:1px solid rgba(255,255,255,0.35);
+
+cursor:pointer;
+
+transition:.2s;
+
+font-size:13px;
+
+}
+
+.filter-chip:hover{
+
+background:#F8FAFC;
+border-color:#CBD5E1;
+
+}
+
+.filter-chip.active .chip-count{
+
+background:white;
+
+color:#3B5DDD;
+
+}
+  
+.filter-chip input{
+
+display:none;
+
+}
+
+.chip-name{
+
+flex:none;
+
+white-space:nowrap;
+
+padding-right:6px;
+
+overflow:hidden;
+
+}
+
+.chip-count{
+
+margin-left:auto;
+
+width:22px;
+
+height:16px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:0px;
+
+background:#E2E8F0;
+
+font-size:12px;
+
+font-weight:700;
+
+flex-shrink:0;
+
+}
+
+.photo-zoom{
+
+position:fixed !important;
+
+left:50% !important;
+top:50% !important;
+
+transform:translate(-50%,-50%) !important;
+
+width:auto !important;
+height:auto !important;
+
+max-width:90vw !important;
+max-height:90vh !important;
+
+z-index:999999;
+
+background:white;
+
+border-radius:12px;
+
+box-shadow:
+0 20px 80px rgba(0,0,0,.45);
+
+}
+
+.photo-close{
+
+position:fixed;
+
+right:20px;
+top:80px;
+
+width:40px;
+height:40px;
+
+background:white;
+
+border-radius:50%;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+font-size:26px;
+
+font-weight:700;
+
+cursor:pointer;
+
+z-index:1000000;
+
+}
+  
+  
+.filter-chip:has(input:checked){
+
+background:#2563EB;
+border-color:#2563EB;
+color:white;
+font-weight:600;
+
+}
+
+.filter-chip:has(input:checked) .chip-count{
+
+background:white;
+
+color:#2563EB;
+
+}
+
+#mapFloatingTitle{
+
+position:absolute;
+
+top:18px;
+left:50%;
+
+transform:translateX(-50%);
+
+z-index:9999;
+
+font-size:clamp(20px,2vw,42px);
+
+font-weight:900;
+
+letter-spacing:3px;
+
+color:#0F172A;
+
+text-transform:uppercase;
+
+text-shadow:
+0 2px 10px rgba(255,255,255,.95),
+0 4px 20px rgba(255,255,255,.80);
+
+}
+
+/* ==========================
+   Responsive Layout
+========================== */
+#photoModal{
+
+display:none;
+
+position:fixed;
+
+left:0;
+top:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.85);
+
+z-index:999999;
+
+justify-content:center;
+align-items:center;
+
+}
+
+#photoModalImg{
+
+max-width:90vw;
+max-height:90vh;
+
+border-radius:12px;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,.5);
+
+cursor:default;
+
+}
+
+/* Popup Glass */
+
+.leaflet-popup-content-wrapper{
+
+background:rgba(255,255,255,0.22) !important;
+
+backdrop-filter:blur(110px);
+
+-webkit-backdrop-filter:blur(110px);
+
+border:1px solid rgba(255,255,255,0.95);
+
+box-shadow:0 12px 40px rgba(15,23,42,.06);
+
+border-radius:20px;
+
+}
+
+.leaflet-popup-tip{
+
+background:rgba(255,255,255,0.22) !important;
+
+backdrop-filter:blur(110px);
+
+-webkit-backdrop-filter:blur(110px);
+
+}
+
+.leaflet-popup-content{
+
+margin:18px !important;
+
+}
+
+.leaflet-container a.leaflet-popup-close-button{
+
+font-size:32px;
+
+font-weight:300;
+
+color:#475569;
+
+right:12px;
+
+top:10px;
+
+}
+
+.leaflet-control-zoom{
+
+border:none !important;
+
+box-shadow:0 12px 40px rgba(15,23,42,.10) !important;
+
+overflow:hidden;
+
+border-radius:12px;
+
+background:rgba(255,255,255,0.28) !important;
+
+backdrop-filter:blur(24px);
+
+-webkit-backdrop-filter:blur(24px);
+
+}
+
+.leaflet-control-zoom a,
+#homeMapBtn,
+#clusterToggleBtn{
+
+width:30px !important;
+
+height:30px !important;
+border-bottom:none !important;
+border-top:none !important;
+box-shadow:none !important;  
+text-decoration:none !important;
+line-height:30px !important;
+
+display:flex !important;
+
+align-items:center;
+
+justify-content:center;
+
+background:transparent !important;
+
+border:none !important;
+
+color:#0F172A !important;
+
+font-size:24px;
+
+font-weight:900;
+
+box-shadow:none !important;
+
+}
+
+.leaflet-control-zoom a{
+border:none !important;
+}  
+
+#homeMapBtn{
+
+font-size:28px;
+
+font-weight:700;
+
+}
+
+#clusterToggleBtn{
+
+font-size:20px;
+
+font-weight:700;
+
+}
+
+  
+  
+@media (max-width: 768px){
+
+#mapFloatingTitle{
+display:none;
+}
+
+#modalPrev{
+left:12px !important;
+}
+
+#modalNext{
+right:12px !important;
+}
+
+#filter-panel{
+display:block;
+max-height:80vh;
+overflow-y:auto;
+width:min(220px,82vw);
+left:10px;
+transform:none;
+top:10px;
+padding:10px;
+}
+
+#openFilterBtn{
+display:none;
+position:absolute;
+top:10px;
+left:10px;
+z-index:10001;
+}
+
+#mapStyleBar{
+
+left:10px;
+
+transform:none;
+
+bottom:6px;
+
+max-width:calc(100vw - 120px);
+
+}
+  
+#stateFilter,
+#categoryFilter{
+width:auto;
+}
+
+.stat-value{
+font-size:28px;
+}
+
+.stat-label{
+font-size:10px;
+}
+
+#mapTitle{
+font-size:10px;
+
+padding-right:40px;
+}
+
+
+  
+#locationCounter{
+font-size:12px;
+padding:10px 12px;
+right:10px;
+top:10px;
+}
+
+}
+  
+
+#previewEnvBadge{
+position:fixed;
+top:14px;
+right:14px;
+z-index:1000001;
+padding:10px 14px;
+border-radius:999px;
+background:#F97316;
+color:#ffffff;
+font-size:12px;
+font-weight:800;
+letter-spacing:.6px;
+box-shadow:0 10px 30px rgba(249,115,22,.35);
+pointer-events:none;
+}
+
+@media (max-width: 768px){
+#previewEnvBadge{
+top:12px;
+right:12px;
+font-size:11px;
+padding:8px 12px;
+}
+}
+
+</style>
+</head>
+
+<body>
+<div id="previewEnvBadge">
+PREVIEW ENVIRONMENT
+</div>
+
+
+<div
+id="photoModal"
+onclick="closePhoto()"
+>
+
+<div
+class="photo-close"
+onclick="closePhoto()"
+>
+×
+</div>
+
+<div style="position:relative;">
+
+<button
+id="modalPrev"
+onclick="modalPrevPhoto(event)"
+style="
+position:absolute;
+left:18px;
+top:50%;
+transform:translateY(-50%);
+border:none;
+background:none;
+color:white;
+font-size:54px;
+font-weight:300;
+text-shadow:0 2px 12px rgba(0,0,0,.8);
+cursor:pointer;
+"
+>
+❮
+</button>
+
+<img
+id="photoModalImg"
+onclick="event.stopPropagation()"
+>
+
+<button
+id="modalNext"
+onclick="modalNextPhoto(event)"
+style="
+position:absolute;
+right:18px;
+top:50%;
+transform:translateY(-50%);
+border:none;
+background:none;
+color:white;
+font-size:54px;
+font-weight:300;
+text-shadow:0 2px 12px rgba(0,0,0,.8);
+cursor:pointer;
+"
+>
+❯
+</button>
+
+</div>
+
+</div>
+
+<button id="openFilterBtn">
+☰ Filters
+</button>
+  
+<div id="filter-panel">
+
+<div class="panel-content">
+
+<div id="panelHeader">
+
+<div id="mapTitle">
+VPLINK NETWORK MAP
+</div>
+
+<button id="closeFilterBtn">
+×
+</button>
+
+</div>
+  
+
+<div id="statsPanel">
+
+<div class="stat-card">
+<div class="stat-value" id="storeCount">0</div>
+<div class="stat-label">LOCATIONS</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-value" id="stateCountDisplay">0</div>
+<div class="stat-label">STATES</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-value" id="categoryCountDisplay">0</div>
+<div class="stat-label">CATEGORIES</div>
+</div>
+
+</div>
+
+  
+<div id="stateFilterContainer">
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+">
+
+<div class="filter-title">
+States
+</div>
+
+<button id="clearStateFilter">
+Clear
+</button>
+
+</div>
+
+<div id="stateFilter">
+</div>
+
+</div>
+
+
+<div id="categoryFilterContainer"
+style="margin-top:12px;">
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+">
+
+<div class="filter-title">
+Categories
+</div>
+
+<button id="clearCategoryFilter">
+Clear
+</button>
+
+</div>
+
+<div id="categoryFilter">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+<div id="mapStyleBar">
+
+<button data-map="OSM">O</button>
+
+<button data-map="LIGHT">L</button>
+
+<button data-map="DARK">D</button>
+
+<button data-map="SAT">🛰</button>
+
+<button data-map="AMAP">A</button>
+
+</div>
+
+</div>
+  
+<div id="locationCounter">
+
+<div id="counterLocations">
+91 Locations
+</div>
+
+<div id="counterStates">
+11 States
+</div>
+
+<div id="counterCategories">
+6 Categories
+</div>
+
+</div>
+
+<div id="mapFloatingTitle">
+VPLINK NETWORK MAP
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+
+var map = L.map('map', {
+    zoomControl:false
+}).setView([51.1657,10.4515],6.4);
+
+if(window.innerWidth <= 768){
+
+map.setView(
+[51.1657,10.4515],
+5.4
+);
+
+}
+
+var currentBaseLayer;
+
+function switchBaseMap(type){
+
+if(currentBaseLayer){
+
+map.removeLayer(
+currentBaseLayer
+);
+
+}
+var tileErrorCount = 0;
+  
+if(type === 'OSM'){
+
+currentBaseLayer = L.tileLayer(
+'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+maxZoom:19
+}
+);
+
+}
+
+if(type === 'LIGHT'){
+
+currentBaseLayer = L.tileLayer(
+'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+{
+subdomains:'abcd',
+maxZoom:19
+}
+);
+
+}
+
+
+if(type === 'DARK'){
+
+currentBaseLayer = L.tileLayer(
+'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+{
+subdomains:'abcd',
+maxZoom:19
+}
+);
+
+}
+
+if(type === 'SAT'){
+
+var satBase = L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{
+maxZoom:19,
+attribution:'Esri'
+}
+);
+
+var satLabel = L.tileLayer(
+'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png',
+{
+    subdomains:'abcd',
+    maxZoom:20,
+    opacity:0.85
+}
+);
+
+currentBaseLayer = L.layerGroup([
+satBase,
+satLabel
+]);
+
+}
+  
+if(type === 'AMAP'){
+
+currentBaseLayer = L.tileLayer(
+'https://webrd0{s}.is.autonavi.com/appmaptile?lang=en&size=1&scale=1&style=7&x={x}&y={y}&z={z}',
+{
+subdomains:['1','2','3','4'],
+maxZoom:19
+}
+);
+
+}
+
+currentBaseLayer.addTo(map);
+if(type !== 'AMAP'){
+
+currentBaseLayer.on(
+'tileerror',
+function(){
+
+tileErrorCount++;
+
+if(tileErrorCount < 5){
+return;
+}
+
+console.log(
+'Map Tile Failed:',
+type
+);
+
+if(type === 'OSM'){
+
+switchBaseMap('LIGHT');
+
+document
+.querySelectorAll('#mapStyleBar button')
+.forEach(btn=>btn.classList.remove('active'));
+
+document
+.querySelector('[data-map="LIGHT"]')
+.classList.add('active');
+
+}
+
+else if(type === 'LIGHT'){
+
+switchBaseMap('AMAP');
+
+document
+.querySelectorAll('#mapStyleBar button')
+.forEach(btn=>btn.classList.remove('active'));
+
+document
+.querySelector('[data-map="AMAP"]')
+.classList.add('active');
+
+}
+
+}
+);
+
+}
+}
+
+switchBaseMap('OSM');
+
+document
+.querySelector(
+'#mapStyleBar button[data-map="OSM"]'
+)
+.classList.add('active');
+  
+L.control.zoom({
+    position:'bottomright'
+}).addTo(map);
+
+var homeControl = L.control({
+position:'bottomright'
+});
+
+homeControl.onAdd = function(){
+
+var div = L.DomUtil.create(
+'div',
+'leaflet-control leaflet-control-zoom'
+);
+
+div.innerHTML =
+
+'<a id="homeMapBtn" href="#" title="Reset View">↻</a>' +
+
+'<a id="clusterToggleBtn" href="#" title="Toggle Cluster">◉</a>';
+
+div.style.display = 'flex';
+
+div.style.flexDirection = 'column';
+  
+
+return div;
+};
+
+homeControl.addTo(map);
+
+document.addEventListener(
+'click',
+function(e){
+if(
+e.target &&
+e.target.dataset &&
+e.target.dataset.map
+){
+
+document
+.querySelectorAll('#mapStyleBar button')
+.forEach(function(btn){
+
+btn.classList.remove('active');
+
+});
+
+e.target.classList.add('active');
+
+switchBaseMap(
+e.target.dataset.map
+);
+
+}
+if(
+e.target &&
+e.target.id === 'homeMapBtn'
+){
+
+e.preventDefault();
+
+map.setView(
+[51.1657,10.4515],
+window.innerWidth <= 768 ? 5.4 : 6.4
+);
+
+}
+
+if(
+e.target &&
+e.target.id === 'clusterToggleBtn'
+){
+
+e.preventDefault();
+
+isClusterMode = !isClusterMode;
+
+document.getElementById(
+'clusterToggleBtn'
+).innerHTML = isClusterMode ? '◉' : '◎';
+
+if(window.renderMarkers){
+
+window.renderMarkers(
+currentFilteredMarkers
+);
+
+}
+
+}
+});
+  
+/* CSV读取 */
+
+var normalMarkerLayer = L.layerGroup();
+
+var isClusterMode = true;
+
+var currentFilteredMarkers = [];
+  
+var markerCluster = L.markerClusterGroup({
+
+    showCoverageOnHover:false,
+
+    spiderfyOnMaxZoom:true,
+
+    zoomToBoundsOnClick:false,
+
+    iconCreateFunction:function(cluster){
+
+        var count = cluster.getChildCount();
+
+        var size = 32;
+
+        if(count >= 20){
+            size = 40;
+        }
+        else if(count >= 10){
+            size = 36;
+        }
+
+        return L.divIcon({
+
+            html:
+            '<div style="' +
+            'width:'+size+'px;' +
+            'height:'+size+'px;' +
+            'background:#1D4ED8;' +
+            'border-radius:50%;' +
+            'color:white;' +
+            'font-weight:700;' +
+            'font-size:14px;' +
+            'display:flex;' +
+            'align-items:center;' +
+            'justify-content:center;' +
+            'box-shadow:0 0 8px rgba(29,78,216,.35),' +
+            '0 0 16px rgba(29,78,216,.18);' +
+            '">' +
+            count +
+            '</div>',
+
+            className:'',
+
+            iconSize:[size,size]
+
+        });
+
+    }
+
+});
+
+markerCluster.on(
+'clusterclick',
+function(e){
+
+map.setView(
+e.latlng,
+Math.min(
+map.getZoom() + 3,
+16
+)
+);
+
+}
+);
+  
+var stateCount = {};
+
+var categoryCount = {};
+var allMarkers = [];
+
+function getStateColor(count){
+
+    if(count >= 20){
+        return '#EC4899';
+    }
+
+    if(count >= 10){
+        return '#8B5CF6';
+    }
+
+    if(count >= 5){
+        return '#3B82F6';
+    }
+
+    if(count >= 1){
+        return '#14B8A6';
+    }
+
+    return 'transparent';
+}
+
+var stateNameMap = {
+'柏林':'Berlin',
+'勃兰登堡州':'Brandenburg',
+'北威州':'Nordrhein-Westfalen',
+'巴符州':'Baden-Württemberg',
+'黑森州':'Hessen',
+'莱法州':'Rheinland-Pfalz',
+'梅前州':'Mecklenburg-Vorpommern',
+'汉堡州':'Hamburg',
+'汉堡':'Hamburg',
+'巴伐利亚州':'Bayern',
+'石荷州':'Schleswig-Holstein',
+'下萨克森州':'Niedersachsen',
+'萨安州':'Sachsen-Anhalt'
+};
+
+const R2_BASE =
+'https://pub-3575d79a89e1428486f35743798eab42.r2.dev';
+
+function getStorePhotoUrl(storeId,index){
+return `${R2_BASE}/${storeId}-${String(index).padStart(2,'0')}.jpg`;
+}
+
+function hideFloatingTitle(){
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'none';
+}
+
+function showFloatingTitle(){
+if(window.innerWidth > 768){
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'block';
+}
+}
+
+function panPopupIntoView(popup){
+if(
+!popup ||
+!popup._container
+){
+return;
+}
+
+const popupHeight =
+popup._container.offsetHeight || 520;
+
+const point =
+map.project(
+popup.getLatLng(),
+map.getZoom()
+);
+
+point.y -= popupHeight / 2;
+
+map.panTo(
+map.unproject(
+point,
+map.getZoom()
+),
+{
+animate:true
+}
+);
+}
+
+function attachPopupHandlers(targetMarker){
+targetMarker.on(
+'popupopen',
+function(e){
+
+hideFloatingTitle();
+
+let popupCentered = false;
+
+function centerPopupCard(){
+
+if(popupCentered){
+return;
+}
+
+if(
+!e.popup ||
+!e.popup._container
+){
+return;
+}
+
+popupCentered = true;
+
+panPopupIntoView(
+e.popup
+);
+
+}
+
+map.once(
+'moveend',
+function(){
+
+setTimeout(
+centerPopupCard,
+120
+);
+
+}
+);
+
+setTimeout(
+centerPopupCard,
+700
+);
+
+}
+);
+
+targetMarker.on(
+'popupclose',
+function(){
+showFloatingTitle();
+}
+);
+}
+
+function buildPopupHtml(store){
+
+const storeId =
+parseInt(store.ID,10);
+
+const photo1 =
+getStorePhotoUrl(storeId,1);
+
+	return (
+	'<div style="min-width:260px;">' +
+
+'<h3 style="margin:0 0 12px 0;font-size:16px;font-weight:700;line-height:1.2;word-break:break-word;color:#0F172A;">' +
+store.StoreName +
+'</h3>' +
+
+'<div><b style="font-size:15px;">🏙 City</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.City || '-') +
+'</div>' +
+
+'<div><b style="font-size:15px;">🏪 ID</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.ID || '-') +
+'</div>' +
+
+'<div><b style="font-size:15px;">📂 Category</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.StoreType || '-') +
+'</div>' +
+
+'<div><b style="font-size:15px;">📍 Address</b></div>' +
+'<div style="margin-bottom:10px;">' +
+(store.Address || '-') +
+'</div>' +
+
+(
+storeId
+?
+'<div style="position:relative;margin-top:12px;">' +
+'<img id="popupImage" src="' +
+photo1 +
+'" onclick="openPhoto(this)" ' +
+'onerror="this.parentElement.style.display=\'none\'" ' +
+'style="width:100%;height:220px;object-fit:cover;border-radius:10px;cursor:pointer;">' +
+'<button onclick="prevPhoto(this)" style="' +
+'position:absolute;' +
+'left:8px;' +
+'top:50%;' +
+'transform:translateY(-50%);' +
+'border:none;' +
+'background:none;' +
+'color:white;' +
+'font-size:38px;' +
+'font-weight:300;' +
+'text-shadow:0 2px 8px rgba(0,0,0,.8);' +
+'cursor:pointer;' +
+'">❮</button>' +
+'<button onclick="nextPhoto(this)" style="' +
+'position:absolute;' +
+'right:8px;' +
+'top:50%;' +
+'transform:translateY(-50%);' +
+'border:none;' +
+'background:none;' +
+'color:white;' +
+'font-size:38px;' +
+'font-weight:300;' +
+'text-shadow:0 2px 8px rgba(0,0,0,.8);' +
+'cursor:pointer;' +
+'">❯</button>' +
+'<div style="display:none" class="photo-data"' +
+' data-storeid="' + storeId + '"' +
+' data-index="0"></div>' +
+'</div>'
+: ''
+	) +
+	'</div>');
+
+}
+
+var clusterSingleIcon = L.divIcon({
+
+className:'',
+
+html:
+'<div style="' +
+'width:32px;' +
+'height:32px;' +
+'background:#2563EB;' +
+'border-radius:50%;' +
+'color:white;' +
+'font-weight:700;' +
+'font-size:14px;' +
+'display:flex;' +
+'align-items:center;' +
+'justify-content:center;' +
+'box-shadow:0 2px 8px rgba(0,0,0,.15);' +
+'">' +
+'1' +
+'</div>',
+
+iconAnchor:[16,16]
+
+});
+
+var pointIcon = L.divIcon({
+
+className:'',
+
+html:
+'<svg width="22" height="30" viewBox="0 0 24 36" xmlns="http://www.w3.org/2000/svg">' +
+'<path fill="#2563EB" d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z"/>' +
+'<circle cx="12" cy="12" r="4" fill="white"/>' +
+'</svg>',
+
+iconSize:[18,25],
+iconAnchor:[9,25],
+popupAnchor:[0,-25]
+
+});
+
+
+
+  
+Papa.parse(
+'../VPL门店地图信息.csv?v=' + Date.now(),
+{
+
+    download: true,
+    header: true,
+
+    complete: function(results) {
+
+        results.data.forEach(function(store) {
+    var germanState = stateNameMap[store.State];
+
+if(germanState){
+
+    if(!stateCount[germanState]){
+        stateCount[germanState] = 0;
+    }
+
+    stateCount[germanState]++;
+
+}
+
+
+if(store.StoreType){
+
+    if(!categoryCount[store.StoreType]){
+        categoryCount[store.StoreType] = 0;
+    }
+
+    categoryCount[store.StoreType]++;
+
+}
+
+    if (!store.Latitude || !store.Longitude) {
+        return;
+    }
+
+var marker = L.marker(
+    [
+        parseFloat(store.Latitude),
+        parseFloat(store.Longitude)
+    ],
+    {
+        icon: clusterSingleIcon
+    }
+);
+
+marker.on(
+'click',
+function(){
+
+if(isClusterMode){
+
+map.setView(
+marker.getLatLng(),
+Math.min(
+map.getZoom() + 3,
+16
+)
+);
+
+}
+
+}
+);
+          
+marker.bindPopup(
+buildPopupHtml(store)
+);
+
+attachPopupHandlers(marker);
+          
+allMarkers.push({
+marker: marker,
+store: store
+});
+
+        });
+
+map.addLayer(markerCluster);
+
+updateStats(
+allMarkers
+);
+currentFilteredMarkers = allMarkers;
+      
+document
+.getElementById(
+'closeFilterBtn'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.getElementById(
+'filter-panel'
+)
+.style.display =
+'none';
+
+document
+.getElementById(
+'openFilterBtn'
+)
+.style.display =
+'block';
+
+}
+);
+
+document
+.getElementById(
+'openFilterBtn'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.getElementById(
+'filter-panel'
+)
+.style.display =
+'block';
+
+document
+.getElementById(
+'openFilterBtn'
+)
+.style.display =
+'none';
+
+}
+);
+      
+
+
+window.renderMarkers = function(items){
+
+currentFilteredMarkers = items;
+
+markerCluster.clearLayers();
+normalMarkerLayer.clearLayers();
+
+if(map.hasLayer(markerCluster)){
+map.removeLayer(markerCluster);
+}
+
+if(map.hasLayer(normalMarkerLayer)){
+map.removeLayer(normalMarkerLayer);
+}
+
+if(isClusterMode){
+
+items.forEach(function(item){
+
+item.marker.setIcon(
+clusterSingleIcon
+);
+
+markerCluster.addLayer(
+item.marker
+);
+
+});
+
+map.addLayer(markerCluster);
+
+}else{
+
+items.forEach(function(item){
+
+var pointMarker = L.marker(
+item.marker.getLatLng(),
+{
+icon: pointIcon
+}
+);
+
+pointMarker.bindPopup(
+item.marker.getPopup()
+);
+
+attachPopupHandlers(pointMarker);
+  
+normalMarkerLayer.addLayer(
+pointMarker
+);
+
+});
+
+map.addLayer(normalMarkerLayer);
+
+}
+  
+}
+window.renderMarkers(
+allMarkers
+);
+      
+function applyFilters(){
+
+var selectedStates = [];
+
+document
+.querySelectorAll(
+'.stateCheckbox:checked'
+)
+.forEach(function(cb){
+
+selectedStates.push(
+cb.value
+);
+
+});
+
+var selectedCategories = [];
+
+document
+.querySelectorAll(
+'.categoryCheckbox:checked'
+)
+.forEach(function(cb){
+
+selectedCategories.push(
+cb.value
+);
+
+});
+
+var filteredMarkers = [];
+
+markerCluster.clearLayers();
+
+normalMarkerLayer.clearLayers();
+
+allMarkers.forEach(function(item){
+
+var state =
+stateNameMap[item.store.State];
+
+var category =
+item.store.StoreType;
+
+var stateMatch =
+selectedStates.length === 0 ||
+selectedStates.includes(state);
+
+var categoryMatch =
+selectedCategories.length === 0 ||
+selectedCategories.includes(category);
+
+if(
+stateMatch &&
+categoryMatch
+){
+
+filteredMarkers.push(
+item
+);
+
+}
+
+});
+
+window.renderMarkers(
+filteredMarkers
+);
+
+updateStats(
+filteredMarkers
+);
+
+}
+
+document
+.getElementById(
+'clearStateFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.stateCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
+});
+
+applyFilters();
+
+});
+
+document
+.getElementById(
+'clearCategoryFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.categoryCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
+});
+
+applyFilters();
+
+});
+
+document.addEventListener(
+'change',
+function(e){
+
+if(
+!e.target.classList.contains(
+'stateCheckbox'
+)
+&&
+!e.target.classList.contains(
+'categoryCheckbox'
+)
+){
+return;
+}
+
+applyFilters();
+
+});
+
+
+// State Filter
+
+Object.keys(stateCount)
+.sort()
+.forEach(function(state){
+
+    var row =
+    document.createElement('div');
+
+    row.className = 'state-item';
+
+    row.innerHTML =
+
+'<label class="filter-chip">' +
+
+'<input type="checkbox" ' +
+'class="stateCheckbox" ' +
+'value="' + state + '">' +
+
+'<span class="chip-name">' +
+state +
+'</span>' +
+
+'<span class="chip-count">' +
+stateCount[state] +
+'</span>' +
+
+'</label>';
+
+    document
+    .getElementById('stateFilter')
+    .appendChild(row);
+
+});
+
+
+document.getElementById(
+'storeCount'
+).innerHTML =
+allMarkers.length;
+
+document.getElementById(
+'stateCountDisplay'
+).innerHTML =
+Object.keys(stateCount).length;
+
+document.getElementById(
+'categoryCountDisplay'
+).innerHTML =
+Object.keys(categoryCount).length;
+
+function updateStats(filteredMarkers){
+
+var states = [];
+var categories = [];
+
+filteredMarkers.forEach(function(item){
+
+var state =
+stateNameMap[item.store.State];
+
+var category =
+item.store.StoreType;
+
+if(
+state &&
+!states.includes(state)
+){
+states.push(state);
+}
+
+if(
+category &&
+!categories.includes(category)
+){
+categories.push(category);
+}
+
+});
+
+document.getElementById(
+'storeCount'
+).innerHTML =
+filteredMarkers.length;
+
+document.getElementById(
+'counterLocations'
+).innerHTML =
+filteredMarkers.length +
+' Locations';
+
+document.getElementById(
+'counterStates'
+).innerHTML =
+states.length +
+' States';
+
+document.getElementById(
+'counterCategories'
+).innerHTML =
+categories.length +
+' Categories';
+  
+document.getElementById(
+'stateCountDisplay'
+).innerHTML =
+states.length;
+
+document.getElementById(
+'categoryCountDisplay'
+).innerHTML =
+categories.length;
+
+}
+      
+// Category Filter
+
+Object.keys(categoryCount)
+.sort()
+.forEach(function(category){
+
+    var row =
+    document.createElement('div');
+
+    row.className = 'category-item';
+
+    row.innerHTML =
+
+'<label class="filter-chip">' +
+
+'<input type="checkbox" ' +
+'class="categoryCheckbox" ' +
+'value="' + category + '">' +
+
+'<span class="chip-name">' +
+category +
+'</span>' +
+
+'<span class="chip-count">' +
+categoryCount[category] +
+'</span>' +
+
+'</label>';
+
+    document
+    .getElementById('categoryFilter')
+    .appendChild(row);
+
+});
+
+  
+fetch('../Germany_border_sehr_hoch.geo.json')
+.then(response => response.json())
+.then(data => {
+
+    // 最外层光晕
+    L.geoJSON(data,{
+        style:{
+            color:'#60A5FA',
+            weight:60,
+            opacity:0.02,
+            fillOpacity:0
+        }
+    }).addTo(map);
+
+    // 第二层光晕
+    L.geoJSON(data,{
+        style:{
+            color:'#60A5FA',
+            weight:40,
+            opacity:0.04,
+            fillOpacity:0
+        }
+    }).addTo(map);
+
+    // 第三层光晕
+    L.geoJSON(data,{
+        style:{
+            color:'#60A5FA',
+            weight:20,
+            opacity:0.08,
+            fillOpacity:0
+        }
+    }).addTo(map);
+
+    // 德国边界
+    L.geoJSON(data,{
+        style:{
+            color:'#475569',
+            weight:3,
+            opacity:0.9,
+            fillOpacity:0
+        }
+    }).addTo(map);
+
+});
+
+fetch('../2_hoch.geo_1.4M.json')
+.then(response => response.json())
+.then(data => {
+
+L.geoJSON(data, {
+
+style:function(feature){
+
+    var stateName = feature.properties.name;
+
+    if(stateCount[stateName] > 0){
+
+        var count = stateCount[stateName];
+
+return{
+    color:'#94A3B8',
+    weight:1.2,
+    opacity:0.9,
+    fillColor:getStateColor(count),
+    fillOpacity:0.18
+};
+
+    }
+
+return{
+    color:'#94A3B8',
+    weight:1.5,
+    opacity:0.8,
+    fillColor:'#E5E7EB',
+    fillOpacity:0.08
+};
+
+}
+
+}).addTo(map);
+
+});
+
+    }
+
+});
+
+async function nextPhoto(btn){
+
+const wrapper = btn.parentElement;
+
+const data =
+wrapper.querySelector('.photo-data');
+
+if(!data.dataset.photos){
+
+await loadStorePhotos(data);
+
+}
+
+const photos =
+JSON.parse(data.dataset.photos);
+
+if(photos.length <= 1){
+return;
+}  
+  
+let index =
+parseInt(data.dataset.index);
+
+index++;
+
+if(index >= photos.length){
+index = 0;
+}
+
+wrapper.querySelector('img').src =
+photos[index];
+
+data.dataset.index = index;
+
+}
+
+async function prevPhoto(btn){
+
+const wrapper = btn.parentElement;
+
+const data =
+wrapper.querySelector('.photo-data');
+
+if(!data.dataset.photos){
+
+await loadStorePhotos(data);
+
+}
+
+const photos =
+JSON.parse(data.dataset.photos);
+
+if(photos.length <= 1){
+return;
+}
+
+let index =
+parseInt(data.dataset.index);
+
+index--;
+
+if(index < 0){
+index = photos.length - 1;
+}
+
+wrapper.querySelector('img').src =
+photos[index];
+
+data.dataset.index = index;
+
+} 
+
+let currentPhotos = [];
+let currentPhotoIndex = 0;
+
+const storePhotoCache = {};
+
+async function loadStorePhotos(data){
+
+const storeId =
+data.dataset.storeid;
+
+if(storePhotoCache[storeId]){
+
+data.dataset.photos =
+JSON.stringify(storePhotoCache[storeId]);
+
+return;
+
+}
+
+const photos = [];
+
+function checkImage(url){
+
+return new Promise(function(resolve){
+
+const img = new Image();
+
+img.onload = function(){
+resolve(true);
+};
+
+img.onerror = function(){
+resolve(false);
+};
+
+img.src = url + '?v=' + Date.now();
+
+});
+
+}
+
+for(let i=1;i<=20;i++){
+
+const url =
+getStorePhotoUrl(storeId,i);
+
+const exists =
+await checkImage(url);
+
+if(exists){
+
+photos.push(url);
+
+}else{
+
+break;
+
+}
+
+}
+
+storePhotoCache[storeId] = photos;
+
+data.dataset.photos =
+JSON.stringify(photos);
+
+}
+
+async function openPhoto(img){
+
+const wrapper =
+img.closest('div');
+
+const data =
+wrapper.querySelector('.photo-data');
+
+if(!data.dataset.photos){
+
+await loadStorePhotos(data);
+
+}
+
+currentPhotos =
+JSON.parse(
+data.dataset.photos
+);
+
+currentPhotoIndex =
+parseInt(data.dataset.index) || 0;
+
+document.getElementById(
+'photoModal'
+).style.display = 'flex';
+
+document.getElementById(
+'photoModalImg'
+).src =
+currentPhotos[currentPhotoIndex];
+
+}
+
+function closePhoto(){
+
+document.getElementById(
+'photoModal'
+).style.display = 'none';
+
+}
+
+function modalNextPhoto(e){
+
+e.stopPropagation();
+
+if(currentPhotos.length <= 1){
+return;
+}
+
+currentPhotoIndex++;
+
+if(currentPhotoIndex >= currentPhotos.length){
+currentPhotoIndex = 0;
+}
+
+document.getElementById(
+'photoModalImg'
+).src =
+currentPhotos[currentPhotoIndex];
+
+}
+
+function modalPrevPhoto(e){
+
+e.stopPropagation();
+
+if(currentPhotos.length <= 1){
+return;
+}
+
+currentPhotoIndex--;
+
+if(currentPhotoIndex < 0){
+currentPhotoIndex = currentPhotos.length - 1;
+}
+
+document.getElementById(
+'photoModalImg'
+).src =
+currentPhotos[currentPhotoIndex];
+
+}
+
+document.addEventListener(
+'keydown',
+function(e){
+
+if(
+document.getElementById('photoModal').style.display === 'flex'
+){
+
+if(e.key === 'ArrowRight'){
+modalNextPhoto({stopPropagation:function(){}});
+}
+
+if(e.key === 'ArrowLeft'){
+modalPrevPhoto({stopPropagation:function(){}});
+}
+
+}
+
+if(e.key === 'Escape'){
+closePhoto();
+}
+
+}
+);
+  
+</script>
+
+</body>
+</html>
