@@ -25,3 +25,10 @@ VPLINK Germany vending-machine network map, maintained as a subproject of the br
 ## Working model
 
 Future code changes should be implemented and verified in Codex using the current repository as the source of truth. Read `AGENTS.md` and `docs/PROJECT_HANDOFF.md` before making changes.
+
+## Code-change release rule
+
+- Before any code optimization or logic change, create a backup from the current production state.
+- Produce a test environment first and verify the requested change there.
+- Publish to the production environment only after the test result is confirmed.
+- Do not send unverified code changes directly to the live GitHub Pages deployment.

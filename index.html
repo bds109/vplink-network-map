@@ -26,25 +26,6 @@ width:100%;
 height:100vh;
 }
 
-html,body{
-height:100%;
-margin:0;
-}
-
-#map{
-width:100%;
-height:100vh;
-}
-
-.store-dot{
-width:16px;
-height:16px;
-background:#007BFF;
-border:3px solid #ffffff;
-border-radius:50%;
-box-shadow:0 0 6px rgba(0,0,0,0.3);
-}
-
 .marker-cluster-small,
 .marker-cluster-medium,
 .marker-cluster-large{
@@ -1511,6 +1492,195 @@ var stateNameMap = {
 '萨安州':'Sachsen-Anhalt'
 };
 
+const R2_BASE =
+'https://pub-3575d79a89e1428486f35743798eab42.r2.dev';
+
+function getStorePhotoUrl(storeId,index){
+return `${R2_BASE}/${storeId}-${String(index).padStart(2,'0')}.jpg`;
+}
+
+function hideFloatingTitle(){
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'none';
+}
+
+function showFloatingTitle(){
+if(window.innerWidth > 768){
+document.getElementById(
+'mapFloatingTitle'
+).style.display = 'block';
+}
+}
+
+function panPopupIntoView(popup){
+if(
+!popup ||
+!popup._container
+){
+return;
+}
+
+const popupHeight =
+popup._container.offsetHeight || 520;
+
+const point =
+map.project(
+popup.getLatLng(),
+map.getZoom()
+);
+
+point.y -= popupHeight / 2;
+
+map.panTo(
+map.unproject(
+point,
+map.getZoom()
+),
+{
+animate:true
+}
+);
+}
+
+function attachPopupHandlers(targetMarker){
+targetMarker.on(
+'popupopen',
+function(e){
+
+hideFloatingTitle();
+
+let popupCentered = false;
+
+function centerPopupCard(){
+
+if(popupCentered){
+return;
+}
+
+if(
+!e.popup ||
+!e.popup._container
+){
+return;
+}
+
+popupCentered = true;
+
+panPopupIntoView(
+e.popup
+);
+
+}
+
+map.once(
+'moveend',
+function(){
+
+setTimeout(
+centerPopupCard,
+120
+);
+
+}
+);
+
+setTimeout(
+centerPopupCard,
+700
+);
+
+}
+);
+
+targetMarker.on(
+'popupclose',
+function(){
+showFloatingTitle();
+}
+);
+}
+
+function buildPopupHtml(store){
+
+const storeId =
+parseInt(store.ID,10);
+
+const photo1 =
+getStorePhotoUrl(storeId,1);
+
+	return (
+	'<div style="min-width:260px;">' +
+
+'<h3 style="margin:0 0 12px 0;font-size:16px;font-weight:700;line-height:1.2;word-break:break-word;color:#0F172A;">' +
+store.StoreName +
+'</h3>' +
+
+'<div><b style="font-size:15px;">🏙 City</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.City || '-') +
+'</div>' +
+
+'<div><b style="font-size:15px;">🏪 ID</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.ID || '-') +
+'</div>' +
+
+'<div><b style="font-size:15px;">📂 Category</b></div>' +
+'<div style="margin-bottom:8px;">' +
+(store.StoreType || '-') +
+'</div>' +
+
+'<div><b style="font-size:15px;">📍 Address</b></div>' +
+'<div style="margin-bottom:10px;">' +
+(store.Address || '-') +
+'</div>' +
+
+(
+storeId
+?
+'<div style="position:relative;margin-top:12px;">' +
+'<img id="popupImage" src="' +
+photo1 +
+'" onclick="openPhoto(this)" ' +
+'onerror="this.parentElement.style.display=\'none\'" ' +
+'style="width:100%;height:220px;object-fit:cover;border-radius:10px;cursor:pointer;">' +
+'<button onclick="prevPhoto(this)" style="' +
+'position:absolute;' +
+'left:8px;' +
+'top:50%;' +
+'transform:translateY(-50%);' +
+'border:none;' +
+'background:none;' +
+'color:white;' +
+'font-size:38px;' +
+'font-weight:300;' +
+'text-shadow:0 2px 8px rgba(0,0,0,.8);' +
+'cursor:pointer;' +
+'">❮</button>' +
+'<button onclick="nextPhoto(this)" style="' +
+'position:absolute;' +
+'right:8px;' +
+'top:50%;' +
+'transform:translateY(-50%);' +
+'border:none;' +
+'background:none;' +
+'color:white;' +
+'font-size:38px;' +
+'font-weight:300;' +
+'text-shadow:0 2px 8px rgba(0,0,0,.8);' +
+'cursor:pointer;' +
+'">❯</button>' +
+'<div style="display:none" class="photo-data"' +
+' data-storeid="' + storeId + '"' +
+' data-index="0"></div>' +
+'</div>'
+: ''
+	) +
+	'</div>');
+
+}
+
 var clusterSingleIcon = L.divIcon({
 
 className:'',
@@ -1564,17 +1734,7 @@ Papa.parse(
 
     complete: function(results) {
 
-        console.log(results.data);
-
         results.data.forEach(function(store) {
-          const STORE_ID = parseInt(store.ID);
-
-const R2_BASE =
-'https://pub-3575d79a89e1428486f35743798eab42.r2.dev';
-
-const photo1 =
-`${R2_BASE}/${STORE_ID}-01.jpg`;
-
     var germanState = stateNameMap[store.State];
 
 if(germanState){
@@ -1632,186 +1792,10 @@ map.getZoom() + 3,
 );
           
 marker.bindPopup(
-
-'<div style="min-width:260px;">' +
-
-'<h3 style="margin:0 0 12px 0;font-size:16px;font-weight:700;line-height:1.2;word-break:break-word;color:#0F172A;">' +
-store.StoreName +
-'</h3>' +
-
-'<div><bstyle="font-size:15px;">🏙 City</b></div>' +
-'<div style="margin-bottom:8px;">' +
-(store.City || '-') +
-'</div>' +
-
-'<div><b style="font-size:15px;">🏪 ID</b></div>' +
-'<div style="margin-bottom:8px;">' +
-(store.ID || '-') +
-'</div>' +
-
-'<div><b style="font-size:15px;"> 📂 Category</b></div>' +
-'<div style="margin-bottom:8px;">' +
-(store.StoreType || '-') +
-'</div>' +
-
-'<div><b style="font-size:15px;">📍 Address</b></div>' +
-'<div style="margin-bottom:10px;">' +
-(store.Address || '-') +
-'</div>' +
-      
-           
-(
-STORE_ID
-?
-
-'<div style="position:relative;margin-top:12px;">'
-
-+
-
-'<img id="popupImage" src="' +
-
-photo1
-
-+
-
-'" onclick="openPhoto(this)" ' +
-'onerror="this.parentElement.style.display=\'none\'" ' +
-'style="width:100%;height:220px;object-fit:cover;border-radius:10px;cursor:pointer;">'
-+
-
-  
-  
-'<button onclick="prevPhoto(this)" style="' +
-'position:absolute;' +
-'left:8px;' +
-'top:50%;' +
-'transform:translateY(-50%);' +
-'border:none;' +
-'background:none;' +
-'color:white;' +
-'font-size:38px;' +
-'font-weight:300;' +
-'text-shadow:0 2px 8px rgba(0,0,0,.8);' +
-'cursor:pointer;' +
-'">❮</button>'
-+
-
-'<button onclick="nextPhoto(this)" style="' +
-'position:absolute;' +
-'right:8px;' +
-'top:50%;' +
-'transform:translateY(-50%);' +
-'border:none;' +
-'background:none;' +
-'color:white;' +
-'font-size:38px;' +
-'font-weight:300;' +
-'text-shadow:0 2px 8px rgba(0,0,0,.8);' +
-'cursor:pointer;' +
-'">❯</button>'
-+
-
-'<div style="display:none" class="photo-data"'
-
-+
-
-' data-storeid="' + STORE_ID + '"'
-
-+
-
-' data-index="0"></div>'
-
-+
-
-'</div>'
-
-: ''
-)
-
+buildPopupHtml(store)
 );
 
-marker.on(
-'popupopen',
-function(e){
-
-document.getElementById(
-'mapFloatingTitle'
-).style.display = 'none';
-
-let popupCentered = false;
-
-function centerPopupCard(){
-
-if(popupCentered){
-return;
-}
-
-if(
-!e.popup ||
-!e.popup._container
-){
-return;
-}
-
-popupCentered = true;
-
-const popupHeight =
-e.popup._container.offsetHeight || 520;
-
-const point =
-map.project(
-e.popup.getLatLng(),
-map.getZoom()
-);
-
-point.y -= popupHeight / 2;
-
-map.panTo(
-map.unproject(
-point,
-map.getZoom()
-),
-{
-animate:true
-}
-);
-
-}
-
-map.once(
-'moveend',
-function(){
-
-setTimeout(
-centerPopupCard,
-120
-);
-
-}
-);
-
-setTimeout(
-centerPopupCard,
-700
-);
-
-}
-);
-
-marker.on(
-'popupclose',
-function(){
-
-if(window.innerWidth > 768){
-
-document.getElementById(
-'mapFloatingTitle'
-).style.display = 'block';
-
-}
-
-}
-);
+attachPopupHandlers(marker);
           
 allMarkers.push({
 marker: marker,
@@ -1925,56 +1909,7 @@ pointMarker.bindPopup(
 item.marker.getPopup()
 );
 
-pointMarker.on(
-'popupopen',
-function(e){
-
-document.getElementById(
-'mapFloatingTitle'
-).style.display = 'none';
-
-setTimeout(function(){
-
-const popupHeight =
-e.popup._container.offsetHeight || 520;
-
-const point =
-map.project(
-e.popup.getLatLng(),
-map.getZoom()
-);
-
-point.y -= popupHeight / 2;
-
-map.panTo(
-map.unproject(
-point,
-map.getZoom()
-),
-{
-animate:true
-}
-);
-
-},100);
-
-}
-);
-
-pointMarker.on(
-'popupclose',
-function(){
-
-if(window.innerWidth > 768){
-
-document.getElementById(
-'mapFloatingTitle'
-).style.display = 'block';
-
-}
-
-}
-);
+attachPopupHandlers(pointMarker);
   
 normalMarkerLayer.addLayer(
 pointMarker
@@ -2486,7 +2421,7 @@ img.src = url + '?v=' + Date.now();
 for(let i=1;i<=20;i++){
 
 const url =
-`https://pub-3575d79a89e1428486f35743798eab42.r2.dev/${storeId}-${String(i).padStart(2,'0')}.jpg`;
+getStorePhotoUrl(storeId,i);
 
 const exists =
 await checkImage(url);

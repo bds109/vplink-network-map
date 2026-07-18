@@ -219,3 +219,20 @@ A Codex task is not complete until:
 - Cluster and non-cluster modes were checked when relevant.
 - Browser console has no new syntax/runtime errors.
 - Repository documentation was updated if the decision or operational rule changed.
+
+## 11. Backup and test-environment rule
+
+For any code optimization, display adjustment, or behavior change:
+
+1. Back up the current production state first.
+2. Apply the change in a test environment before touching production.
+3. Verify the requested behavior in the test environment.
+4. Verify that approved existing behavior still works.
+5. Publish to the live GitHub Pages production environment only after the test result is confirmed.
+
+### Minimum required execution model
+
+- Backup must be created before code changes are published.
+- The test environment must be separate from the live production page.
+- Production publication is the last step, not the first validation step.
+- If test verification is incomplete, do not publish.
