@@ -767,14 +767,17 @@ pointer-events:none;
 
 background:linear-gradient(
 90deg,
-#0F172A 0%,
-#0F172A 30%,
-#60A5FA 45%,
+rgba(29,78,216,0) 0%,
+rgba(29,78,216,0) 43%,
+#60A5FA 48%,
 #FFFFFF 50%,
-#60A5FA 55%,
-#0F172A 70%,
-#0F172A 100%
+#60A5FA 52%,
+rgba(29,78,216,0) 57%,
+rgba(29,78,216,0) 100%
 );
+
+-webkit-background-repeat:no-repeat;
+background-repeat:no-repeat;
 
 -webkit-background-size:220% 100%;
 background-size:220% 100%;
@@ -789,12 +792,12 @@ animation:shinyPillSweep 5.5s ease-in-out infinite;
 
 @keyframes shinyPillSweep{
 0%{
--webkit-background-position:200% 50%;
-background-position:200% 50%;
+-webkit-background-position:140% 50%;
+background-position:140% 50%;
 }
 100%{
--webkit-background-position:-20% 50%;
-background-position:-20% 50%;
+-webkit-background-position:-40% 50%;
+background-position:-40% 50%;
 }
 }
 
@@ -1979,7 +1982,7 @@ popupAnchor:[0,-25]
 
   
 Papa.parse(
-'../VPL门店地图信息.csv?v=' + Date.now(),
+'/VPL门店地图信息.csv?v=' + Date.now(),
 {
 
     download: true,
@@ -2470,7 +2473,7 @@ categoryCount[category] +
 });
 
   
-fetch('../Germany_border_sehr_hoch.geo.json')
+fetch('/Germany_border_sehr_hoch.geo.json')
 .then(response => response.json())
 .then(data => {
 
@@ -2516,7 +2519,7 @@ fetch('../Germany_border_sehr_hoch.geo.json')
 
 });
 
-fetch('../2_hoch.geo_1.4M.json')
+fetch('/2_hoch.geo_1.4M.json')
 .then(response => response.json())
 .then(data => {
 
