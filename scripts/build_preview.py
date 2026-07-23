@@ -51,15 +51,15 @@ def build_preview() -> None:
     html = html.replace("<body>", "<body>\n" + PREVIEW_BADGE, 1)
     html = html.replace(
         "'VPL门店地图信息.csv?v=' + Date.now(),",
-        "'../VPL门店地图信息.csv?v=' + Date.now(),",
+        "'/VPL门店地图信息.csv?v=' + Date.now(),",
     )
     html = html.replace(
         "fetch('Germany_border_sehr_hoch.geo.json')",
-        "fetch('../Germany_border_sehr_hoch.geo.json')",
+        "fetch('/Germany_border_sehr_hoch.geo.json')",
     )
     html = html.replace(
         "fetch('2_hoch.geo_1.4M.json')",
-        "fetch('../2_hoch.geo_1.4M.json')",
+        "fetch('/2_hoch.geo_1.4M.json')",
     )
 
     TARGET_DIR.mkdir(exist_ok=True)
