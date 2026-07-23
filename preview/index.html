@@ -765,23 +765,23 @@ color:transparent;
 
 pointer-events:none;
 
--webkit-mask-image:linear-gradient(to right, transparent 38%, #000 50%, transparent 62%);
-mask-image:linear-gradient(to right, transparent 38%, #000 50%, transparent 62%);
-
--webkit-mask-size:150% auto;
-mask-size:150% auto;
-
 background:linear-gradient(
 90deg,
-#1D4ED8 0%,
-#60A5FA 35%,
+#0F172A 0%,
+#0F172A 30%,
+#60A5FA 45%,
 #FFFFFF 50%,
-#60A5FA 65%,
-#1D4ED8 100%
+#60A5FA 55%,
+#0F172A 70%,
+#0F172A 100%
 );
+
+-webkit-background-size:220% 100%;
+background-size:220% 100%;
 
 -webkit-background-clip:text;
 background-clip:text;
+-webkit-text-fill-color:transparent;
 
 animation:shinyPillSweep 5.5s ease-in-out infinite;
 
@@ -789,12 +789,12 @@ animation:shinyPillSweep 5.5s ease-in-out infinite;
 
 @keyframes shinyPillSweep{
 0%{
--webkit-mask-position:200%;
-mask-position:200%;
+-webkit-background-position:200% 50%;
+background-position:200% 50%;
 }
 100%{
--webkit-mask-position:-100%;
-mask-position:-100%;
+-webkit-background-position:-20% 50%;
+background-position:-20% 50%;
 }
 }
 
