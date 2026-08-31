@@ -2600,7 +2600,6 @@ brands:mapView.mode === 'brand' && mapView.brand ? [mapView.brand.slug] : []
 renderFilterSections(initialSelections,null);
 applyFilters();
 
-
 fetch('/Germany_border_sehr_hoch.geo.json')
 .then(response => response.json())
 .then(data => {

@@ -5,9 +5,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "index.html"
+SOURCE = ROOT / "scripts" / "map_template.html"
 BRAND_CONFIG_SOURCE = ROOT / "scripts" / "brand_config.json"
-CANDIDATE_CSV = ROOT / "map data" / "VPL门店地图信息_20260831_English.csv"
+CANDIDATE_CSV = ROOT / "map data" / "VPL门店地图信息_20260831_1644_English.csv"
 PREVIEW_DIR = ROOT / "preview"
 PREVIEW_DATA = PREVIEW_DIR / "data" / "locations.csv"
 PREVIEW_DATA_HASH = PREVIEW_DIR / "data" / "locations.sha256"
@@ -547,16 +547,24 @@ var mapView = resolveMapView();
 """
 
 
-def build_page(brands: list[dict[str, str]]) -> str:
+def build_page(brands: list[dict[str, str]], *, preview: bool, noindex: bool) -> str:
     html = SOURCE.read_text(encoding="utf-8")
-    html = replace_once(
-        html,
-        "<title>VPL Germany Network Map</title>",
-        "<title>VPL Germany Network Map Preview</title>\n" + PREVIEW_META,
-        "title",
-    )
+    if preview:
+        html = replace_once(
+            html,
+            "<title>VPL Germany Network Map</title>",
+            "<title>VPL Germany Network Map Preview</title>\n" + PREVIEW_META,
+            "preview title",
+        )
+        html = replace_once(html, "<body>", "<body>\n" + PREVIEW_BADGE, "preview body start")
+    elif noindex:
+        html = replace_once(
+            html,
+            "<title>VPL Germany Network Map</title>",
+            "<title>VPL Germany Network Map</title>\n" + PREVIEW_META,
+            "private-page title",
+        )
     html = replace_once(html, "</style>", PREVIEW_CSS + "\n</style>", "style end")
-    html = replace_once(html, "<body>", "<body>\n" + PREVIEW_BADGE, "body start")
 
     filter_start = html.index('<div id="stateFilterContainer">')
     filter_end = html.index('\n\n</div>\n\n\n</div>\n\n<div id="mapStyleBar">', filter_start)
@@ -568,12 +576,20 @@ def build_page(brands: list[dict[str, str]]) -> str:
         "<script>\n\n" + feature_bootstrap(brands) + "var map =",
         "map bootstrap",
     )
-    html = replace_once(
-        html,
-        "'VPL门店地图信息.csv?v=' + Date.now(),",
-        "'/preview/data/locations.csv?v=' + Date.now(),",
-        "preview CSV path",
-    )
+    if preview:
+        html = replace_once(
+            html,
+            "'VPL门店地图信息.csv?v=' + Date.now(),",
+            "'/preview/data/locations.csv?v=' + Date.now(),",
+            "preview CSV path",
+        )
+    else:
+        html = replace_once(
+            html,
+            "'VPL门店地图信息.csv?v=' + Date.now(),",
+            "'/VPL门店地图信息.csv?v=' + Date.now(),",
+            "production CSV path",
+        )
     html = replace_once(
         html,
         "fetch('Germany_border_sehr_hoch.geo.json')",
@@ -588,7 +604,7 @@ def build_page(brands: list[dict[str, str]]) -> str:
     )
 
     filter_logic_start = html.index('function applyFilters(){')
-    filter_logic_end = html.index("\n  \nfetch('/Germany_border_sehr_hoch.geo.json')", filter_logic_start)
+    filter_logic_end = html.index("\nfetch('/Germany_border_sehr_hoch.geo.json')", filter_logic_start)
     html = html[:filter_logic_start] + FILTER_LOGIC + html[filter_logic_end:]
     return "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
 
@@ -598,7 +614,7 @@ def build_preview() -> None:
     if not CANDIDATE_CSV.is_file():
         raise RuntimeError(f"Candidate CSV is missing: {CANDIDATE_CSV}")
 
-    page = build_page(brands)
+    page = build_page(brands, preview=True, noindex=True)
     PREVIEW_DIR.mkdir(exist_ok=True)
     PREVIEW_DATA.parent.mkdir(exist_ok=True)
     shutil.copyfile(CANDIDATE_CSV, PREVIEW_DATA)
@@ -608,7 +624,7 @@ def build_preview() -> None:
     if source_hash != preview_hash:
         raise RuntimeError("Preview CSV copy hash does not match candidate source")
     PREVIEW_DATA_HASH.write_text(
-        f"{source_hash}  map data/VPL门店地图信息_20260831_English.csv\n"
+        f"{source_hash}  map data/VPL门店地图信息_20260831_1644_English.csv\n"
         f"{preview_hash}  preview/data/locations.csv\n",
         encoding="utf-8",
     )

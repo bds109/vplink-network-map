@@ -6,8 +6,7 @@
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0">
-<title>VPL Germany Network Map Preview</title>
-<meta name="robots" content="noindex,nofollow">
+<title>VPL Germany Network Map</title>
 
 <link
 rel="stylesheet"
@@ -1110,172 +1109,10 @@ top:10px;
 
 }
 
-
-#previewEnvBadge{
-position:fixed;
-top:14px;
-right:14px;
-z-index:1000001;
-padding:10px 14px;
-border-radius:999px;
-background:#F97316;
-color:#ffffff;
-font-size:12px;
-font-weight:800;
-letter-spacing:.6px;
-box-shadow:0 10px 30px rgba(249,115,22,.35);
-pointer-events:none;
-}
-
-#mapTitle.is-brand-title{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-height:36px;
-padding-right:30px;
-line-height:1.1;
-white-space:nowrap;
-}
-
-#mapTitle.is-brand-title .map-title-main{
-font-size:12px;
-font-weight:900;
-letter-spacing:.5px;
-}
-
-#mapTitle.is-brand-title .map-title-subtitle{
-margin-top:2px;
-font-size:9px;
-font-weight:800;
-letter-spacing:1.2px;
-}
-
-#mapFloatingTitle.is-brand-title{
-width:min(780px,calc(100vw - 420px));
-}
-
-#mapFloatingTitle.is-brand-title #mapFloatingTitleText,
-#mapFloatingTitle.is-brand-title #mapFloatingTitleFallback{
-font-size:clamp(18px,1.8vw,36px);
-letter-spacing:.01em;
-}
-
-.filter-sections{
-display:flex;
-flex-direction:column;
-gap:8px;
-width:100%;
-box-sizing:border-box;
-}
-
-.filter-section{
-width:100%;
-box-sizing:border-box;
-padding-top:8px;
-border-top:1px solid rgba(255,255,255,.35);
-}
-
-.filter-section:first-child{
-padding-top:0;
-border-top:none;
-}
-
-.filter-section-header{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:6px;
-min-width:0;
-margin-bottom:5px;
-}
-
-.filter-section-title{
-min-width:0;
-font-size:14px;
-font-weight:700;
-color:#0F172A;
-white-space:nowrap;
-}
-
-.selection-summary{
-font-size:11px;
-font-weight:600;
-color:#475569;
-}
-
-#stateFilter,
-#categoryFilter,
-#brandFilter{
-width:100%;
-max-width:100%;
-max-height:none;
-box-sizing:border-box;
-overflow:hidden;
-}
-
-.filter-list.is-compact .filter-item:nth-child(n+5):not(.is-selected){
-display:none;
-}
-
-.filter-list.is-expanded{
-max-height:260px !important;
-overflow-y:auto !important;
-overflow-x:hidden;
-}
-
-.filter-expand-button{
-width:100%;
-min-height:24px;
-margin-top:4px;
-padding:2px 6px;
-border:1px solid rgba(148,163,184,.55);
-border-radius:5px;
-background:rgba(255,255,255,.18);
-color:#334155;
-font:inherit;
-font-size:12px;
-font-weight:700;
-cursor:pointer;
-}
-
-.filter-expand-button:hover{
-background:rgba(255,255,255,.5);
-}
-
-.filter-section[hidden]{
-display:none;
-}
-
-@media (max-width: 768px){
-#mapTitle.is-brand-title{
-padding-right:40px;
-}
-
-#mapTitle.is-brand-title .map-title-main{
-font-size:10px;
-}
-
-.filter-list.is-expanded{
-max-height:32vh !important;
-}
-
-#previewEnvBadge{
-top:12px;
-right:12px;
-font-size:11px;
-padding:8px 12px;
-}
-}
-
 </style>
 </head>
 
 <body>
-<div id="previewEnvBadge">
-PREVIEW ENVIRONMENT
-</div>
-
 
 <div
 id="photoModal"
@@ -1381,34 +1218,56 @@ VPLINK NETWORK MAP
 </div>
 
 
+<div id="stateFilterContainer">
 
-<div id="filterSections" class="filter-sections" aria-label="Map filters">
-<section id="stateFilterContainer" class="filter-section" data-filter-section="states" aria-labelledby="stateFilterHeading">
-<div class="filter-section-header">
-<div id="stateFilterHeading" class="filter-section-title">States<span id="stateSelectionSummary" class="selection-summary"></span></div>
-<button id="clearStateFilter" type="button">Clear</button>
-</div>
-<div id="stateFilter" class="filter-list is-compact"></div>
-<button id="toggleStateFilter" class="filter-expand-button" type="button" hidden>Show all</button>
-</section>
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+">
 
-<section id="categoryFilterContainer" class="filter-section" data-filter-section="categories" aria-labelledby="categoryFilterHeading">
-<div class="filter-section-header">
-<div id="categoryFilterHeading" class="filter-section-title">Categories<span id="categorySelectionSummary" class="selection-summary"></span></div>
-<button id="clearCategoryFilter" type="button">Clear</button>
+<div class="filter-title">
+States
 </div>
-<div id="categoryFilter" class="filter-list is-compact"></div>
-<button id="toggleCategoryFilter" class="filter-expand-button" type="button" hidden>Show all</button>
-</section>
 
-<section id="brandFilterContainer" class="filter-section" data-filter-section="brands" aria-labelledby="brandFilterHeading">
-<div class="filter-section-header">
-<div id="brandFilterHeading" class="filter-section-title">Brand<span id="brandSelectionSummary" class="selection-summary"></span></div>
-<button id="clearBrandFilter" type="button">All</button>
+<button id="clearStateFilter">
+Clear
+</button>
+
 </div>
-<div id="brandFilter" class="filter-list is-compact"></div>
-<button id="toggleBrandFilter" class="filter-expand-button" type="button" hidden>Show all</button>
-</section>
+
+<div id="stateFilter">
+</div>
+
+</div>
+
+
+<div id="categoryFilterContainer"
+style="margin-top:12px;">
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+">
+
+<div class="filter-title">
+Categories
+</div>
+
+<button id="clearCategoryFilter">
+Clear
+</button>
+
+</div>
+
+<div id="categoryFilter">
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -1464,23 +1323,6 @@ VPLINK NETWORK MAP
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
-
-var BRAND_CONFIG = [{"slug": "geekbar", "label": "Geekbar", "column": "Geekbar"}, {"slug": "dojo", "label": "Dojo", "column": "Dojo"}];
-
-function resolveMapView(){
-var segments = window.location.pathname.split('/').filter(Boolean);
-var lastSegment = segments.length ? segments[segments.length - 1] : '';
-if(lastSegment === 'network-overview'){
-return {mode:'overview',brand:null};
-}
-var brand = BRAND_CONFIG.find(function(candidate){ return candidate.slug === lastSegment; });
-if(brand){
-return {mode:'brand',brand:brand};
-}
-return {mode:'neutral',brand:null};
-}
-
-var mapView = resolveMapView();
 
 var map = L.map('map', {
     zoomControl:false
@@ -2109,7 +1951,7 @@ popupAnchor:[0,-25]
 
 
 Papa.parse(
-'/preview/data/locations.csv?v=' + Date.now(),
+'VPL门店地图信息.csv?v=' + Date.now(),
 {
 
     download: true,
@@ -2309,298 +2151,298 @@ window.renderMarkers(
 allMarkers
 );
 
+function applyFilters(){
 
-var FILTER_GROUPS = [
-{key:'states',inputClass:'stateCheckbox',rowClass:'state-item',containerId:'stateFilter',sectionId:'stateFilterContainer',summaryId:'stateSelectionSummary',toggleId:'toggleStateFilter'},
-{key:'categories',inputClass:'categoryCheckbox',rowClass:'category-item',containerId:'categoryFilter',sectionId:'categoryFilterContainer',summaryId:'categorySelectionSummary',toggleId:'toggleCategoryFilter'},
-{key:'brands',inputClass:'brandCheckbox',rowClass:'brand-item',containerId:'brandFilter',sectionId:'brandFilterContainer',summaryId:'brandSelectionSummary',toggleId:'toggleBrandFilter'}
-];
+var selectedStates = [];
 
-var expandedFilterSection = null;
+document
+.querySelectorAll(
+'.stateCheckbox:checked'
+)
+.forEach(function(cb){
 
-function applyViewTitle(){
-if(mapView.mode !== 'brand' || !mapView.brand){
-return;
-}
-
-var brandName = mapView.brand.label.toUpperCase();
-var panelTitle = document.getElementById('mapTitle');
-var floatingTitle = 'VPLINK × ' + brandName + ' NETWORK MAP';
-var panelMain = document.createElement('span');
-var panelSubtitle = document.createElement('span');
-
-panelMain.className = 'map-title-main';
-panelMain.textContent = 'VPLINK × ' + brandName;
-panelSubtitle.className = 'map-title-subtitle';
-panelSubtitle.textContent = 'NETWORK MAP';
-panelTitle.textContent = '';
-panelTitle.appendChild(panelMain);
-panelTitle.appendChild(panelSubtitle);
-panelTitle.classList.add('is-brand-title');
-
-document.title = 'VPLINK × ' + mapView.brand.label + ' Network Map';
-document.getElementById('mapFloatingTitle').setAttribute('aria-label',floatingTitle);
-document.getElementById('mapFloatingTitle').classList.add('is-brand-title');
-document.getElementById('mapFloatingTitleTextBase').textContent = floatingTitle;
-document.getElementById('mapFloatingTitleTextShine').textContent = floatingTitle;
-document.getElementById('mapFloatingTitleFallback').textContent = floatingTitle;
-document.getElementById('clearBrandFilter').hidden = true;
-}
-
-function getSelectedValues(selector){
-return Array.prototype.map.call(
-document.querySelectorAll(selector + ':checked'),
-function(cb){ return cb.value; }
+selectedStates.push(
+cb.value
 );
-}
 
-function getSelectedBrands(){
-return getSelectedValues('.brandCheckbox');
-}
-
-function getFilterSelections(){
-return {
-states:getSelectedValues('.stateCheckbox'),
-categories:getSelectedValues('.categoryCheckbox'),
-brands:getSelectedBrands()
-};
-}
-
-function sortFilterItems(items,selectedValues){
-return items.slice().sort(function(a,b){
-var selectedDifference = Number(selectedValues.includes(b.value)) - Number(selectedValues.includes(a.value));
-return selectedDifference || a.label.localeCompare(b.label);
 });
-}
 
-function getStateFilterItems(){
-return Object.keys(stateCount).map(function(state){
-return {value:state,label:state,count:stateCount[state]};
+var selectedCategories = [];
+
+document
+.querySelectorAll(
+'.categoryCheckbox:checked'
+)
+.forEach(function(cb){
+
+selectedCategories.push(
+cb.value
+);
+
 });
+
+var filteredMarkers = [];
+
+markerCluster.clearLayers();
+
+normalMarkerLayer.clearLayers();
+
+allMarkers.forEach(function(item){
+
+var state =
+stateNameMap[item.store.State];
+
+var category =
+item.store.StoreType;
+
+var stateMatch =
+selectedStates.length === 0 ||
+selectedStates.includes(state);
+
+var categoryMatch =
+selectedCategories.length === 0 ||
+selectedCategories.includes(category);
+
+if(
+stateMatch &&
+categoryMatch
+){
+
+filteredMarkers.push(
+item
+);
+
 }
 
-function getCategoryFilterItems(){
-return Object.keys(categoryCount).map(function(category){
-return {value:category,label:category,count:categoryCount[category]};
 });
+
+window.renderMarkers(
+filteredMarkers
+);
+
+updateStats(
+filteredMarkers
+);
+
 }
 
-function renderBrandFilter(){
-if(mapView.mode === 'neutral'){
-return [];
-}
-var visibleBrands = mapView.mode === 'brand' ? [mapView.brand] : BRAND_CONFIG;
-return visibleBrands.filter(Boolean).map(function(brand){
-return {
-value:brand.slug,
-label:brand.label,
-count:allMarkers.filter(function(item){ return item.store[brand.column] === '1'; }).length
-};
+document
+.getElementById(
+'clearStateFilter'
+)
+.addEventListener(
+'click',
+function(){
+
+document
+.querySelectorAll(
+'.stateCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
 });
-}
 
-function filterItemsForGroup(group){
-if(group.key === 'states'){
-return getStateFilterItems();
-}
-if(group.key === 'categories'){
-return getCategoryFilterItems();
-}
-return renderBrandFilter();
-}
+applyFilters();
 
-function updateFilterSection(group,selectedValues){
-var container = document.getElementById(group.containerId);
-var summary = document.getElementById(group.summaryId);
-var toggle = document.getElementById(group.toggleId);
-var total = container.querySelectorAll('.filter-item').length;
-var expanded = expandedFilterSection === group.key;
-var isClientBrand = group.key === 'brands' && mapView.mode === 'brand';
+});
 
-summary.hidden = isClientBrand;
-summary.textContent = isClientBrand ? '' : (selectedValues.length ? ' · ' + selectedValues.length + ' selected' : '');
-toggle.hidden = total <= 4;
-toggle.textContent = expanded ? 'Show less' : 'Show all';
-container.classList.toggle('is-compact',!expanded);
-container.classList.toggle('is-expanded',expanded);
-}
+document
+.getElementById(
+'clearCategoryFilter'
+)
+.addEventListener(
+'click',
+function(){
 
-function updateFilterSectionPresentation(selections){
-FILTER_GROUPS.forEach(function(group){
-var section = document.getElementById(group.sectionId);
-if(group.key === 'brands' && mapView.mode === 'neutral'){
-section.hidden = true;
+document
+.querySelectorAll(
+'.categoryCheckbox'
+)
+.forEach(function(cb){
+
+cb.checked = false;
+
+});
+
+applyFilters();
+
+});
+
+document.addEventListener(
+'change',
+function(e){
+
+if(
+!e.target.classList.contains(
+'stateCheckbox'
+)
+&&
+!e.target.classList.contains(
+'categoryCheckbox'
+)
+){
 return;
 }
-section.hidden = false;
-updateFilterSection(group,selections[group.key]);
-});
-}
 
-function renderFilterSection(group,items,selectedValues){
-var container = document.getElementById(group.containerId);
-container.innerHTML = '';
-sortFilterItems(items,selectedValues).forEach(function(item){
-var selected = selectedValues.includes(item.value);
-var row = document.createElement('div');
-row.className = group.rowClass + ' filter-item' + (selected ? ' is-selected' : '');
-row.innerHTML =
-'<label class="filter-chip filter-option" tabindex="0" role="checkbox" aria-checked="' + selected + '">' +
-'<input type="checkbox" class="' + group.inputClass + '" value="' + item.value + '">' +
-'<span class="chip-name">' + item.label + '</span>' +
-'<span class="chip-count">' + item.count + '</span>' +
+applyFilters();
+
+});
+
+
+// State Filter
+
+Object.keys(stateCount)
+.sort()
+.forEach(function(state){
+
+    var row =
+    document.createElement('div');
+
+    row.className = 'state-item';
+
+    row.innerHTML =
+
+'<label class="filter-chip">' +
+
+'<input type="checkbox" ' +
+'class="stateCheckbox" ' +
+'value="' + state + '">' +
+
+'<span class="chip-name">' +
+state +
+'</span>' +
+
+'<span class="chip-count">' +
+stateCount[state] +
+'</span>' +
+
 '</label>';
-row.querySelector('input').checked = selected;
-container.appendChild(row);
+
+    document
+    .getElementById('stateFilter')
+    .appendChild(row);
+
 });
-}
 
-function restoreFilterFocus(focusTarget){
-if(!focusTarget){
-return;
-}
-var target;
-if(focusTarget.controlId){
-target = document.getElementById(focusTarget.controlId);
-}else if(focusTarget.inputClass){
-var input = document.querySelector('.' + focusTarget.inputClass + '[value="' + focusTarget.value + '"]');
-target = input && input.closest('.filter-option');
-}
-if(target){
-target.focus();
-}
-}
 
-function renderFilterSections(selections,focusTarget){
-FILTER_GROUPS.forEach(function(group){
-renderFilterSection(group,filterItemsForGroup(group),selections[group.key]);
-});
-updateFilterSectionPresentation(selections);
-restoreFilterFocus(focusTarget);
-}
+document.getElementById(
+'storeCount'
+).innerHTML =
+allMarkers.length;
 
-function ensureAutoExpansion(selections,preferredGroup){
-if(preferredGroup && selections[preferredGroup].length > 4){
-expandedFilterSection = preferredGroup;
-return;
-}
-if(expandedFilterSection){
-return;
-}
-var group = FILTER_GROUPS.find(function(candidate){
-return (candidate.key !== 'brands' || mapView.mode !== 'neutral') && selections[candidate.key].length > 4;
-});
-if(group){
-expandedFilterSection = group.key;
-}
-}
+document.getElementById(
+'stateCountDisplay'
+).innerHTML =
+Object.keys(stateCount).length;
 
-function toggleFilterExpansion(groupKey){
-expandedFilterSection = expandedFilterSection === groupKey ? null : groupKey;
-updateFilterSectionPresentation(getFilterSelections());
-document.getElementById(FILTER_GROUPS.find(function(group){ return group.key === groupKey; }).toggleId).focus();
-}
+document.getElementById(
+'categoryCountDisplay'
+).innerHTML =
+Object.keys(categoryCount).length;
 
 function updateStats(filteredMarkers){
+
 var states = [];
 var categories = [];
 
 filteredMarkers.forEach(function(item){
-var state = stateNameMap[item.store.State];
-var category = item.store.StoreType;
 
-if(state && !states.includes(state)){
+var state =
+stateNameMap[item.store.State];
+
+var category =
+item.store.StoreType;
+
+if(
+state &&
+!states.includes(state)
+){
 states.push(state);
 }
 
-if(category && !categories.includes(category)){
+if(
+category &&
+!categories.includes(category)
+){
 categories.push(category);
 }
+
 });
 
-document.getElementById('storeCount').innerHTML = filteredMarkers.length;
-document.getElementById('counterLocations').innerHTML = filteredMarkers.length + ' Locations';
-document.getElementById('counterStates').innerHTML = states.length + ' States';
-document.getElementById('counterCategories').innerHTML = categories.length + ' Categories';
-document.getElementById('stateCountDisplay').innerHTML = states.length;
-document.getElementById('categoryCountDisplay').innerHTML = categories.length;
+document.getElementById(
+'storeCount'
+).innerHTML =
+filteredMarkers.length;
+
+document.getElementById(
+'counterLocations'
+).innerHTML =
+filteredMarkers.length +
+' Locations';
+
+document.getElementById(
+'counterStates'
+).innerHTML =
+states.length +
+' States';
+
+document.getElementById(
+'counterCategories'
+).innerHTML =
+categories.length +
+' Categories';
+
+document.getElementById(
+'stateCountDisplay'
+).innerHTML =
+states.length;
+
+document.getElementById(
+'categoryCountDisplay'
+).innerHTML =
+categories.length;
+
 }
 
-function applyFilters(focusTarget){
-var selections = getFilterSelections();
-ensureAutoExpansion(selections,focusTarget && focusTarget.group);
+// Category Filter
 
-var filteredMarkers = allMarkers.filter(function(item){
-var state = stateNameMap[item.store.State];
-var category = item.store.StoreType;
-var stateMatch = selections.states.length === 0 || selections.states.includes(state);
-var categoryMatch = selections.categories.length === 0 || selections.categories.includes(category);
-var brandMatch = selections.brands.length === 0 || selections.brands.some(function(slug){
-var brand = BRAND_CONFIG.find(function(candidate){ return candidate.slug === slug; });
-return brand && item.store[brand.column] === '1';
-});
-return stateMatch && categoryMatch && brandMatch;
-});
+Object.keys(categoryCount)
+.sort()
+.forEach(function(category){
 
-window.renderMarkers(filteredMarkers);
-updateStats(filteredMarkers);
-renderFilterSections(selections,focusTarget);
-}
+    var row =
+    document.createElement('div');
 
-function clearFilter(groupKey,controlId){
-var group = FILTER_GROUPS.find(function(candidate){ return candidate.key === groupKey; });
-document.querySelectorAll('.' + group.inputClass).forEach(function(cb){ cb.checked = false; });
-applyFilters({group:groupKey,controlId:controlId});
-}
+    row.className = 'category-item';
 
-document.getElementById('clearStateFilter').addEventListener('click',function(){
-clearFilter('states','clearStateFilter');
-});
+    row.innerHTML =
 
-document.getElementById('clearCategoryFilter').addEventListener('click',function(){
-clearFilter('categories','clearCategoryFilter');
-});
+'<label class="filter-chip">' +
 
-document.getElementById('clearBrandFilter').addEventListener('click',function(){
-clearFilter('brands','clearBrandFilter');
+'<input type="checkbox" ' +
+'class="categoryCheckbox" ' +
+'value="' + category + '">' +
+
+'<span class="chip-name">' +
+category +
+'</span>' +
+
+'<span class="chip-count">' +
+categoryCount[category] +
+'</span>' +
+
+'</label>';
+
+    document
+    .getElementById('categoryFilter')
+    .appendChild(row);
+
 });
 
-document.getElementById('filterSections').addEventListener('click',function(e){
-var toggle = e.target.closest('.filter-expand-button');
-if(!toggle || toggle.hidden){
-return;
-}
-var section = toggle.closest('[data-filter-section]');
-toggleFilterExpansion(section.dataset.filterSection);
-});
 
-document.addEventListener('change',function(e){
-var group = FILTER_GROUPS.find(function(candidate){
-return e.target.classList.contains(candidate.inputClass);
-});
-if(group){
-applyFilters({group:group.key,inputClass:group.inputClass,value:e.target.value});
-}
-});
-
-document.addEventListener('keydown',function(e){
-if((e.key === ' ' || e.key === 'Enter') && e.target.classList.contains('filter-option')){
-e.preventDefault();
-e.target.querySelector('input').click();
-}
-});
-
-applyViewTitle();
-
-var initialSelections = {
-states:[],
-categories:[],
-brands:mapView.mode === 'brand' && mapView.brand ? [mapView.brand.slug] : []
-};
-renderFilterSections(initialSelections,null);
-applyFilters();
-
-fetch('/Germany_border_sehr_hoch.geo.json')
+fetch('Germany_border_sehr_hoch.geo.json')
 .then(response => response.json())
 .then(data => {
 
@@ -2646,7 +2488,7 @@ fetch('/Germany_border_sehr_hoch.geo.json')
 
 });
 
-fetch('/2_hoch.geo_1.4M.json')
+fetch('2_hoch.geo_1.4M.json')
 .then(response => response.json())
 .then(data => {
 
