@@ -1,0 +1,12 @@
+[
+  {
+    "slug": "geekbar",
+    "label": "Geekbar",
+    "column": "Geekbar"
+  },
+  {
+    "slug": "dojo",
+    "label": "Dojo",
+    "column": "Dojo"
+  }
+]
