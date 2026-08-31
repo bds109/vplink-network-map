@@ -34,28 +34,76 @@ box-shadow:0 10px 30px rgba(249,115,22,.35);
 pointer-events:none;
 }
 
-.filter-tabs{
-display:grid;
-grid-template-columns:repeat(3,minmax(0,1fr));
-gap:4px;
+.filter-sections{
+display:flex;
+flex-direction:column;
+gap:8px;
 width:100%;
 box-sizing:border-box;
 }
 
-.filter-tabs.is-two-tabs{
-grid-template-columns:repeat(2,minmax(0,1fr));
+.filter-section{
+width:100%;
+box-sizing:border-box;
+padding-top:8px;
+border-top:1px solid rgba(255,255,255,.35);
 }
 
-.filter-tab{
+.filter-section:first-child{
+padding-top:0;
+border-top:none;
+}
+
+.filter-section-header{
 display:flex;
 align-items:center;
-justify-content:center;
-gap:4px;
+justify-content:space-between;
+gap:6px;
 min-width:0;
-height:30px;
-padding:0 4px;
-border:1px solid rgba(255,255,255,.45);
-border-radius:6px;
+margin-bottom:5px;
+}
+
+.filter-section-title{
+min-width:0;
+font-size:14px;
+font-weight:700;
+color:#0F172A;
+white-space:nowrap;
+}
+
+.selection-summary{
+font-size:11px;
+font-weight:600;
+color:#475569;
+}
+
+#stateFilter,
+#categoryFilter,
+#brandFilter{
+width:100%;
+max-width:100%;
+max-height:none;
+box-sizing:border-box;
+overflow:hidden;
+}
+
+.filter-list.is-compact .filter-item:nth-child(n+5):not(.is-selected){
+display:none;
+}
+
+.filter-list.is-expanded{
+max-height:260px !important;
+overflow-y:auto !important;
+overflow-x:hidden;
+}
+
+.filter-expand-button{
+width:100%;
+min-height:24px;
+margin-top:4px;
+padding:2px 6px;
+border:1px solid rgba(148,163,184,.55);
+border-radius:5px;
 background:rgba(255,255,255,.18);
 color:#334155;
 font:inherit;
@@ -64,61 +112,17 @@ font-weight:700;
 cursor:pointer;
 }
 
-.filter-tab[aria-selected="true"]{
-background:#2563EB;
-border-color:#2563EB;
-color:#ffffff;
+.filter-expand-button:hover{
+background:rgba(255,255,255,.5);
 }
 
-.tab-selection-count{
-display:flex;
-align-items:center;
-justify-content:center;
-width:16px;
-height:16px;
-flex:0 0 16px;
-border-radius:50%;
-background:#E2E8F0;
-color:#334155;
-font-size:10px;
-line-height:1;
-}
-
-.filter-tab[aria-selected="true"] .tab-selection-count{
-background:#ffffff;
-color:#2563EB;
-}
-
-.filter-section{
-display:none;
-}
-
-.filter-section.is-active{
-display:block;
-}
-
-#stateFilter,
-#categoryFilter,
-#brandFilter{
-width:100%;
-max-width:100%;
-max-height:260px;
-box-sizing:border-box;
-overflow-y:auto;
-overflow-x:hidden;
-}
-
-#brandFilterContainer[hidden],
-.filter-tab[hidden]{
+.filter-section[hidden]{
 display:none;
 }
 
 @media (max-width: 768px){
-#stateFilter,
-#categoryFilter,
-#brandFilter{
-width:100%;
-max-height:28vh;
+.filter-list.is-expanded{
+max-height:32vh !important;
 }
 
 #previewEnvBadge{
@@ -131,37 +135,44 @@ padding:8px 12px;
 """
 
 FILTER_MARKUP = """
-<div id="filterTabs" class="filter-tabs" role="tablist" aria-label="Map filters">
-<button type="button" class="filter-tab" role="tab" id="stateFilterTab" aria-selected="true" aria-controls="stateFilterContainer" data-filter-tab="states">States <span class="tab-selection-count">0</span></button>
-<button type="button" class="filter-tab" role="tab" id="categoryFilterTab" aria-selected="false" aria-controls="categoryFilterContainer" data-filter-tab="categories">Categories <span class="tab-selection-count">0</span></button>
-<button type="button" class="filter-tab" role="tab" id="brandFilterTab" aria-selected="false" aria-controls="brandFilterContainer" data-filter-tab="brand">Brand <span class="tab-selection-count">0</span></button>
-</div>
-
-<div id="stateFilterContainer" class="filter-section" role="tabpanel" aria-labelledby="stateFilterTab">
-<div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0;">
-<div class="filter-title">States</div>
+<div id="filterSections" class="filter-sections" aria-label="Map filters">
+<section id="stateFilterContainer" class="filter-section" data-filter-section="states" aria-labelledby="stateFilterHeading">
+<div class="filter-section-header">
+<div id="stateFilterHeading" class="filter-section-title">States<span id="stateSelectionSummary" class="selection-summary"></span></div>
 <button id="clearStateFilter" type="button">Clear</button>
 </div>
-<div id="stateFilter"></div>
-</div>
+<div id="stateFilter" class="filter-list is-compact"></div>
+<button id="toggleStateFilter" class="filter-expand-button" type="button" hidden>Show all</button>
+</section>
 
-<div id="categoryFilterContainer" class="filter-section" role="tabpanel" aria-labelledby="categoryFilterTab">
-<div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0;">
-<div class="filter-title">Categories</div>
+<section id="categoryFilterContainer" class="filter-section" data-filter-section="categories" aria-labelledby="categoryFilterHeading">
+<div class="filter-section-header">
+<div id="categoryFilterHeading" class="filter-section-title">Categories<span id="categorySelectionSummary" class="selection-summary"></span></div>
 <button id="clearCategoryFilter" type="button">Clear</button>
 </div>
-<div id="categoryFilter"></div>
-</div>
+<div id="categoryFilter" class="filter-list is-compact"></div>
+<button id="toggleCategoryFilter" class="filter-expand-button" type="button" hidden>Show all</button>
+</section>
 
-<div id="brandFilterContainer" class="filter-section" role="tabpanel" aria-labelledby="brandFilterTab">
-<div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0;">
-<div class="filter-title">Brand</div>
+<section id="brandFilterContainer" class="filter-section" data-filter-section="brands" aria-labelledby="brandFilterHeading">
+<div class="filter-section-header">
+<div id="brandFilterHeading" class="filter-section-title">Brand<span id="brandSelectionSummary" class="selection-summary"></span></div>
 <button id="clearBrandFilter" type="button">All</button>
 </div>
-<div id="brandFilter"></div>
+<div id="brandFilter" class="filter-list is-compact"></div>
+<button id="toggleBrandFilter" class="filter-expand-button" type="button" hidden>Show all</button>
+</section>
 </div>"""
 
 FILTER_LOGIC = """
+var FILTER_GROUPS = [
+{key:'states',inputClass:'stateCheckbox',rowClass:'state-item',containerId:'stateFilter',sectionId:'stateFilterContainer',summaryId:'stateSelectionSummary',toggleId:'toggleStateFilter'},
+{key:'categories',inputClass:'categoryCheckbox',rowClass:'category-item',containerId:'categoryFilter',sectionId:'categoryFilterContainer',summaryId:'categorySelectionSummary',toggleId:'toggleCategoryFilter'},
+{key:'brands',inputClass:'brandCheckbox',rowClass:'brand-item',containerId:'brandFilter',sectionId:'brandFilterContainer',summaryId:'brandSelectionSummary',toggleId:'toggleBrandFilter'}
+];
+
+var expandedFilterSection = null;
+
 function getSelectedValues(selector){
 return Array.prototype.map.call(
 document.querySelectorAll(selector + ':checked'),
@@ -173,114 +184,145 @@ function getSelectedBrands(){
 return getSelectedValues('.brandCheckbox');
 }
 
-function setFilterTabBadge(tabName,count){
-var tab = document.querySelector('[data-filter-tab="' + tabName + '"]');
-if(tab){
-tab.querySelector('.tab-selection-count').textContent = count;
-}
-}
-
-function updateFilterTabBadges(){
-setFilterTabBadge('states',getSelectedValues('.stateCheckbox').length);
-setFilterTabBadge('categories',getSelectedValues('.categoryCheckbox').length);
-setFilterTabBadge('brand',getSelectedBrands().length);
+function getFilterSelections(){
+return {
+states:getSelectedValues('.stateCheckbox'),
+categories:getSelectedValues('.categoryCheckbox'),
+brands:getSelectedBrands()
+};
 }
 
-function setActiveFilterTab(tabName,moveFocus){
-var tabs = Array.prototype.filter.call(
-document.querySelectorAll('[data-filter-tab]'),
-function(tab){ return !tab.hidden; }
-);
-
-tabs.forEach(function(tab){
-var isActive = tab.dataset.filterTab === tabName;
-tab.setAttribute('aria-selected',isActive ? 'true' : 'false');
-var section = document.getElementById(tab.getAttribute('aria-controls'));
-if(section){
-section.classList.toggle('is-active',isActive);
-}
-if(isActive && moveFocus){
-tab.focus();
-}
+function sortFilterItems(items,selectedValues){
+return items.slice().sort(function(a,b){
+var selectedDifference = Number(selectedValues.includes(b.value)) - Number(selectedValues.includes(a.value));
+return selectedDifference || a.label.localeCompare(b.label);
 });
 }
 
-function renderFilterTabs(){
-var isNeutral = mapView.mode === 'neutral';
-var tabs = document.getElementById('filterTabs');
-var brandTab = document.getElementById('brandFilterTab');
-var brandContainer = document.getElementById('brandFilterContainer');
-
-brandTab.hidden = isNeutral;
-brandContainer.hidden = isNeutral;
-tabs.classList.toggle('is-two-tabs',isNeutral);
-setActiveFilterTab(isNeutral ? 'states' : 'brand',false);
-}
-
-function renderStateFilter(){
-var container = document.getElementById('stateFilter');
-container.innerHTML = '';
-Object.keys(stateCount).sort().forEach(function(state){
-var row = document.createElement('div');
-row.className = 'state-item';
-row.innerHTML =
-'<label class="filter-chip">' +
-'<input type="checkbox" class="stateCheckbox" value="' + state + '">' +
-'<span class="chip-name">' + state + '</span>' +
-'<span class="chip-count">' + stateCount[state] + '</span>' +
-'</label>';
-container.appendChild(row);
+function getStateFilterItems(){
+return Object.keys(stateCount).map(function(state){
+return {value:state,label:state,count:stateCount[state]};
 });
 }
 
-function renderCategoryFilter(){
-var container = document.getElementById('categoryFilter');
-container.innerHTML = '';
-Object.keys(categoryCount).sort().forEach(function(category){
-var row = document.createElement('div');
-row.className = 'category-item';
-row.innerHTML =
-'<label class="filter-chip">' +
-'<input type="checkbox" class="categoryCheckbox" value="' + category + '">' +
-'<span class="chip-name">' + category + '</span>' +
-'<span class="chip-count">' + categoryCount[category] + '</span>' +
-'</label>';
-container.appendChild(row);
+function getCategoryFilterItems(){
+return Object.keys(categoryCount).map(function(category){
+return {value:category,label:category,count:categoryCount[category]};
 });
 }
 
 function renderBrandFilter(){
-var container = document.getElementById('brandFilter');
-container.innerHTML = '';
 if(mapView.mode === 'neutral'){
-return;
+return [];
 }
 var visibleBrands = mapView.mode === 'brand' ? [mapView.brand] : BRAND_CONFIG;
+return visibleBrands.filter(Boolean).map(function(brand){
+return {
+value:brand.slug,
+label:brand.label,
+count:allMarkers.filter(function(item){ return item.store[brand.column] === '1'; }).length
+};
+});
+}
 
-visibleBrands.forEach(function(brand){
-if(!brand){
+function filterItemsForGroup(group){
+if(group.key === 'states'){
+return getStateFilterItems();
+}
+if(group.key === 'categories'){
+return getCategoryFilterItems();
+}
+return renderBrandFilter();
+}
+
+function updateFilterSection(group,selectedValues){
+var container = document.getElementById(group.containerId);
+var summary = document.getElementById(group.summaryId);
+var toggle = document.getElementById(group.toggleId);
+var total = container.querySelectorAll('.filter-item').length;
+var expanded = expandedFilterSection === group.key;
+
+summary.textContent = selectedValues.length ? ' · ' + selectedValues.length + ' selected' : '';
+toggle.hidden = total <= 4;
+toggle.textContent = expanded ? 'Show less' : 'Show all';
+container.classList.toggle('is-compact',!expanded);
+container.classList.toggle('is-expanded',expanded);
+}
+
+function updateFilterSectionPresentation(selections){
+FILTER_GROUPS.forEach(function(group){
+var section = document.getElementById(group.sectionId);
+if(group.key === 'brands' && mapView.mode === 'neutral'){
+section.hidden = true;
 return;
 }
-var count = allMarkers.filter(function(item){
-return item.store[brand.column] === '1';
-}).length;
+section.hidden = false;
+updateFilterSection(group,selections[group.key]);
+});
+}
+
+function renderFilterSection(group,items,selectedValues){
+var container = document.getElementById(group.containerId);
+container.innerHTML = '';
+sortFilterItems(items,selectedValues).forEach(function(item){
+var selected = selectedValues.includes(item.value);
 var row = document.createElement('div');
-row.className = 'brand-item';
+row.className = group.rowClass + ' filter-item' + (selected ? ' is-selected' : '');
 row.innerHTML =
-'<label class="filter-chip">' +
-'<input type="checkbox" class="brandCheckbox" value="' + brand.slug + '">' +
-'<span class="chip-name">' + brand.label + '</span>' +
-'<span class="chip-count">' + count + '</span>' +
+'<label class="filter-chip filter-option" tabindex="0" role="checkbox" aria-checked="' + selected + '">' +
+'<input type="checkbox" class="' + group.inputClass + '" value="' + item.value + '">' +
+'<span class="chip-name">' + item.label + '</span>' +
+'<span class="chip-count">' + item.count + '</span>' +
 '</label>';
+row.querySelector('input').checked = selected;
 container.appendChild(row);
 });
+}
 
-if(mapView.mode === 'brand' && mapView.brand){
-var defaultBrand = container.querySelector('.brandCheckbox');
-if(defaultBrand){
-defaultBrand.checked = true;
+function restoreFilterFocus(focusTarget){
+if(!focusTarget){
+return;
+}
+var target;
+if(focusTarget.controlId){
+target = document.getElementById(focusTarget.controlId);
+}else if(focusTarget.inputClass){
+var input = document.querySelector('.' + focusTarget.inputClass + '[value="' + focusTarget.value + '"]');
+target = input && input.closest('.filter-option');
+}
+if(target){
+target.focus();
 }
 }
+
+function renderFilterSections(selections,focusTarget){
+FILTER_GROUPS.forEach(function(group){
+renderFilterSection(group,filterItemsForGroup(group),selections[group.key]);
+});
+updateFilterSectionPresentation(selections);
+restoreFilterFocus(focusTarget);
+}
+
+function ensureAutoExpansion(selections,preferredGroup){
+if(preferredGroup && selections[preferredGroup].length > 4){
+expandedFilterSection = preferredGroup;
+return;
+}
+if(expandedFilterSection){
+return;
+}
+var group = FILTER_GROUPS.find(function(candidate){
+return (candidate.key !== 'brands' || mapView.mode !== 'neutral') && selections[candidate.key].length > 4;
+});
+if(group){
+expandedFilterSection = group.key;
+}
+}
+
+function toggleFilterExpansion(groupKey){
+expandedFilterSection = expandedFilterSection === groupKey ? null : groupKey;
+updateFilterSectionPresentation(getFilterSelections());
+document.getElementById(FILTER_GROUPS.find(function(group){ return group.key === groupKey; }).toggleId).focus();
 }
 
 function updateStats(filteredMarkers){
@@ -308,17 +350,16 @@ document.getElementById('stateCountDisplay').innerHTML = states.length;
 document.getElementById('categoryCountDisplay').innerHTML = categories.length;
 }
 
-function applyFilters(){
-var selectedStates = getSelectedValues('.stateCheckbox');
-var selectedCategories = getSelectedValues('.categoryCheckbox');
-var selectedBrands = getSelectedBrands();
+function applyFilters(focusTarget){
+var selections = getFilterSelections();
+ensureAutoExpansion(selections,focusTarget && focusTarget.group);
 
 var filteredMarkers = allMarkers.filter(function(item){
 var state = stateNameMap[item.store.State];
 var category = item.store.StoreType;
-var stateMatch = selectedStates.length === 0 || selectedStates.includes(state);
-var categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(category);
-var brandMatch = selectedBrands.length === 0 || selectedBrands.some(function(slug){
+var stateMatch = selections.states.length === 0 || selections.states.includes(state);
+var categoryMatch = selections.categories.length === 0 || selections.categories.includes(category);
+var brandMatch = selections.brands.length === 0 || selections.brands.some(function(slug){
 var brand = BRAND_CONFIG.find(function(candidate){ return candidate.slug === slug; });
 return brand && item.store[brand.column] === '1';
 });
@@ -327,70 +368,58 @@ return stateMatch && categoryMatch && brandMatch;
 
 window.renderMarkers(filteredMarkers);
 updateStats(filteredMarkers);
-updateFilterTabBadges();
+renderFilterSections(selections,focusTarget);
 }
 
-function clearFilter(selector){
-document.querySelectorAll(selector).forEach(function(cb){ cb.checked = false; });
-applyFilters();
+function clearFilter(groupKey,controlId){
+var group = FILTER_GROUPS.find(function(candidate){ return candidate.key === groupKey; });
+document.querySelectorAll('.' + group.inputClass).forEach(function(cb){ cb.checked = false; });
+applyFilters({group:groupKey,controlId:controlId});
 }
 
 document.getElementById('clearStateFilter').addEventListener('click',function(){
-clearFilter('.stateCheckbox');
+clearFilter('states','clearStateFilter');
 });
 
 document.getElementById('clearCategoryFilter').addEventListener('click',function(){
-clearFilter('.categoryCheckbox');
+clearFilter('categories','clearCategoryFilter');
 });
 
 document.getElementById('clearBrandFilter').addEventListener('click',function(){
-clearFilter('.brandCheckbox');
+clearFilter('brands','clearBrandFilter');
+});
+
+document.getElementById('filterSections').addEventListener('click',function(e){
+var toggle = e.target.closest('.filter-expand-button');
+if(!toggle || toggle.hidden){
+return;
+}
+var section = toggle.closest('[data-filter-section]');
+toggleFilterExpansion(section.dataset.filterSection);
 });
 
 document.addEventListener('change',function(e){
-if(
-e.target.classList.contains('stateCheckbox') ||
-e.target.classList.contains('categoryCheckbox') ||
-e.target.classList.contains('brandCheckbox')
-){
-applyFilters();
+var group = FILTER_GROUPS.find(function(candidate){
+return e.target.classList.contains(candidate.inputClass);
+});
+if(group){
+applyFilters({group:group.key,inputClass:group.inputClass,value:e.target.value});
 }
 });
 
-document.getElementById('filterTabs').addEventListener('click',function(e){
-var tab = e.target.closest('[data-filter-tab]');
-if(tab && !tab.hidden){
-setActiveFilterTab(tab.dataset.filterTab,false);
-}
-});
-
-document.getElementById('filterTabs').addEventListener('keydown',function(e){
-if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){
-return;
-}
-var tabs = Array.prototype.filter.call(
-document.querySelectorAll('[data-filter-tab]'),
-function(tab){ return !tab.hidden; }
-);
-var index = tabs.indexOf(document.activeElement);
-if(index === -1){
-return;
-}
+document.addEventListener('keydown',function(e){
+if((e.key === ' ' || e.key === 'Enter') && e.target.classList.contains('filter-option')){
 e.preventDefault();
-if(e.key === 'Home'){
-index = 0;
-}else if(e.key === 'End'){
-index = tabs.length - 1;
-}else{
-index = (index + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+e.target.querySelector('input').click();
 }
-setActiveFilterTab(tabs[index].dataset.filterTab,true);
 });
 
-renderFilterTabs();
-renderStateFilter();
-renderCategoryFilter();
-renderBrandFilter();
+var initialSelections = {
+states:[],
+categories:[],
+brands:mapView.mode === 'brand' && mapView.brand ? [mapView.brand.slug] : []
+};
+renderFilterSections(initialSelections,null);
 applyFilters();
 """
 
