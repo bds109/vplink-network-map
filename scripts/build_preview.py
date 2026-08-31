@@ -34,6 +34,40 @@ box-shadow:0 10px 30px rgba(249,115,22,.35);
 pointer-events:none;
 }
 
+#mapTitle.is-brand-title{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:36px;
+padding-right:30px;
+line-height:1.1;
+white-space:nowrap;
+}
+
+#mapTitle.is-brand-title .map-title-main{
+font-size:12px;
+font-weight:900;
+letter-spacing:.5px;
+}
+
+#mapTitle.is-brand-title .map-title-subtitle{
+margin-top:2px;
+font-size:9px;
+font-weight:800;
+letter-spacing:1.2px;
+}
+
+#mapFloatingTitle.is-brand-title{
+width:min(780px,calc(100vw - 420px));
+}
+
+#mapFloatingTitle.is-brand-title #mapFloatingTitleText,
+#mapFloatingTitle.is-brand-title #mapFloatingTitleFallback{
+font-size:clamp(18px,1.8vw,36px);
+letter-spacing:.01em;
+}
+
 .filter-sections{
 display:flex;
 flex-direction:column;
@@ -121,6 +155,14 @@ display:none;
 }
 
 @media (max-width: 768px){
+#mapTitle.is-brand-title{
+padding-right:40px;
+}
+
+#mapTitle.is-brand-title .map-title-main{
+font-size:10px;
+}
+
 .filter-list.is-expanded{
 max-height:32vh !important;
 }
@@ -172,6 +214,35 @@ var FILTER_GROUPS = [
 ];
 
 var expandedFilterSection = null;
+
+function applyViewTitle(){
+if(mapView.mode !== 'brand' || !mapView.brand){
+return;
+}
+
+var brandName = mapView.brand.label.toUpperCase();
+var panelTitle = document.getElementById('mapTitle');
+var floatingTitle = 'VPLINK × ' + brandName + ' NETWORK MAP';
+var panelMain = document.createElement('span');
+var panelSubtitle = document.createElement('span');
+
+panelMain.className = 'map-title-main';
+panelMain.textContent = 'VPLINK × ' + brandName;
+panelSubtitle.className = 'map-title-subtitle';
+panelSubtitle.textContent = 'NETWORK MAP';
+panelTitle.textContent = '';
+panelTitle.appendChild(panelMain);
+panelTitle.appendChild(panelSubtitle);
+panelTitle.classList.add('is-brand-title');
+
+document.title = 'VPLINK × ' + mapView.brand.label + ' Network Map';
+document.getElementById('mapFloatingTitle').setAttribute('aria-label',floatingTitle);
+document.getElementById('mapFloatingTitle').classList.add('is-brand-title');
+document.getElementById('mapFloatingTitleTextBase').textContent = floatingTitle;
+document.getElementById('mapFloatingTitleTextShine').textContent = floatingTitle;
+document.getElementById('mapFloatingTitleFallback').textContent = floatingTitle;
+document.getElementById('clearBrandFilter').hidden = true;
+}
 
 function getSelectedValues(selector){
 return Array.prototype.map.call(
@@ -241,8 +312,10 @@ var summary = document.getElementById(group.summaryId);
 var toggle = document.getElementById(group.toggleId);
 var total = container.querySelectorAll('.filter-item').length;
 var expanded = expandedFilterSection === group.key;
+var isClientBrand = group.key === 'brands' && mapView.mode === 'brand';
 
-summary.textContent = selectedValues.length ? ' · ' + selectedValues.length + ' selected' : '';
+summary.hidden = isClientBrand;
+summary.textContent = isClientBrand ? '' : (selectedValues.length ? ' · ' + selectedValues.length + ' selected' : '');
 toggle.hidden = total <= 4;
 toggle.textContent = expanded ? 'Show less' : 'Show all';
 container.classList.toggle('is-compact',!expanded);
@@ -413,6 +486,8 @@ e.preventDefault();
 e.target.querySelector('input').click();
 }
 });
+
+applyViewTitle();
 
 var initialSelections = {
 states:[],
