@@ -18,10 +18,12 @@ PREVIEW ENVIRONMENT
 </div>
 """
 SEARCH_MARKUP = """<div id="searchControl">
+<button id="openSearchBtn" type="button" aria-controls="locationSearch" aria-expanded="false">Search</button>
 <label class="search-input-wrap" for="locationSearch">
 <span class="search-icon" aria-hidden="true">⌕</span>
 <input id="locationSearch" type="search" inputmode="search" autocomplete="off" placeholder="Search locations…" aria-label="Search locations" aria-controls="searchResults" aria-expanded="false">
 </label>
+<button id="closeSearchBtn" type="button" aria-label="Close search">×</button>
 <div id="showingCount" aria-live="polite">Showing 0 of 0 locations</div>
 <div id="searchResults" role="listbox" aria-label="Location search results" hidden></div>
 </div>
@@ -75,6 +77,11 @@ width:min(780px,calc(100vw - 420px));
 #mapFloatingTitle.is-brand-title #mapFloatingTitleFallback{
 font-size:clamp(18px,1.8vw,36px);
 letter-spacing:.01em;
+}
+
+#openSearchBtn,
+#closeSearchBtn{
+display:none;
 }
 
 #searchControl{
@@ -318,27 +325,92 @@ display:none;
 #searchControl{
 top:10px;
 left:10px;
-width:calc(100vw - 130px);
-min-width:180px;
+width:calc(100vw - 132px);
+min-width:0;
+height:38px;
+display:flex;
+align-items:center;
+gap:5px;
+}
+
+#openSearchBtn,
+#closeSearchBtn{
+display:block;
+flex:none;
+height:38px;
+padding:0 10px;
+border:1px solid rgba(255,255,255,.95);
+border-radius:10px;
+background:rgba(255,255,255,.86);
+color:#0F172A;
+font:inherit;
+font-size:13px;
+font-weight:700;
+box-shadow:0 8px 24px rgba(15,23,42,.10);
+cursor:pointer;
+}
+
+#searchControl .search-input-wrap,
+#searchControl #closeSearchBtn{
+display:none;
+}
+
+#searchControl.is-search-open{
+width:calc(100vw - 20px);
+}
+
+#searchControl.is-search-open + #openFilterBtn{
+visibility:hidden;
+}
+
+#searchControl.is-search-open #openSearchBtn,
+#searchControl.is-search-open #showingCount{
+display:none;
+}
+
+#searchControl.is-search-open .search-input-wrap{
+display:flex;
+flex:1;
+min-width:0;
+}
+
+#searchControl.is-search-open #closeSearchBtn{
+display:block;
+}
+
+#showingCount{
+min-width:0;
+margin:0;
+padding:2px 5px;
+white-space:nowrap;
+font-size:10px;
 }
 
 #searchResults{
+top:42px;
 max-height:32vh;
+}
+
+#locationCounter{
+top:58px;
+right:10px;
 }
 
 #filter-panel{
 display:none;
-top:124px;
+top:58px;
 left:10px;
 width:min(280px,calc(100vw - 20px));
-max-height:calc(100vh - 134px);
+max-height:calc(100vh - 68px);
 }
 
 #openFilterBtn{
 display:block;
-top:80px;
-left:10px;
-padding:8px 12px;
+top:10px;
+left:auto;
+right:10px;
+height:38px;
+padding:0 10px;
 }
 
 #clearAllFilters{
@@ -358,8 +430,9 @@ max-height:32vh !important;
 }
 
 #previewEnvBadge{
-top:80px;
+top:142px;
 right:10px;
+z-index:9998;
 font-size:10px;
 padding:7px 10px;
 }
@@ -646,8 +719,16 @@ document.getElementById('counterCategories').innerHTML = categories.length + ' C
 document.getElementById('stateCountDisplay').innerHTML = states.length;
 document.getElementById('categoryCountDisplay').innerHTML = categories.length;
 var scopeTotal = pageScopeMarkers && pageScopeMarkers.length ? pageScopeMarkers.length : filteredMarkers.length;
-document.getElementById('showingCount').textContent =
-'Showing ' + filteredMarkers.length + ' of ' + scopeTotal + ' locations';
+updateShowingCount(filteredMarkers.length,scopeTotal);
+}
+
+function updateShowingCount(shown,total){
+var count = document.getElementById('showingCount');
+count.textContent = isMobileFiltersLayout() ? 'Showing ' + shown + '/' + total :
+'Showing ' + shown + ' of ' + total + ' locations';
+count.setAttribute('aria-label','Showing ' + shown + ' of ' + total + ' locations');
+count.dataset.shown = shown;
+count.dataset.total = total;
 }
 
 function getActiveFilterDimensionCount(selections){
@@ -826,14 +907,9 @@ results.hidden = false;
 document.getElementById('locationSearch').setAttribute('aria-expanded','true');
 }
 
-function addRequiredFilterValue(selector,value){
+function replaceFilterDimension(selector,value){
 var checkbox = value && document.querySelector(selector + '[value="' + CSS.escape(value) + '"]');
-if(checkbox){
-checkbox.checked = true;
-return true;
-}
-document.querySelectorAll(selector).forEach(function(cb){ cb.checked = false; });
-return false;
+document.querySelectorAll(selector).forEach(function(cb){ cb.checked = cb === checkbox; });
 }
 
 function adjustFiltersForSearchTarget(item){
@@ -841,21 +917,22 @@ var selections = getFilterSelections();
 var state = stateNameMap[item.store.State];
 var category = item.store.StoreType;
 
-if(selections.states.length && !selections.states.includes(state)){
-addRequiredFilterValue('.stateCheckbox',state);
+if(selections.states.length && (selections.states.length !== 1 || selections.states[0] !== state)){
+replaceFilterDimension('.stateCheckbox',state);
 }
-if(selections.categories.length && !selections.categories.includes(category)){
-addRequiredFilterValue('.categoryCheckbox',category);
+if(selections.categories.length && (selections.categories.length !== 1 || selections.categories[0] !== category)){
+replaceFilterDimension('.categoryCheckbox',category);
 }
 if(mapView.mode === 'overview' && selections.brands.length){
 var targetBrands = BRAND_CONFIG.filter(function(brand){ return itemMatchesBrand(item,brand); });
 var selectedTargetBrand = targetBrands.some(function(brand){ return selections.brands.includes(brand.slug); });
-if(!selectedTargetBrand){
-if(targetBrands.length){
-addRequiredFilterValue('.brandCheckbox',targetBrands[0].slug);
-}else{
-document.querySelectorAll('.brandCheckbox').forEach(function(cb){ cb.checked = false; });
-}
+if(!selectedTargetBrand || selections.brands.some(function(slug){
+return !targetBrands.some(function(brand){ return brand.slug === slug; });
+})){
+var compatibleBrand = selections.brands.find(function(slug){
+return targetBrands.some(function(brand){ return brand.slug === slug; });
+});
+replaceFilterDimension('.brandCheckbox',compatibleBrand || (targetBrands.length ? targetBrands[0].slug : null));
 }
 }
 }
@@ -880,15 +957,40 @@ hideSearchResults();
 document.getElementById('locationSearch').blur();
 if(isMobileFiltersLayout()){
 setMobileFiltersOpen(false);
+setMobileSearchOpen(false);
 }
 if(filtered.includes(item)){
 focusSearchTarget(item);
 }
 }
 
+function setMobileSearchOpen(open){
+if(!isMobileFiltersLayout()){
+return;
+}
+var control = document.getElementById('searchControl');
+var input = document.getElementById('locationSearch');
+control.classList.toggle('is-search-open',Boolean(open));
+document.getElementById('openSearchBtn').setAttribute('aria-expanded',open ? 'true' : 'false');
+if(open){
+setMobileFiltersOpen(false);
+input.focus();
+}else{
+hideSearchResults();
+input.value = '';
+input.blur();
+}
+}
+
 function initializeSearch(){
 var input = document.getElementById('locationSearch');
 var results = document.getElementById('searchResults');
+document.getElementById('openSearchBtn').addEventListener('click',function(){
+setMobileSearchOpen(true);
+});
+document.getElementById('closeSearchBtn').addEventListener('click',function(){
+setMobileSearchOpen(false);
+});
 input.addEventListener('input',function(){
 var query = normalizeSearchText(input.value);
 if(query.length < 2){
@@ -905,13 +1007,21 @@ if(item){ selectSearchResult(item); }
 });
 document.addEventListener('click',function(e){
 if(!document.getElementById('searchControl').contains(e.target)){
+if(isMobileFiltersLayout()){
+setMobileSearchOpen(false);
+}else{
 hideSearchResults();
+}
 }
 });
 input.addEventListener('keydown',function(e){
 if(e.key === 'Escape'){
+if(isMobileFiltersLayout()){
+setMobileSearchOpen(false);
+}else{
 hideSearchResults();
 input.blur();
+}
 }
 });
 }
@@ -952,10 +1062,15 @@ if(mobile === wasMobile){ return; }
 wasMobile = mobile;
 if(mobile){
 setMobileFiltersOpen(false);
+setMobileSearchOpen(false);
 }else{
+document.getElementById('searchControl').classList.remove('is-search-open');
+hideSearchResults();
 document.getElementById('filter-panel').style.display = 'block';
 openButton.style.display = 'none';
 }
+var count = document.getElementById('showingCount');
+updateShowingCount(Number(count.dataset.shown),Number(count.dataset.total));
 updateMobileFilterButton(getFilterSelections());
 });
 if(wasMobile){
