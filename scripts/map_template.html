@@ -1679,6 +1679,7 @@ function getStateColor(count){
 
 var stateNameMap = {
 '柏林':'Berlin',
+'柏林州':'Berlin',
 '勃兰登堡州':'Brandenburg',
 '北威州':'Nordrhein-Westfalen',
 '巴符州':'Baden-Württemberg',
@@ -1690,7 +1691,8 @@ var stateNameMap = {
 '巴伐利亚州':'Bayern',
 '石荷州':'Schleswig-Holstein',
 '下萨克森州':'Niedersachsen',
-'萨安州':'Sachsen-Anhalt'
+'萨安州':'Sachsen-Anhalt',
+'萨克森州':'Sachsen'
 };
 
 const R2_BASE =
@@ -1983,14 +1985,17 @@ if(store.StoreType){
 
 }
 
-    if (!store.Latitude || !store.Longitude) {
+    var latitude = parseFloat(store.Latitude);
+    var longitude = parseFloat(store.Longitude);
+
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
         return;
     }
 
 var marker = L.marker(
     [
-        parseFloat(store.Latitude),
-        parseFloat(store.Longitude)
+        latitude,
+        longitude
     ],
     {
         icon: clusterSingleIcon
@@ -2107,6 +2112,8 @@ if(isClusterMode){
 
 items.forEach(function(item){
 
+item.displayMarker = item.marker;
+
 item.marker.setIcon(
 clusterSingleIcon
 );
@@ -2135,6 +2142,7 @@ item.marker.getPopup()
 );
 
 attachPopupHandlers(pointMarker);
+item.displayMarker = pointMarker;
 
 normalMarkerLayer.addLayer(
 pointMarker
