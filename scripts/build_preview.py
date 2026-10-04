@@ -218,6 +218,21 @@ overflow-x:hidden;
 top:100px;
 }
 
+#shareFeedback{
+margin-top:4px;
+padding:5px 7px;
+border-radius:6px;
+background:rgba(239,246,255,.9);
+color:#1E3A8A;
+font-size:12px;
+line-height:1.4;
+overflow-wrap:anywhere;
+}
+
+#shareFeedback[hidden]{
+display:none;
+}
+
 #shareViewBtn{
 width:100%;
 min-height:32px;
@@ -338,8 +353,29 @@ display:none;
 }
 
 @media (max-width: 768px){
+:root{
+--mobile-safe-top:env(safe-area-inset-top,0px);
+--mobile-safe-bottom:env(safe-area-inset-bottom,0px);
+--mobile-top-row:calc(10px + var(--mobile-safe-top));
+--mobile-panel-top:calc(var(--mobile-top-row) + 48px);
+--mobile-style-bottom:calc(6px + var(--mobile-safe-bottom));
+--mobile-panel-bottom:calc(var(--mobile-style-bottom) + 52px + 12px);
+--map-z-style:1150;
+--map-z-counter:1200;
+--map-z-panel:1300;
+--map-z-controls:1400;
+--map-z-popup:1500;
+--map-z-modal:2000;
+}
+
+#map{
+height:100vh;
+height:100dvh;
+}
+
 #searchControl{
-top:10px;
+top:var(--mobile-top-row);
+z-index:var(--map-z-controls);
 left:10px;
 width:calc(100vw - 132px);
 min-width:0;
@@ -405,28 +441,54 @@ font-size:10px;
 #searchResults{
 top:42px;
 max-height:32vh;
+max-height:32dvh;
+z-index:1;
 }
 
 #locationCounter{
-top:58px;
+top:var(--mobile-panel-top);
 right:10px;
+z-index:var(--map-z-counter);
+}
+
+body.mobile-filters-open #locationCounter,
+body.mobile-search-open #locationCounter{
+visibility:hidden;
 }
 
 #filter-panel{
 display:none;
-top:58px;
+top:var(--mobile-panel-top);
 left:10px;
 width:min(280px,calc(100vw - 20px));
-max-height:calc(100vh - 68px);
+max-height:calc(100vh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+max-height:calc(100dvh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+overflow-y:auto;
+overscroll-behavior:contain;
+z-index:var(--map-z-panel);
+}
+
+#mapStyleBar{
+bottom:var(--mobile-style-bottom);
+z-index:var(--map-z-style);
 }
 
 #openFilterBtn{
 display:block;
-top:10px;
+top:var(--mobile-top-row);
 left:auto;
 right:10px;
 height:38px;
 padding:0 10px;
+z-index:var(--map-z-controls);
+}
+
+.leaflet-popup-pane{
+z-index:var(--map-z-popup) !important;
+}
+
+#photoModal{
+z-index:var(--map-z-modal);
 }
 
 #clearAllFilters{
@@ -446,11 +508,28 @@ max-height:32vh !important;
 }
 
 #previewEnvBadge{
-top:142px;
+top:calc(var(--mobile-panel-top) + 84px);
 right:10px;
-z-index:9998;
+z-index:1100;
 font-size:10px;
 padding:7px 10px;
+}
+
+body:has(.leaflet-popup-pane .leaflet-popup) #previewEnvBadge{
+visibility:hidden;
+}
+}
+
+@media (max-width: 768px) and (max-height: 500px){
+/* In short landscape, the photo card uses the same clear zone as the filter panel. */
+.leaflet-popup-content-wrapper{
+box-sizing:border-box;
+max-height:calc(100vh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+max-height:calc(100dvh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+overflow-y:auto;
+}
+#popupImage{
+height:100px !important;
 }
 }
 """
@@ -485,6 +564,7 @@ FILTER_MARKUP = """
 </section>
 <button id="clearAllFilters" type="button">Clear filters</button>
 <button id="shareViewBtn" type="button">Share view</button>
+<div id="shareFeedback" role="status" aria-live="polite" hidden></div>
 </div>"""
 
 FILTER_LOGIC = """
@@ -991,6 +1071,7 @@ return;
 var control = document.getElementById('searchControl');
 var input = document.getElementById('locationSearch');
 control.classList.toggle('is-search-open',Boolean(open));
+document.body.classList.toggle('mobile-search-open',Boolean(open));
 document.getElementById('openSearchBtn').setAttribute('aria-expanded',open ? 'true' : 'false');
 if(open){
 setMobileFiltersOpen(false);
@@ -1055,6 +1136,7 @@ if(!isMobileFiltersLayout()){
 return;
 }
 mobileFiltersOpen = Boolean(open);
+document.body.classList.toggle('mobile-filters-open',mobileFiltersOpen);
 document.getElementById('filter-panel').style.display = mobileFiltersOpen ? 'block' : 'none';
 document.getElementById('openFilterBtn').style.display = 'block';
 document.getElementById('openFilterBtn').setAttribute('aria-expanded',mobileFiltersOpen ? 'true' : 'false');
@@ -1085,6 +1167,7 @@ setMobileFiltersOpen(false);
 setMobileSearchOpen(false);
 }else{
 document.getElementById('searchControl').classList.remove('is-search-open');
+document.body.classList.remove('mobile-search-open','mobile-filters-open');
 hideSearchResults();
 document.getElementById('filter-panel').style.display = 'block';
 openButton.style.display = 'none';
@@ -1139,9 +1222,21 @@ map.setView([lat,lng],zoom,{animate:false});
 
 function showShareFeedback(text){
 var button = document.getElementById('shareViewBtn');
-button.textContent = text;
+var feedback = document.getElementById('shareFeedback');
 clearTimeout(button.feedbackTimer);
-button.feedbackTimer = setTimeout(function(){ button.textContent = 'Share view'; },2000);
+if(isMobileFiltersLayout()){
+feedback.hidden = true;
+button.textContent = text;
+}else{
+button.textContent = 'Share view';
+feedback.textContent = text;
+feedback.hidden = false;
+}
+button.feedbackTimer = setTimeout(function(){
+button.textContent = 'Share view';
+feedback.hidden = true;
+feedback.textContent = '';
+},3000);
 }
 
 async function copyShareUrl(url){
@@ -1161,9 +1256,11 @@ if(!document.execCommand('copy')){ throw new Error('Copy unavailable'); }
 field.remove();
 }
 }
-showShareFeedback('Link copied');
+showShareFeedback(isMobileFiltersLayout() ? 'Link copied' :
+'Share link copied to clipboard. You can send it to anyone.');
 }catch(error){
-showShareFeedback('Unable to copy link');
+showShareFeedback(isMobileFiltersLayout() ? 'Unable to copy link' :
+'Could not copy link. Please try again.');
 }
 }
 
@@ -1234,6 +1331,10 @@ restoreMapView(params);
 syncUrlState();
 document.getElementById('shareViewBtn').addEventListener('click',async function(){
 var url = shareUrl().href;
+if(!isMobileFiltersLayout()){
+await copyShareUrl(url);
+return;
+}
 if(navigator.share){
 try{
 await navigator.share({url:url});
