@@ -3,6 +3,8 @@ import json
 import shutil
 from pathlib import Path
 
+from validate_locations import validate_or_exit
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "scripts" / "map_template.html"
@@ -214,6 +216,20 @@ overflow-x:hidden;
 
 #openFilterBtn{
 top:100px;
+}
+
+#shareViewBtn{
+width:100%;
+min-height:32px;
+padding:5px 8px;
+border:1px solid #94A3B8;
+border-radius:6px;
+background:rgba(255,255,255,.72);
+color:#1E40AF;
+font:inherit;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
 }
 
 #clearAllFilters{
@@ -468,6 +484,7 @@ FILTER_MARKUP = """
 <button id="toggleBrandFilter" class="filter-expand-button" type="button" hidden>Show all</button>
 </section>
 <button id="clearAllFilters" type="button">Clear filters</button>
+<button id="shareViewBtn" type="button">Share view</button>
 </div>"""
 
 FILTER_LOGIC = """
@@ -481,6 +498,8 @@ var expandedFilterSection = null;
 var pageScopeMarkers = [];
 var mobileFiltersOpen = false;
 var searchResultItems = [];
+var activePopupId = null;
+var urlStateReady = false;
 
 function applyViewTitle(){
 if(mapView.mode !== 'brand' || !mapView.brand){
@@ -766,6 +785,7 @@ window.renderMarkers(filteredMarkers);
 updateStats(filteredMarkers);
 renderFilterSections(selections,focusTarget);
 updateMobileFilterButton(selections);
+if(urlStateReady){ syncUrlState(); }
 return filteredMarkers;
 }
 
@@ -1078,6 +1098,155 @@ setMobileFiltersOpen(false);
 }
 }
 
+function shareUrl(){
+var url = new URL(window.location.href);
+var params = new URLSearchParams();
+var selections = getFilterSelections();
+selections.states.slice().sort().forEach(function(value){ params.append('state',value); });
+selections.categories.slice().sort().forEach(function(value){ params.append('type',value); });
+if(mapView.mode === 'overview'){
+selections.brands.slice().sort().forEach(function(value){ params.append('brand',value); });
+}
+if(activePopupId){ params.set('id',activePopupId); }
+var center = map.getCenter();
+params.set('lat',center.lat.toFixed(6));
+params.set('lng',center.lng.toFixed(6));
+params.set('z',String(map.getZoom()));
+url.search = params.toString();
+return url;
+}
+
+function syncUrlState(){
+if(!urlStateReady){ return; }
+var url = shareUrl();
+history.replaceState(history.state,'',url.pathname + url.search + url.hash);
+}
+
+function restoreMapView(params){
+var values = ['lat','lng','z'].map(function(key){ return params.get(key); });
+if(values.some(function(value){ return value === null || !/^[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)$/.test(value); })){
+return;
+}
+var lat = Number(values[0]);
+var lng = Number(values[1]);
+var zoom = Number(values[2]);
+if(!Number.isFinite(lat) || !Number.isFinite(lng) || !Number.isFinite(zoom) ||
+Math.abs(lat) > 90 || Math.abs(lng) > 180 || zoom < 0 || zoom > 19){
+return;
+}
+map.setView([lat,lng],zoom,{animate:false});
+}
+
+function showShareFeedback(text){
+var button = document.getElementById('shareViewBtn');
+button.textContent = text;
+clearTimeout(button.feedbackTimer);
+button.feedbackTimer = setTimeout(function(){ button.textContent = 'Share view'; },2000);
+}
+
+async function copyShareUrl(url){
+try{
+if(navigator.clipboard && navigator.clipboard.writeText){
+await navigator.clipboard.writeText(url);
+}else{
+var field = document.createElement('textarea');
+field.value = url;
+field.style.position = 'fixed';
+field.style.opacity = '0';
+document.body.appendChild(field);
+field.select();
+try{
+if(!document.execCommand('copy')){ throw new Error('Copy unavailable'); }
+}finally{
+field.remove();
+}
+}
+showShareFeedback('Link copied');
+}catch(error){
+showShareFeedback('Unable to copy link');
+}
+}
+
+function initializeUrlState(){
+var params = new URLSearchParams(window.location.search);
+var selectedStates = new Set(params.getAll('state').filter(function(value){
+return Object.prototype.hasOwnProperty.call(stateCount,value);
+}));
+var selectedTypes = new Set(params.getAll('type').filter(function(value){
+return Object.prototype.hasOwnProperty.call(categoryCount,value);
+}));
+var selectedBrands = new Set(mapView.mode === 'overview' ? params.getAll('brand').filter(function(value){
+return BRAND_CONFIG.some(function(brand){ return brand.slug === value; });
+}) : []);
+document.querySelectorAll('.stateCheckbox').forEach(function(cb){ cb.checked = selectedStates.has(cb.value); });
+document.querySelectorAll('.categoryCheckbox').forEach(function(cb){ cb.checked = selectedTypes.has(cb.value); });
+if(mapView.mode === 'overview'){
+document.querySelectorAll('.brandCheckbox').forEach(function(cb){ cb.checked = selectedBrands.has(cb.value); });
+}
+applyFilters();
+var requestedId = params.get('id');
+var target = requestedId && pageScopeMarkers.find(function(item){
+return String(item.store.ID).trim() === requestedId;
+});
+if(target){
+adjustFiltersForSearchTarget(target);
+if(!applyFilters().includes(target)){ target = null; }
+}
+activePopupId = target ? String(target.store.ID).trim() : null;
+urlStateReady = true;
+map.on('popupopen',function(e){
+var source = e.popup._source;
+var item = pageScopeMarkers.find(function(candidate){
+return candidate.marker === source || candidate.displayMarker === source;
+});
+if(item){
+activePopupId = String(item.store.ID).trim();
+syncUrlState();
+}
+});
+map.on('popupclose',function(e){
+var source = e.popup._source;
+var item = pageScopeMarkers.find(function(candidate){
+return candidate.marker === source || candidate.displayMarker === source;
+});
+if(item && activePopupId === String(item.store.ID).trim()){
+activePopupId = null;
+syncUrlState();
+}
+});
+map.on('moveend zoomend',syncUrlState);
+if(target){
+var targetId = activePopupId;
+// Let the initial mobile zoom finish before revealing a direct-link marker.
+function revealDirectTarget(){
+if(activePopupId !== targetId){ return; }
+if(map._animatingZoom){
+map.once('zoomend',revealDirectTarget);
+return;
+}
+map.setView(target.marker.getLatLng(),16,{animate:false});
+focusSearchTarget(target);
+}
+setTimeout(revealDirectTarget,600);
+}else{
+restoreMapView(params);
+}
+syncUrlState();
+document.getElementById('shareViewBtn').addEventListener('click',async function(){
+var url = shareUrl().href;
+if(navigator.share){
+try{
+await navigator.share({url:url});
+showShareFeedback('Shared');
+return;
+}catch(error){
+if(error && error.name === 'AbortError'){ return; }
+}
+}
+await copyShareUrl(url);
+});
+}
+
 applyViewTitle();
 pageScopeMarkers = getPageScopeMarkers();
 window.pageScopeMarkers = pageScopeMarkers;
@@ -1092,6 +1261,7 @@ renderFilterSections(initialSelections,null);
 applyFilters();
 initializeSearch();
 initializeMobileFilters();
+initializeUrlState();
 """
 
 
@@ -1213,8 +1383,7 @@ def build_page(brands: list[dict[str, str]], *, preview: bool, noindex: bool) ->
 
 def build_preview() -> None:
     brands = load_brand_config()
-    if not CANDIDATE_CSV.is_file():
-        raise RuntimeError(f"Candidate CSV is missing: {CANDIDATE_CSV}")
+    validate_or_exit(CANDIDATE_CSV)
 
     page = build_page(brands, preview=True, noindex=True)
     PREVIEW_DIR.mkdir(exist_ok=True)

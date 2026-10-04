@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from build_preview import ROOT, build_page, load_brand_config
+from build_preview import CANDIDATE_CSV, ROOT, build_page, load_brand_config
+from validate_locations import validate_or_exit
 
 
 def write_page(path: Path, html: str) -> None:
@@ -10,6 +11,7 @@ def write_page(path: Path, html: str) -> None:
 
 def build_production() -> None:
     brands = load_brand_config()
+    validate_or_exit(CANDIDATE_CSV)
     root_page = build_page(brands, preview=False, noindex=False)
     private_page = build_page(brands, preview=False, noindex=True)
 

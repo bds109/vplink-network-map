@@ -1863,6 +1863,11 @@ store.StoreName +
 (store.Address || '-') +
 '</div>' +
 
+'<a class="popup-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=' +
+String(store.Latitude).trim() + ',' + String(store.Longitude).trim() +
+'" target="_blank" rel="noopener noreferrer" ' +
+'style="display:inline-block;margin-bottom:10px;color:#1D4ED8;font-weight:700;">Directions</a>' +
+
 (
 storeId
 ?
