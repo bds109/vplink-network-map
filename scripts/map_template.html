@@ -2026,6 +2026,7 @@ map.getZoom() + 3,
 }
 );
 
+marker.locationStoreId = String(store.ID).trim();
 marker.bindPopup(
 buildPopupHtml(store)
 );
@@ -2045,58 +2046,6 @@ updateStats(
 allMarkers
 );
 currentFilteredMarkers = allMarkers;
-
-document
-.getElementById(
-'closeFilterBtn'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.getElementById(
-'filter-panel'
-)
-.style.display =
-'none';
-
-document
-.getElementById(
-'openFilterBtn'
-)
-.style.display =
-'block';
-
-}
-);
-
-document
-.getElementById(
-'openFilterBtn'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.getElementById(
-'filter-panel'
-)
-.style.display =
-'block';
-
-document
-.getElementById(
-'openFilterBtn'
-)
-.style.display =
-'none';
-
-}
-);
-
-
 
 window.renderMarkers = function(items){
 
@@ -2142,6 +2091,7 @@ icon: pointIcon
 }
 );
 
+pointMarker.locationStoreId = String(item.store.ID).trim();
 pointMarker.bindPopup(
 item.marker.getPopup()
 );
