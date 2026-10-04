@@ -1161,6 +1161,158 @@ font-size:clamp(18px,1.8vw,36px);
 letter-spacing:.01em;
 }
 
+#openSearchBtn,
+#closeSearchBtn{
+display:none;
+}
+
+#searchControl{
+position:absolute;
+top:20px;
+left:20px;
+z-index:10002;
+width:min(240px,calc(100vw - 40px));
+box-sizing:border-box;
+}
+
+.search-input-wrap{
+display:flex;
+align-items:center;
+box-sizing:border-box;
+height:38px;
+padding:0 10px;
+border:1px solid rgba(255,255,255,.95);
+border-radius:10px;
+background:rgba(255,255,255,.76);
+backdrop-filter:blur(30px);
+-webkit-backdrop-filter:blur(30px);
+box-shadow:0 8px 24px rgba(15,23,42,.10);
+}
+
+.search-icon{
+margin-right:7px;
+color:#475569;
+font-size:18px;
+line-height:1;
+}
+
+#locationSearch{
+width:100%;
+min-width:0;
+border:0;
+outline:0;
+background:transparent;
+color:#0F172A;
+font:inherit;
+font-size:13px;
+}
+
+#locationSearch::placeholder{
+color:#64748B;
+}
+
+#showingCount{
+margin-top:4px;
+padding:2px 8px;
+border-radius:6px;
+background:rgba(255,255,255,.68);
+color:#334155;
+font-size:11px;
+font-weight:700;
+line-height:18px;
+box-shadow:0 4px 14px rgba(15,23,42,.06);
+}
+
+#searchResults{
+position:absolute;
+top:64px;
+left:0;
+right:0;
+max-height:320px;
+overflow-y:auto;
+overflow-x:hidden;
+box-sizing:border-box;
+padding:5px;
+border:1px solid rgba(255,255,255,.95);
+border-radius:10px;
+background:rgba(255,255,255,.94);
+backdrop-filter:blur(30px);
+-webkit-backdrop-filter:blur(30px);
+box-shadow:0 12px 32px rgba(15,23,42,.16);
+}
+
+.search-result-status{
+padding:8px;
+color:#475569;
+font-size:12px;
+font-weight:700;
+}
+
+.search-result-button{
+display:block;
+width:100%;
+box-sizing:border-box;
+padding:7px 8px;
+border:0;
+border-radius:6px;
+background:transparent;
+text-align:left;
+cursor:pointer;
+}
+
+.search-result-button:hover,
+.search-result-button:focus-visible{
+background:#EFF6FF;
+outline:2px solid #2563EB;
+outline-offset:-2px;
+}
+
+.search-result-name{
+display:block;
+overflow:hidden;
+color:#0F172A;
+font-size:13px;
+font-weight:800;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.search-result-meta{
+display:block;
+margin-top:2px;
+overflow:hidden;
+color:#64748B;
+font-size:11px;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+#filter-panel{
+top:100px;
+max-height:calc(100vh - 120px);
+overflow-y:auto;
+overflow-x:hidden;
+}
+
+#openFilterBtn{
+top:100px;
+}
+
+#clearAllFilters{
+display:none;
+width:100%;
+min-height:28px;
+padding:4px 8px;
+border:1px solid #CBD5E1;
+border-radius:6px;
+background:rgba(255,255,255,.28);
+color:#334155;
+font:inherit;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+}
+
 .filter-sections{
 display:flex;
 flex-direction:column;
@@ -1243,11 +1395,110 @@ cursor:pointer;
 background:rgba(255,255,255,.5);
 }
 
+.filter-option[aria-disabled="true"]{
+cursor:default;
+}
+
 .filter-section[hidden]{
 display:none;
 }
 
 @media (max-width: 768px){
+#searchControl{
+top:10px;
+left:10px;
+width:calc(100vw - 132px);
+min-width:0;
+height:38px;
+display:flex;
+align-items:center;
+gap:5px;
+}
+
+#openSearchBtn,
+#closeSearchBtn{
+display:block;
+flex:none;
+height:38px;
+padding:0 10px;
+border:1px solid rgba(255,255,255,.95);
+border-radius:10px;
+background:rgba(255,255,255,.86);
+color:#0F172A;
+font:inherit;
+font-size:13px;
+font-weight:700;
+box-shadow:0 8px 24px rgba(15,23,42,.10);
+cursor:pointer;
+}
+
+#searchControl .search-input-wrap,
+#searchControl #closeSearchBtn{
+display:none;
+}
+
+#searchControl.is-search-open{
+width:calc(100vw - 20px);
+}
+
+#searchControl.is-search-open + #openFilterBtn{
+visibility:hidden;
+}
+
+#searchControl.is-search-open #openSearchBtn,
+#searchControl.is-search-open #showingCount{
+display:none;
+}
+
+#searchControl.is-search-open .search-input-wrap{
+display:flex;
+flex:1;
+min-width:0;
+}
+
+#searchControl.is-search-open #closeSearchBtn{
+display:block;
+}
+
+#showingCount{
+min-width:0;
+margin:0;
+padding:2px 5px;
+white-space:nowrap;
+font-size:10px;
+}
+
+#searchResults{
+top:42px;
+max-height:32vh;
+}
+
+#locationCounter{
+top:58px;
+right:10px;
+}
+
+#filter-panel{
+display:none;
+top:58px;
+left:10px;
+width:min(280px,calc(100vw - 20px));
+max-height:calc(100vh - 68px);
+}
+
+#openFilterBtn{
+display:block;
+top:10px;
+left:auto;
+right:10px;
+height:38px;
+padding:0 10px;
+}
+
+#clearAllFilters{
+display:block;
+}
+
 #mapTitle.is-brand-title{
 padding-right:40px;
 }
@@ -1261,10 +1512,11 @@ max-height:32vh !important;
 }
 
 #previewEnvBadge{
-top:12px;
-right:12px;
-font-size:11px;
-padding:8px 12px;
+top:142px;
+right:10px;
+z-index:9998;
+font-size:10px;
+padding:7px 10px;
 }
 }
 
@@ -1336,6 +1588,17 @@ cursor:pointer;
 
 </div>
 
+<div id="searchControl">
+<button id="openSearchBtn" type="button" aria-controls="locationSearch" aria-expanded="false">Search</button>
+<label class="search-input-wrap" for="locationSearch">
+<span class="search-icon" aria-hidden="true">⌕</span>
+<input id="locationSearch" type="search" inputmode="search" autocomplete="off" placeholder="Search locations…" aria-label="Search locations" aria-controls="searchResults" aria-expanded="false">
+</label>
+<button id="closeSearchBtn" type="button" aria-label="Close search">×</button>
+<div id="showingCount" aria-live="polite">Showing 0 of 0 locations</div>
+<div id="searchResults" role="listbox" aria-label="Location search results" hidden></div>
+</div>
+
 <button id="openFilterBtn">
 ☰ Filters
 </button>
@@ -1405,6 +1668,7 @@ VPLINK NETWORK MAP
 <div id="brandFilter" class="filter-list is-compact"></div>
 <button id="toggleBrandFilter" class="filter-expand-button" type="button" hidden>Show all</button>
 </section>
+<button id="clearAllFilters" type="button">Clear filters</button>
 </div>
 
 </div>
@@ -1833,6 +2097,7 @@ function getStateColor(count){
 
 var stateNameMap = {
 '柏林':'Berlin',
+'柏林州':'Berlin',
 '勃兰登堡州':'Brandenburg',
 '北威州':'Nordrhein-Westfalen',
 '巴符州':'Baden-Württemberg',
@@ -1844,7 +2109,8 @@ var stateNameMap = {
 '巴伐利亚州':'Bayern',
 '石荷州':'Schleswig-Holstein',
 '下萨克森州':'Niedersachsen',
-'萨安州':'Sachsen-Anhalt'
+'萨安州':'Sachsen-Anhalt',
+'萨克森州':'Sachsen'
 };
 
 const R2_BASE =
@@ -2137,14 +2403,17 @@ if(store.StoreType){
 
 }
 
-    if (!store.Latitude || !store.Longitude) {
+    var latitude = parseFloat(store.Latitude);
+    var longitude = parseFloat(store.Longitude);
+
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
         return;
     }
 
 var marker = L.marker(
     [
-        parseFloat(store.Latitude),
-        parseFloat(store.Longitude)
+        latitude,
+        longitude
     ],
     {
         icon: clusterSingleIcon
@@ -2261,6 +2530,8 @@ if(isClusterMode){
 
 items.forEach(function(item){
 
+item.displayMarker = item.marker;
+
 item.marker.setIcon(
 clusterSingleIcon
 );
@@ -2289,6 +2560,7 @@ item.marker.getPopup()
 );
 
 attachPopupHandlers(pointMarker);
+item.displayMarker = pointMarker;
 
 normalMarkerLayer.addLayer(
 pointMarker
@@ -2313,6 +2585,9 @@ var FILTER_GROUPS = [
 ];
 
 var expandedFilterSection = null;
+var pageScopeMarkers = [];
+var mobileFiltersOpen = false;
+var searchResultItems = [];
 
 function applyViewTitle(){
 if(mapView.mode !== 'brand' || !mapView.brand){
@@ -2395,6 +2670,34 @@ count:allMarkers.filter(function(item){ return item.store[brand.column] === '1';
 });
 }
 
+function itemMatchesBrand(item,brand){
+return Boolean(brand && item.store[brand.column] === '1');
+}
+
+function getPageScopeMarkers(){
+if(mapView.mode !== 'brand' || !mapView.brand){
+return allMarkers.slice();
+}
+return allMarkers.filter(function(item){
+return itemMatchesBrand(item,mapView.brand);
+});
+}
+
+function rebuildFacetCounts(items){
+stateCount = {};
+categoryCount = {};
+items.forEach(function(item){
+var state = stateNameMap[item.store.State];
+var category = item.store.StoreType;
+if(state){
+stateCount[state] = (stateCount[state] || 0) + 1;
+}
+if(category){
+categoryCount[category] = (categoryCount[category] || 0) + 1;
+}
+});
+}
+
 function filterItemsForGroup(group){
 if(group.key === 'states'){
 return getStateFilterItems();
@@ -2438,15 +2741,17 @@ var container = document.getElementById(group.containerId);
 container.innerHTML = '';
 sortFilterItems(items,selectedValues).forEach(function(item){
 var selected = selectedValues.includes(item.value);
+var isFixedBrand = group.key === 'brands' && mapView.mode === 'brand';
 var row = document.createElement('div');
 row.className = group.rowClass + ' filter-item' + (selected ? ' is-selected' : '');
 row.innerHTML =
-'<label class="filter-chip filter-option" tabindex="0" role="checkbox" aria-checked="' + selected + '">' +
+'<label class="filter-chip filter-option" tabindex="' + (isFixedBrand ? '-1' : '0') + '" role="checkbox" aria-checked="' + selected + '" aria-disabled="' + isFixedBrand + '">' +
 '<input type="checkbox" class="' + group.inputClass + '" value="' + item.value + '">' +
 '<span class="chip-name">' + item.label + '</span>' +
 '<span class="chip-count">' + item.count + '</span>' +
 '</label>';
 row.querySelector('input').checked = selected;
+row.querySelector('input').disabled = isFixedBrand;
 container.appendChild(row);
 });
 }
@@ -2520,20 +2825,46 @@ document.getElementById('counterStates').innerHTML = states.length + ' States';
 document.getElementById('counterCategories').innerHTML = categories.length + ' Categories';
 document.getElementById('stateCountDisplay').innerHTML = states.length;
 document.getElementById('categoryCountDisplay').innerHTML = categories.length;
+var scopeTotal = pageScopeMarkers && pageScopeMarkers.length ? pageScopeMarkers.length : filteredMarkers.length;
+updateShowingCount(filteredMarkers.length,scopeTotal);
+}
+
+function updateShowingCount(shown,total){
+var count = document.getElementById('showingCount');
+count.textContent = isMobileFiltersLayout() ? 'Showing ' + shown + '/' + total :
+'Showing ' + shown + ' of ' + total + ' locations';
+count.setAttribute('aria-label','Showing ' + shown + ' of ' + total + ' locations');
+count.dataset.shown = shown;
+count.dataset.total = total;
+}
+
+function getActiveFilterDimensionCount(selections){
+var count = 0;
+if(selections.states.length){ count++; }
+if(selections.categories.length){ count++; }
+if(mapView.mode === 'overview' && selections.brands.length){ count++; }
+return count;
+}
+
+function updateMobileFilterButton(selections){
+var count = getActiveFilterDimensionCount(selections);
+var button = document.getElementById('openFilterBtn');
+button.textContent = isMobileFiltersLayout() ? (count ? 'Filters (' + count + ')' : 'Filters') : '☰ Filters';
+button.setAttribute('aria-label',button.textContent);
 }
 
 function applyFilters(focusTarget){
 var selections = getFilterSelections();
 ensureAutoExpansion(selections,focusTarget && focusTarget.group);
 
-var filteredMarkers = allMarkers.filter(function(item){
+var filteredMarkers = pageScopeMarkers.filter(function(item){
 var state = stateNameMap[item.store.State];
 var category = item.store.StoreType;
 var stateMatch = selections.states.length === 0 || selections.states.includes(state);
 var categoryMatch = selections.categories.length === 0 || selections.categories.includes(category);
-var brandMatch = selections.brands.length === 0 || selections.brands.some(function(slug){
+var brandMatch = mapView.mode !== 'overview' || selections.brands.length === 0 || selections.brands.some(function(slug){
 var brand = BRAND_CONFIG.find(function(candidate){ return candidate.slug === slug; });
-return brand && item.store[brand.column] === '1';
+return itemMatchesBrand(item,brand);
 });
 return stateMatch && categoryMatch && brandMatch;
 });
@@ -2541,6 +2872,8 @@ return stateMatch && categoryMatch && brandMatch;
 window.renderMarkers(filteredMarkers);
 updateStats(filteredMarkers);
 renderFilterSections(selections,focusTarget);
+updateMobileFilterButton(selections);
+return filteredMarkers;
 }
 
 function clearFilter(groupKey,controlId){
@@ -2561,6 +2894,18 @@ document.getElementById('clearBrandFilter').addEventListener('click',function(){
 clearFilter('brands','clearBrandFilter');
 });
 
+function clearAllUserFilters(){
+document.querySelectorAll('.stateCheckbox,.categoryCheckbox').forEach(function(cb){
+cb.checked = false;
+});
+if(mapView.mode === 'overview'){
+document.querySelectorAll('.brandCheckbox').forEach(function(cb){ cb.checked = false; });
+}
+applyFilters({controlId:'clearAllFilters'});
+}
+
+document.getElementById('clearAllFilters').addEventListener('click',clearAllUserFilters);
+
 document.getElementById('filterSections').addEventListener('click',function(e){
 var toggle = e.target.closest('.filter-expand-button');
 if(!toggle || toggle.hidden){
@@ -2574,7 +2919,7 @@ document.addEventListener('change',function(e){
 var group = FILTER_GROUPS.find(function(candidate){
 return e.target.classList.contains(candidate.inputClass);
 });
-if(group){
+if(group && !e.target.disabled){
 applyFilters({group:group.key,inputClass:group.inputClass,value:e.target.value});
 }
 });
@@ -2582,11 +2927,268 @@ applyFilters({group:group.key,inputClass:group.inputClass,value:e.target.value})
 document.addEventListener('keydown',function(e){
 if((e.key === ' ' || e.key === 'Enter') && e.target.classList.contains('filter-option')){
 e.preventDefault();
-e.target.querySelector('input').click();
+var input = e.target.querySelector('input');
+if(!input.disabled){ input.click(); }
 }
 });
 
+function normalizeSearchText(value){
+return String(value || '')
+.normalize('NFD')
+.replace(/[̀-ͯ]/g,'')
+.replace(/ß/g,'ss')
+.toLowerCase()
+.trim()
+.replace(/\s+/g,' ');
+}
+
+function getSearchScore(item,query){
+var store = item.store;
+var name = normalizeSearchText(store.StoreName);
+var city = normalizeSearchText(store.City);
+var zip = normalizeSearchText(store.PostalCode);
+var address = normalizeSearchText(store.Address);
+if(name === query || city === query || zip === query || address === query){ return 0; }
+if(name.startsWith(query)){ return 1; }
+if(city.startsWith(query) || zip.startsWith(query)){ return 2; }
+if(name.includes(query)){ return 3; }
+if(city.includes(query) || zip.includes(query)){ return 4; }
+if(address.includes(query)){ return 5; }
+return Infinity;
+}
+
+function findSearchResults(query){
+return pageScopeMarkers
+.map(function(item){ return {item:item,score:getSearchScore(item,query)}; })
+.filter(function(result){ return Number.isFinite(result.score); })
+.sort(function(a,b){
+return a.score - b.score ||
+normalizeSearchText(a.item.store.StoreName).localeCompare(normalizeSearchText(b.item.store.StoreName)) ||
+String(a.item.store.ID).localeCompare(String(b.item.store.ID));
+});
+}
+
+function hideSearchResults(){
+var results = document.getElementById('searchResults');
+results.hidden = true;
+document.getElementById('locationSearch').setAttribute('aria-expanded','false');
+}
+
+function renderSearchResults(matches){
+var results = document.getElementById('searchResults');
+results.innerHTML = '';
+searchResultItems = matches.slice(0,10).map(function(match){ return match.item; });
+
+if(!matches.length){
+var empty = document.createElement('div');
+empty.className = 'search-result-status';
+empty.textContent = 'No matching locations';
+results.appendChild(empty);
+}else{
+if(matches.length > 10){
+var status = document.createElement('div');
+status.className = 'search-result-status';
+status.textContent = matches.length + ' matches — showing first 10';
+results.appendChild(status);
+}
+searchResultItems.forEach(function(item,index){
+var button = document.createElement('button');
+var name = document.createElement('span');
+var meta = document.createElement('span');
+var zipCity = [item.store.PostalCode,item.store.City].filter(Boolean).join(' ');
+button.type = 'button';
+button.className = 'search-result-button';
+button.dataset.resultIndex = index;
+button.setAttribute('role','option');
+name.className = 'search-result-name';
+name.textContent = item.store.StoreName || 'Unnamed location';
+meta.className = 'search-result-meta';
+meta.textContent = (zipCity || '-') + ' · ' + (item.store.Address || '-');
+button.appendChild(name);
+button.appendChild(meta);
+results.appendChild(button);
+});
+}
+
+results.hidden = false;
+document.getElementById('locationSearch').setAttribute('aria-expanded','true');
+}
+
+function replaceFilterDimension(selector,value){
+var checkbox = value && document.querySelector(selector + '[value="' + CSS.escape(value) + '"]');
+document.querySelectorAll(selector).forEach(function(cb){ cb.checked = cb === checkbox; });
+}
+
+function adjustFiltersForSearchTarget(item){
+var selections = getFilterSelections();
+var state = stateNameMap[item.store.State];
+var category = item.store.StoreType;
+
+if(selections.states.length && (selections.states.length !== 1 || selections.states[0] !== state)){
+replaceFilterDimension('.stateCheckbox',state);
+}
+if(selections.categories.length && (selections.categories.length !== 1 || selections.categories[0] !== category)){
+replaceFilterDimension('.categoryCheckbox',category);
+}
+if(mapView.mode === 'overview' && selections.brands.length){
+var targetBrands = BRAND_CONFIG.filter(function(brand){ return itemMatchesBrand(item,brand); });
+var selectedTargetBrand = targetBrands.some(function(brand){ return selections.brands.includes(brand.slug); });
+if(!selectedTargetBrand || selections.brands.some(function(slug){
+return !targetBrands.some(function(brand){ return brand.slug === slug; });
+})){
+var compatibleBrand = selections.brands.find(function(slug){
+return targetBrands.some(function(brand){ return brand.slug === slug; });
+});
+replaceFilterDimension('.brandCheckbox',compatibleBrand || (targetBrands.length ? targetBrands[0].slug : null));
+}
+}
+}
+
+function focusSearchTarget(item){
+if(isClusterMode){
+markerCluster.zoomToShowLayer(item.marker,function(){
+setTimeout(function(){ item.marker.openPopup(); },80);
+});
+return;
+}
+var marker = item.displayMarker;
+if(!marker){ return; }
+map.panTo(marker.getLatLng(),{animate:true});
+setTimeout(function(){ marker.openPopup(); },300);
+}
+
+function selectSearchResult(item){
+adjustFiltersForSearchTarget(item);
+var filtered = applyFilters();
+hideSearchResults();
+document.getElementById('locationSearch').blur();
+if(isMobileFiltersLayout()){
+setMobileFiltersOpen(false);
+setMobileSearchOpen(false);
+}
+if(filtered.includes(item)){
+focusSearchTarget(item);
+}
+}
+
+function setMobileSearchOpen(open){
+if(!isMobileFiltersLayout()){
+return;
+}
+var control = document.getElementById('searchControl');
+var input = document.getElementById('locationSearch');
+control.classList.toggle('is-search-open',Boolean(open));
+document.getElementById('openSearchBtn').setAttribute('aria-expanded',open ? 'true' : 'false');
+if(open){
+setMobileFiltersOpen(false);
+input.focus();
+}else{
+hideSearchResults();
+input.value = '';
+input.blur();
+}
+}
+
+function initializeSearch(){
+var input = document.getElementById('locationSearch');
+var results = document.getElementById('searchResults');
+document.getElementById('openSearchBtn').addEventListener('click',function(){
+setMobileSearchOpen(true);
+});
+document.getElementById('closeSearchBtn').addEventListener('click',function(){
+setMobileSearchOpen(false);
+});
+input.addEventListener('input',function(){
+var query = normalizeSearchText(input.value);
+if(query.length < 2){
+hideSearchResults();
+return;
+}
+renderSearchResults(findSearchResults(query));
+});
+results.addEventListener('click',function(e){
+var button = e.target.closest('.search-result-button');
+if(!button){ return; }
+var item = searchResultItems[Number(button.dataset.resultIndex)];
+if(item){ selectSearchResult(item); }
+});
+document.addEventListener('click',function(e){
+if(!document.getElementById('searchControl').contains(e.target)){
+if(isMobileFiltersLayout()){
+setMobileSearchOpen(false);
+}else{
+hideSearchResults();
+}
+}
+});
+input.addEventListener('keydown',function(e){
+if(e.key === 'Escape'){
+if(isMobileFiltersLayout()){
+setMobileSearchOpen(false);
+}else{
+hideSearchResults();
+input.blur();
+}
+}
+});
+}
+
+function isMobileFiltersLayout(){
+return window.matchMedia('(max-width: 768px)').matches;
+}
+
+function setMobileFiltersOpen(open){
+if(!isMobileFiltersLayout()){
+return;
+}
+mobileFiltersOpen = Boolean(open);
+document.getElementById('filter-panel').style.display = mobileFiltersOpen ? 'block' : 'none';
+document.getElementById('openFilterBtn').style.display = 'block';
+document.getElementById('openFilterBtn').setAttribute('aria-expanded',mobileFiltersOpen ? 'true' : 'false');
+}
+
+function initializeMobileFilters(){
+var openButton = document.getElementById('openFilterBtn');
+var closeButton = document.getElementById('closeFilterBtn');
+var wasMobile = isMobileFiltersLayout();
+openButton.setAttribute('aria-controls','filter-panel');
+openButton.addEventListener('click',function(e){
+if(!isMobileFiltersLayout()){ return; }
+e.stopPropagation();
+setMobileFiltersOpen(!mobileFiltersOpen);
+});
+closeButton.addEventListener('click',function(){
+if(isMobileFiltersLayout()){ setMobileFiltersOpen(false); }
+});
+map.on('click',function(){
+if(isMobileFiltersLayout()){ setMobileFiltersOpen(false); }
+});
+window.addEventListener('resize',function(){
+var mobile = isMobileFiltersLayout();
+if(mobile === wasMobile){ return; }
+wasMobile = mobile;
+if(mobile){
+setMobileFiltersOpen(false);
+setMobileSearchOpen(false);
+}else{
+document.getElementById('searchControl').classList.remove('is-search-open');
+hideSearchResults();
+document.getElementById('filter-panel').style.display = 'block';
+openButton.style.display = 'none';
+}
+var count = document.getElementById('showingCount');
+updateShowingCount(Number(count.dataset.shown),Number(count.dataset.total));
+updateMobileFilterButton(getFilterSelections());
+});
+if(wasMobile){
+setMobileFiltersOpen(false);
+}
+}
+
 applyViewTitle();
+pageScopeMarkers = getPageScopeMarkers();
+window.pageScopeMarkers = pageScopeMarkers;
+rebuildFacetCounts(pageScopeMarkers);
 
 var initialSelections = {
 states:[],
@@ -2595,6 +3197,8 @@ brands:mapView.mode === 'brand' && mapView.brand ? [mapView.brand.slug] : []
 };
 renderFilterSections(initialSelections,null);
 applyFilters();
+initializeSearch();
+initializeMobileFilters();
 
 fetch('/Germany_border_sehr_hoch.geo.json')
 .then(response => response.json())
