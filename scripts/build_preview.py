@@ -3,7 +3,7 @@ import json
 import shutil
 from pathlib import Path
 
-from validate_locations import validate_or_exit
+from validate_locations import configured_brands, validate_or_exit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1381,15 +1381,7 @@ def replace_once(html: str, old: str, new: str, label: str) -> str:
 
 
 def load_brand_config() -> list[dict[str, str]]:
-    brands = json.loads(BRAND_CONFIG_SOURCE.read_text(encoding="utf-8"))
-    if not isinstance(brands, list) or not brands:
-        raise RuntimeError("Brand configuration must contain at least one brand")
-    required = {"slug", "label", "column"}
-    if any(set(brand) != required or not all(brand.values()) for brand in brands):
-        raise RuntimeError("Each brand configuration requires slug, label, and column")
-    if len({brand["slug"] for brand in brands}) != len(brands):
-        raise RuntimeError("Brand slugs must be unique")
-    return brands
+    return configured_brands(BRAND_CONFIG_SOURCE)
 
 
 def feature_bootstrap(brands: list[dict[str, str]]) -> str:
@@ -1483,9 +1475,8 @@ def build_page(brands: list[dict[str, str]], *, preview: bool, noindex: bool) ->
 
 
 def build_preview() -> None:
-    brands = load_brand_config()
-    validate_or_exit(CANDIDATE_CSV)
-
+    report = validate_or_exit(CANDIDATE_CSV, config=BRAND_CONFIG_SOURCE, template=SOURCE)
+    brands = report["brands"]
     page = build_page(brands, preview=True, noindex=True)
     PREVIEW_DIR.mkdir(exist_ok=True)
     PREVIEW_DATA.parent.mkdir(exist_ok=True)
@@ -1501,12 +1492,9 @@ def build_preview() -> None:
         encoding="utf-8",
     )
 
-    for relative_target in (
-        Path("index.html"),
-        Path("network-overview/index.html"),
-        Path("geekbar/index.html"),
-        Path("dojo/index.html"),
-    ):
+    targets = (Path("index.html"), Path("network-overview/index.html"))
+    targets += tuple(Path(brand["slug"]) / "index.html" for brand in brands)
+    for relative_target in targets:
         target = PREVIEW_DIR / relative_target
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(page, encoding="utf-8")

@@ -16,6 +16,11 @@ MAP_TEMPLATE = ROOT / "scripts" / "map_template.html"
 CORE_COLUMNS = {"ID", "StoreName", "StoreType", "State", "Latitude", "Longitude"}
 OPTIONAL_COLUMNS = ("Address", "City", "PostalCode")
 ID_PATTERN = re.compile(r"[1-9][0-9]*\Z")
+BRAND_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+RESERVED_BRAND_SLUGS = {
+    "network-overview", "preview", "data", "scripts", "docs", "photos",
+    "handoff", "output", "backups", "rollback",
+}
 MAP_ENTRY = re.compile(r"\s*('(?:\\.|[^'\\])*')\s*:\s*('(?:\\.|[^'\\])*')\s*,?\s*\Z")
 
 
@@ -42,14 +47,27 @@ def state_mapping(template=MAP_TEMPLATE):
 
 def configured_brands(config=BRAND_CONFIG):
     brands = json.loads(Path(config).read_text(encoding="utf-8"))
-    if not isinstance(brands, list) or not brands or any(
-        not isinstance(brand, dict) or not isinstance(brand.get("column"), str)
-        or not brand["column"] or not brand.get("slug") for brand in brands
-    ):
-        raise ValueError("Invalid brand_config.json")
-    columns = [brand["column"] for brand in brands]
-    if len(columns) != len(set(columns)):
-        raise ValueError("Duplicate brand columns in brand_config.json")
+    required = {"slug", "label", "column"}
+    if not isinstance(brands, list) or not brands:
+        raise ValueError("brand_config.json must contain a nonempty list")
+    slugs, columns = set(), set()
+    for brand in brands:
+        if not isinstance(brand, dict) or set(brand) != required or any(
+            not isinstance(brand[key], str) or not brand[key] or brand[key] != brand[key].strip()
+            for key in required
+        ):
+            raise ValueError("Each brand requires exactly nonempty slug, label, column strings")
+        slug, column = brand["slug"], brand["column"]
+        if not BRAND_SLUG.fullmatch(slug):
+            raise ValueError(f"Invalid brand slug: {slug!r}")
+        if slug in RESERVED_BRAND_SLUGS:
+            raise ValueError(f"Reserved brand slug: {slug!r}")
+        if slug in slugs:
+            raise ValueError(f"Duplicate brand slug: {slug!r}")
+        if column in columns:
+            raise ValueError(f"Duplicate brand column: {column!r}")
+        slugs.add(slug)
+        columns.add(column)
     return brands
 
 
@@ -132,8 +150,9 @@ def validate(path=DEFAULT_CSV, *, config=BRAND_CONFIG, template=MAP_TEMPLATE, ba
                 row_errors.append(f"invalid {field}")
         for brand in brands:
             column = brand["column"]
-            if value(column) not in ("", "1"):
-                row_errors.append(f"invalid {column} flag {value(column)!r} (expected blank or 1)")
+            flag = row.get(column) or ""
+            if flag not in ("", "1"):
+                row_errors.append(f"invalid {column} flag {flag!r} (expected blank or 1)")
         for field in OPTIONAL_COLUMNS:
             if field in headers and not value(field):
                 warnings.append(f"Row {line_number}: missing {field}")
@@ -149,13 +168,17 @@ def validate(path=DEFAULT_CSV, *, config=BRAND_CONFIG, template=MAP_TEMPLATE, ba
         store_types.add(value("StoreType"))
         states.add(mapping[value("State")])
         for brand in brands:
-            if value(brand["column"]) == "1":
+            if row.get(brand["column"]) == "1":
                 brand_counts[brand["column"]] += 1
     for coord, ids in coordinates.items():
         if len(set(ids)) > 1:
             warnings.append(f"Identical coordinates {coord}: IDs {', '.join(ids)}")
+    for brand in brands:
+        if brand_counts[brand["column"]] == 0:
+            errors.append(f"Configured brand {brand['slug']!r} has 0 valid locations")
     comparison = compare_baseline(rows, baseline) if baseline else None
     return {
+        "brands": brands,
         "valid": valid, "blank": blank, "unique_ids": len(seen_ids),
         "store_types": len(store_types), "states": len(states),
         "brand_counts": dict(brand_counts), "errors": errors, "warnings": warnings,
@@ -183,9 +206,9 @@ def format_report(report):
     return "\n".join(lines)
 
 
-def validate_or_exit(path=DEFAULT_CSV):
+def validate_or_exit(path=DEFAULT_CSV, *, config=BRAND_CONFIG, template=MAP_TEMPLATE):
     try:
-        report = validate(path)
+        report = validate(path, config=config, template=template)
     except (OSError, ValueError, csv.Error, json.JSONDecodeError) as error:
         print(f"FAIL: CSV validation could not run: {error}")
         raise SystemExit(1) from error

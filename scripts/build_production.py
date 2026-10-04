@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from build_preview import CANDIDATE_CSV, ROOT, build_page, load_brand_config
+from build_preview import BRAND_CONFIG_SOURCE, CANDIDATE_CSV, ROOT, SOURCE, build_page
 from validate_locations import validate_or_exit
 
 
@@ -10,17 +10,15 @@ def write_page(path: Path, html: str) -> None:
 
 
 def build_production() -> None:
-    brands = load_brand_config()
-    validate_or_exit(CANDIDATE_CSV)
+    report = validate_or_exit(CANDIDATE_CSV, config=BRAND_CONFIG_SOURCE, template=SOURCE)
+    brands = report["brands"]
     root_page = build_page(brands, preview=False, noindex=False)
     private_page = build_page(brands, preview=False, noindex=True)
 
     write_page(ROOT / "index.html", root_page)
-    for relative_target in (
-        Path("network-overview/index.html"),
-        Path("geekbar/index.html"),
-        Path("dojo/index.html"),
-    ):
+    targets = (Path("network-overview/index.html"),)
+    targets += tuple(Path(brand["slug"]) / "index.html" for brand in brands)
+    for relative_target in targets:
         write_page(ROOT / relative_target, private_page)
 
 
