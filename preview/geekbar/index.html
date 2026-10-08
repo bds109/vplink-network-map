@@ -1491,6 +1491,12 @@ background:rgba(248,250,252,.95);
 z-index:10000;
 }
 #filter-panel .panel-content{padding-top:76px;}
+#filter-panel .stat-card{background:#FFFFFF;border-color:#CBD5E1;}
+#filter-panel #stateFilter,
+#filter-panel #categoryFilter,
+#filter-panel #brandFilter{background:#FFFFFF;border:1px solid #CBD5E1;}
+#filter-panel .filter-chip:not(:has(input:checked)){background:#FFFFFF;border-color:#CBD5E1;}
+#filter-panel .filter-chip:not(:has(input:checked)):hover{background:#F8FAFC;border-color:#94A3B8;}
 #searchControl{top:16px;left:16px;width:calc(var(--desktop-panel-width) - 32px);z-index:10010;}
 #mapStyleBar{left:calc(var(--desktop-panel-width) + 20px);}
 #mapFloatingTitle,
