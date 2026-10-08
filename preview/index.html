@@ -3402,10 +3402,12 @@ return String(value || '')
 
 function getSearchScore(item,query){
 var store = item.store;
+var id = String(store.ID).trim();
 var name = normalizeSearchText(store.StoreName);
 var city = normalizeSearchText(store.City);
 var zip = normalizeSearchText(store.PostalCode);
 var address = normalizeSearchText(store.Address);
+if(id && id === query){ return -1; }
 if(name === query || city === query || zip === query || address === query){ return 0; }
 if(name.startsWith(query)){ return 1; }
 if(city.startsWith(query) || zip.startsWith(query)){ return 2; }
@@ -3461,7 +3463,7 @@ button.setAttribute('role','option');
 name.className = 'search-result-name';
 name.textContent = item.store.StoreName || 'Unnamed location';
 meta.className = 'search-result-meta';
-meta.textContent = (zipCity || '-') + ' · ' + (item.store.Address || '-');
+meta.textContent = 'ID: ' + String(item.store.ID).trim() + ' · ' + (zipCity || '-') + ' · ' + (item.store.Address || '-');
 button.appendChild(name);
 button.appendChild(meta);
 results.appendChild(button);
