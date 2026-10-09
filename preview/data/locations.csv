@@ -12,7 +12,7 @@ ID,StoreName,Address,Category,StoreType,State,CityCN,Country,PostalCode,City,Str
 123,BER-ShaNiu's House of Noodles 2,"Kurfürstenstraße 79, 10787 Berlin,Germany",Restaurant,Downtown Commercial District,柏林,柏林,Germany,10787,Berlin,Kurfürstenstraße,79,52.5041116,13.3464042,,,,,,1,
 124,BER-All Seasons,"Am Juliusturm 53, 13599 Berlin
 ,Germany",Restaurant,Large Buffet Restaurant,柏林,柏林,Germany,13599,Berlin,Am Juliusturm,53,52.5369384,13.2156491,,,,,,1,
-126,BER-Shoo Loong Kan Hot Pot 小龙坎,"Meinekestraße 22, 10719 Berlin,Germany",Restaurant,Chain Restaurant,柏林,柏林,Germany,10719,Berlin,Meinekestraße,22,52.5016523,13.3298358,,,,,,1,1
+126,BER-Shoo Loong Kan Hot Pot 小龙坎,"Meinekestraße 22, 10719 Berlin,Germany",Restaurant,China Restaurant,柏林,柏林,Germany,10719,Berlin,Meinekestraße,22,52.5016523,13.3298358,,,,,,1,1
 127,STR-Mino Internationale Lebensmittel,"Löwen-Markt 7, 70499 Stuttgart,Germany",Kiosk,Kiosk,巴符州,斯图加特,Germany,70499,Stuttgart,Löwen-Markt,7,48.8143508,9.112824,,,,,,1,
 128,NUE-Asia Copper House,"Fürther Str. 301, 90429 Nürnberg,Germany",Restaurant,Large Buffet Restaurant,巴伐利亚州,纽伦堡,Germany,90429,Nürnberg,Fürther Str.,301,49.4593859,11.0234034,,,,,,1,
 129,STR-kiosk24h,"König-Karl-Straße 69, 70372 Stuttgart,Germany",24-Hour Store,24-Hour Store,巴符州,斯图加特,Germany,70372,Stuttgart,König-Karl-Straße,69,48.8024417,9.2161295,,,,,,1,
