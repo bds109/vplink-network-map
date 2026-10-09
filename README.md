@@ -6,6 +6,9 @@ VPLINK Germany vending-machine network map, maintained as a subproject of the br
 
 - [Codex working rules](AGENTS.md)
 - [Full project handoff](docs/PROJECT_HANDOFF.md)
+- [Feature evolution: 2026-09-16 stable → 2026-10-09 Production](docs/FEATURE_EVOLUTION_20260916_TO_20261009.md)
+- [Map user guide / 地图使用指南](docs/MAP_USER_GUIDE.md)
+- [Production changelog](CHANGELOG.md)
 
 ## Current stack
 
