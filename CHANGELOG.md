@@ -2,6 +2,14 @@
 
 Production releases are recorded here. Preview-only releases are documented internally and are not Production versions. Add an entry for every Production release, and distinguish Code/UI releases from Operations data releases.
 
+## 2026-10-09 — XLSX store-list data update
+
+**Release type:** Operations data
+
+**Production commit:** `d6b4b18479cdf049c49f8cb1a705609e88d64cab`
+
+Exported the `VPL门店地图信息` worksheet from `VPL门店地图信息_20261007_1039_English.xlsx`. There are still 120 locations; ID 126 changed from `Chain Restaurant` to `China Restaurant`, increasing StoreType count from 21 to 22. Geekbar remains 50 and Dojo remains 60. Preview data commit: `8a47bff19c3bc25a2efe79af6719cab5313ba2df`. No Code/UI change. Production and Preview CSV were verified online against the generated CSV SHA-256; details and rollback: `docs/operations/2026-10-09-csv-update-1039.md`.
+
 ## 2026-10-09 — Accepted Preview Code/UI promotion
 
 **Release type:** Code/UI
