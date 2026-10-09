@@ -1297,6 +1297,35 @@ overflow-x:hidden;
 top:100px;
 }
 
+#shareFeedback{
+margin-top:4px;
+padding:5px 7px;
+border-radius:6px;
+background:rgba(239,246,255,.9);
+color:#1E3A8A;
+font-size:12px;
+line-height:1.4;
+overflow-wrap:anywhere;
+}
+
+#shareFeedback[hidden]{
+display:none;
+}
+
+#shareViewBtn{
+width:100%;
+min-height:32px;
+padding:5px 8px;
+border:1px solid #94A3B8;
+border-radius:6px;
+background:rgba(255,255,255,.72);
+color:#1E40AF;
+font:inherit;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+}
+
 #clearAllFilters{
 display:none;
 width:100%;
@@ -1402,9 +1431,173 @@ cursor:default;
 display:none;
 }
 
-@media (max-width: 768px){
+#areaControl{
+position:absolute;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+z-index:10003;
+display:flex;
+align-items:center;
+gap:8px;
+max-width:calc(100vw - 40px);
+padding:6px 8px;
+border:1px solid rgba(255,255,255,.95);
+border-radius:10px;
+background:rgba(255,255,255,.9);
+box-shadow:0 8px 24px rgba(15,23,42,.15);
+white-space:nowrap;
+}
+#areaControl[hidden],
+#areaPanel[hidden]{display:none !important;}
+#areaControl button,
+#areaPanel button{
+border:0;
+border-radius:6px;
+padding:6px 9px;
+background:#EFF6FF;
+color:#1D4ED8;
+font:inherit;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+}
+#areaCount{font-size:12px;font-weight:700;color:#334155;}
+#areaPanel{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px;
+font-size:12px;
+color:#334155;
+}
+#locationsPanel{display:none;}
+#storeDetailPanel{display:none;}
+
+@media (min-width: 769px){
+:root{--desktop-panel-width:clamp(320px,26vw,380px);--desktop-panel-inset:32px;}
+#map{width:100%;margin-left:0;}
+#filter-panel{
+top:18px;
+left:var(--desktop-panel-inset);
+width:var(--desktop-panel-width);
+height:calc(100vh - 36px);
+height:calc(100dvh - 36px);
+max-height:none;
+padding:16px;
+border-radius:18px;
+background:rgba(255,255,255,.64);
+backdrop-filter:blur(56px) saturate(1.45);
+-webkit-backdrop-filter:blur(56px) saturate(1.45);
+border:1px solid rgba(255,255,255,.88);
+box-shadow:0 10px 28px rgba(15,23,42,.10);
+z-index:10000;
+}
+#filter-panel .panel-content{padding-top:0;}
+#filter-panel #panelHeader{margin-bottom:12px;}
+#filter-panel .stat-card{
+background:rgba(255,255,255,.36);
+border:1px solid rgba(255,255,255,.72);
+backdrop-filter:blur(22px) saturate(1.35);
+-webkit-backdrop-filter:blur(22px) saturate(1.35);
+}
+#filter-panel #stateFilter,
+#filter-panel #categoryFilter,
+#filter-panel #brandFilter{
+background:rgba(255,255,255,.28);
+border:1px solid rgba(255,255,255,.68);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+}
+#filter-panel .filter-chip:not(:has(input:checked)){
+background:rgba(255,255,255,.40);
+border-color:rgba(255,255,255,.62);
+}
+#filter-panel .filter-chip:not(:has(input:checked)):hover{
+background:rgba(255,255,255,.56);
+border-color:rgba(255,255,255,.88);
+}
+#filter-panel .filter-chip{height:24px;}
+#filter-panel .filter-expand-button{background:rgba(255,255,255,.46);border-color:rgba(255,255,255,.76);}
+#filter-panel #shareViewBtn{background:rgba(255,255,255,.56);border-color:rgba(37,99,235,.62);}
 #searchControl{
-top:10px;
+top:20px;
+left:calc(var(--desktop-panel-inset) + var(--desktop-panel-width) + 16px);
+width:min(340px,calc(100vw - var(--desktop-panel-width) - 150px));
+z-index:10010;
+}
+#searchControl .search-input-wrap{background:rgba(255,255,255,.64);border-color:rgba(255,255,255,.88);backdrop-filter:blur(36px) saturate(1.45);-webkit-backdrop-filter:blur(36px) saturate(1.45);}
+#showingCount{background:rgba(255,255,255,.56);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+#searchResults{background:rgba(255,255,255,.78);}
+#mapStyleBar{left:calc(var(--desktop-panel-inset) + var(--desktop-panel-width) + 18px);}
+#mapFloatingTitle,
+#mapFloatingTitle.is-brand-title{
+left:calc((100vw + var(--desktop-panel-inset) + var(--desktop-panel-width))/2);
+width:min(780px,calc(100vw - var(--desktop-panel-width) - 40px));
+}
+#areaControl{left:calc((100vw + var(--desktop-panel-inset) + var(--desktop-panel-width))/2);}
+#locationsPanel{display:block;min-width:0;border-top:1px solid #CBD5E1;padding-top:8px;}
+#locationsHeading{margin:0 0 8px;font-size:15px;color:#0F172A;}
+#locationsList{max-height:50dvh;min-height:130px;overflow-y:auto;overflow-x:hidden;}
+#storeDetailPanel{min-width:0;overflow-y:auto;overflow-x:hidden;padding:4px 0 20px;color:#0F172A;}
+#filter-panel.is-detail .results-body,
+#filter-panel.is-detail #statsPanel,
+body.desktop-detail-open #showingCount,
+#filter-panel.is-detail #filterSections,
+#filter-panel.is-detail #clearAllFilters,
+#filter-panel.is-detail #shareViewBtn,
+#filter-panel.is-detail #shareFeedback{display:none !important;}
+#filter-panel.is-detail #storeDetailPanel{display:block;}
+#detailBackBtn,#detailShowAllBtn,#detailShareBtn{min-height:36px;padding:7px 10px;border:1px solid #94A3B8;border-radius:7px;background:white;color:#1D4ED8;font:inherit;font-weight:700;cursor:pointer;}
+#detailBackBtn{margin-bottom:12px;}
+#detailShowAllBtn{margin-top:10px;}
+#detailShowAllBtn[hidden]{display:none;}
+#detailShareBtn{display:block;margin-top:10px;}
+#detailContent{overflow-wrap:anywhere;}
+#detailContent h3{font-size:19px !important;}
+#detailContent img{max-width:100%;}
+#detailContent .detail-media{margin:0 0 14px !important;}
+#detailShareFeedback{margin-top:8px;color:#1E3A8A;font-size:12px;}
+#detailShareFeedback[hidden]{display:none;}
+.location-row{display:block;width:100%;box-sizing:border-box;margin:0 0 6px;padding:9px;border:1px solid rgba(255,255,255,.68);border-radius:8px;background:rgba(255,255,255,.40);text-align:left;cursor:pointer;}
+.location-row.is-active{border-color:#2563EB;background:#DBEAFE;}
+.location-row-name{display:block;font-size:13px;font-weight:700;color:#0F172A;overflow-wrap:anywhere;}
+.location-row-meta{display:block;margin:3px 0;font-size:11px;color:#475569;}
+.location-row-directions{font-size:12px;font-weight:700;color:#1D4ED8;}
+body.desktop-panel-collapsed #map{width:100%;margin-left:0;}
+body.desktop-panel-collapsed #filter-panel,
+body.desktop-panel-collapsed #searchControl{display:none !important;}
+body.desktop-panel-collapsed #openFilterBtn{display:block;top:20px;left:20px;}
+body.desktop-panel-collapsed #mapStyleBar{left:20px;}
+body.desktop-panel-collapsed #mapFloatingTitle,
+body.desktop-panel-collapsed #mapFloatingTitle.is-brand-title{left:50%;width:min(780px,calc(100vw - 40px));}
+body.desktop-panel-collapsed #areaControl{left:50%;}
+}
+
+@media (max-width: 768px){
+:root{
+--mobile-safe-top:env(safe-area-inset-top,0px);
+--mobile-safe-bottom:env(safe-area-inset-bottom,0px);
+--mobile-top-row:calc(10px + var(--mobile-safe-top));
+--mobile-panel-top:calc(var(--mobile-top-row) + 48px);
+--mobile-style-bottom:calc(6px + var(--mobile-safe-bottom));
+--mobile-panel-bottom:calc(var(--mobile-style-bottom) + 52px + 12px);
+--map-z-style:1150;
+--map-z-counter:1200;
+--map-z-panel:1300;
+--map-z-controls:1400;
+--map-z-popup:1500;
+--map-z-modal:2000;
+}
+
+#map{
+height:100vh;
+height:100dvh;
+}
+
+#searchControl{
+top:var(--mobile-top-row);
+z-index:var(--map-z-controls);
 left:10px;
 width:calc(100vw - 132px);
 min-width:0;
@@ -1436,8 +1629,22 @@ cursor:pointer;
 display:none;
 }
 
+#searchControl .search-input-wrap{
+flex:1;
+min-width:0;
+}
+
+#locationSearch{
+width:100%;
+min-width:0;
+font-size:16px;
+}
+
 #searchControl.is-search-open{
-width:calc(100vw - 20px);
+left:10px;
+right:10px;
+width:auto;
+max-width:none;
 }
 
 #searchControl.is-search-open + #openFilterBtn{
@@ -1457,6 +1664,7 @@ min-width:0;
 
 #searchControl.is-search-open #closeSearchBtn{
 display:block;
+flex:none;
 }
 
 #showingCount{
@@ -1470,28 +1678,65 @@ font-size:10px;
 #searchResults{
 top:42px;
 max-height:32vh;
+max-height:32dvh;
+z-index:1;
 }
 
 #locationCounter{
-top:58px;
+top:var(--mobile-panel-top);
 right:10px;
+z-index:var(--map-z-counter);
+}
+
+body.mobile-filters-open #locationCounter,
+body.mobile-search-open #locationCounter{
+visibility:hidden;
 }
 
 #filter-panel{
 display:none;
-top:58px;
+top:var(--mobile-panel-top);
 left:10px;
 width:min(280px,calc(100vw - 20px));
-max-height:calc(100vh - 68px);
+max-height:calc(100vh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+max-height:calc(100dvh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+overflow-y:auto;
+overscroll-behavior:contain;
+z-index:var(--map-z-panel);
 }
+
+#mapStyleBar{
+bottom:var(--mobile-style-bottom);
+z-index:var(--map-z-style);
+}
+#areaPanel,
+#locationsPanel{display:none !important;}
+#areaControl{
+top:calc(var(--mobile-panel-top) + 110px);
+max-width:calc(100vw - 40px);
+z-index:var(--map-z-panel);
+}
+body.mobile-search-open #areaControl,
+body.mobile-filters-open #areaControl,
+body:has(.leaflet-popup-pane .leaflet-popup) #areaControl{display:none !important;}
+#previewEnvBadge{top:calc(var(--mobile-panel-top) + 84px);}
 
 #openFilterBtn{
 display:block;
-top:10px;
+top:var(--mobile-top-row);
 left:auto;
 right:10px;
 height:38px;
 padding:0 10px;
+z-index:var(--map-z-controls);
+}
+
+.leaflet-popup-pane{
+z-index:var(--map-z-popup) !important;
+}
+
+#photoModal{
+z-index:var(--map-z-modal);
 }
 
 #clearAllFilters{
@@ -1511,11 +1756,28 @@ max-height:32vh !important;
 }
 
 #previewEnvBadge{
-top:142px;
+top:calc(var(--mobile-panel-top) + 84px);
 right:10px;
-z-index:9998;
+z-index:1100;
 font-size:10px;
 padding:7px 10px;
+}
+
+body:has(.leaflet-popup-pane .leaflet-popup) #previewEnvBadge{
+visibility:hidden;
+}
+}
+
+@media (max-width: 768px) and (max-height: 500px){
+/* In short landscape, the photo card uses the same clear zone as the filter panel. */
+.leaflet-popup-content-wrapper{
+box-sizing:border-box;
+max-height:calc(100vh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+max-height:calc(100dvh - var(--mobile-panel-top) - var(--mobile-panel-bottom));
+overflow-y:auto;
+}
+#popupImage{
+height:100px !important;
 }
 }
 
@@ -1668,11 +1930,36 @@ VPLINK NETWORK MAP
 <button id="toggleBrandFilter" class="filter-expand-button" type="button" hidden>Show all</button>
 </section>
 <button id="clearAllFilters" type="button">Clear filters</button>
+<button id="shareViewBtn" type="button">Share view</button>
+<div id="shareFeedback" role="status" aria-live="polite" hidden></div>
+</div>
+<div class="results-body">
+<section id="areaPanel" aria-label="Area results" hidden>
+<span id="areaStatus"></span>
+<button id="showAllPanelBtn" type="button">Show all</button>
+</section>
+<section id="locationsPanel" aria-labelledby="locationsHeading">
+<h2 id="locationsHeading">Locations</h2>
+<div id="locationsList" role="list"></div>
+</section>
+</div>
+<section id="storeDetailPanel" aria-label="Store details" hidden>
+<button id="detailBackBtn" type="button">← Back to locations</button>
+<div id="detailContent"></div>
+<button id="detailShowAllBtn" type="button" hidden>Show all</button>
+<button id="detailShareBtn" type="button">Share</button>
+<div id="detailShareFeedback" role="status" aria-live="polite" hidden></div>
+</section>
+
 </div>
 
+
 </div>
 
-
+<div id="areaControl" aria-live="polite" hidden>
+<button id="searchAreaBtn" type="button">Search this area</button>
+<span id="areaCount" hidden></span>
+<button id="showAllMapBtn" type="button" hidden>Show all</button>
 </div>
 
 <div id="mapStyleBar">
@@ -2280,6 +2567,11 @@ store.StoreName +
 (store.Address || '-') +
 '</div>' +
 
+'<a class="popup-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=' +
+String(store.Latitude).trim() + ',' + String(store.Longitude).trim() +
+'" target="_blank" rel="noopener noreferrer" ' +
+'style="display:inline-block;margin-bottom:10px;color:#1D4ED8;font-weight:700;">Directions</a>' +
+
 (
 storeId
 ?
@@ -2438,6 +2730,7 @@ map.getZoom() + 3,
 }
 );
 
+marker.locationStoreId = String(store.ID).trim();
 marker.bindPopup(
 buildPopupHtml(store)
 );
@@ -2457,58 +2750,6 @@ updateStats(
 allMarkers
 );
 currentFilteredMarkers = allMarkers;
-
-document
-.getElementById(
-'closeFilterBtn'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.getElementById(
-'filter-panel'
-)
-.style.display =
-'none';
-
-document
-.getElementById(
-'openFilterBtn'
-)
-.style.display =
-'block';
-
-}
-);
-
-document
-.getElementById(
-'openFilterBtn'
-)
-.addEventListener(
-'click',
-function(){
-
-document
-.getElementById(
-'filter-panel'
-)
-.style.display =
-'block';
-
-document
-.getElementById(
-'openFilterBtn'
-)
-.style.display =
-'none';
-
-}
-);
-
-
 
 window.renderMarkers = function(items){
 
@@ -2554,6 +2795,7 @@ icon: pointIcon
 }
 );
 
+pointMarker.locationStoreId = String(item.store.ID).trim();
 pointMarker.bindPopup(
 item.marker.getPopup()
 );
@@ -2587,6 +2829,14 @@ var expandedFilterSection = null;
 var pageScopeMarkers = [];
 var mobileFiltersOpen = false;
 var searchResultItems = [];
+var selectedStoreId = null;
+var selectedStoreOverlay = null;
+var resultsScrollTop = 0;
+var suppressPopupSelection = false;
+var urlStateReady = false;
+var activeArea = null;
+var areaPrompt = false;
+var userZoomIntent = false;
 
 function applyViewTitle(){
 if(mapView.mode !== 'brand' || !mapView.brand){
@@ -2852,11 +3102,206 @@ button.textContent = isMobileFiltersLayout() ? (count ? 'Filters (' + count + ')
 button.setAttribute('aria-label',button.textContent);
 }
 
+function findScopedStore(id){
+return pageScopeMarkers.find(function(item){ return String(item.store.ID).trim() === id; });
+}
+
+function updateSelectedStoreView(){
+var desktop = !isMobileFiltersLayout();
+var item = selectedStoreId && findScopedStore(selectedStoreId);
+var panel = document.getElementById('filter-panel');
+var detail = document.getElementById('storeDetailPanel');
+var content = document.getElementById('detailContent');
+var showing = Boolean(desktop && item);
+document.getElementById('detailShowAllBtn').hidden = !activeArea;
+panel.classList.toggle('is-detail',showing);
+document.body.classList.toggle('desktop-detail-open',showing);
+detail.hidden = !showing;
+if(selectedStoreOverlay){ map.removeLayer(selectedStoreOverlay); selectedStoreOverlay = null; }
+if(!showing){ content.replaceChildren(); return; }
+if(content.dataset.storeId !== selectedStoreId || !content.firstElementChild){
+// The popup is the single source for field, directions and photo markup.
+content.innerHTML = buildPopupHtml(item.store);
+content.dataset.storeId = selectedStoreId;
+var photoData = content.querySelector('.photo-data');
+if(photoData){
+var media = photoData.parentElement;
+media.classList.add('detail-media');
+var image = media.querySelector('img');
+image.alt = 'Store photo';
+// No broken or empty media area while the first photo is being checked.
+media.style.display = 'none';
+image.addEventListener('load',function(){ media.style.display = 'block'; });
+image.addEventListener('error',function(){ media.style.display = 'none'; });
+if(image.complete && image.naturalWidth){ media.style.display = 'block'; }
+content.firstElementChild.prepend(media);
+}
+}
+selectedStoreOverlay = L.marker(item.marker.getLatLng(),{
+icon:L.divIcon({className:'selected-store-pin',html:'<span aria-hidden="true" style="display:block;width:26px;height:26px;border:4px solid #F97316;border-radius:50%;background:#2563EB;box-shadow:0 0 0 3px white,0 3px 12px #334155"></span>',iconSize:[34,34],iconAnchor:[17,17]}),
+interactive:false,zIndexOffset:1000
+}).addTo(map);
+}
+
+function setSelectedStore(id){
+var nextId = id && findScopedStore(String(id)) ? String(id) : null;
+if(!selectedStoreId && nextId){
+resultsScrollTop = document.getElementById('locationsList').scrollTop;
+}
+selectedStoreId = nextId;
+updateSelectedStoreView();
+highlightResultRow(nextId);
+if(!nextId){ document.getElementById('locationsList').scrollTop = resultsScrollTop; }
+syncUrlState();
+}
+
+function selectStore(item){
+if(!item || !pageScopeMarkers.includes(item)){ return; }
+setSelectedStore(String(item.store.ID).trim());
+focusSearchTarget(item);
+}
+
+function updateResultsList(items){
+var list = document.getElementById('locationsList');
+var previousScroll = list.scrollTop;
+list.replaceChildren();
+if(isMobileFiltersLayout()){ return; }
+var sorted = items.slice().sort(function(a,b){
+return normalizeSearchText(a.store.StoreName).localeCompare(normalizeSearchText(b.store.StoreName)) ||
+Number(a.store.ID) - Number(b.store.ID);
+});
+if(!sorted.length){
+var empty = document.createElement('p');
+empty.textContent = 'No locations in the current results';
+list.appendChild(empty);
+return;
+}
+sorted.forEach(function(item){
+var row = document.createElement('div');
+var name = document.createElement('span');
+var meta = document.createElement('span');
+var directions = document.createElement('a');
+row.className = 'location-row';
+row.dataset.storeId = String(item.store.ID).trim();
+row.setAttribute('role','button');
+row.tabIndex = 0;
+row.setAttribute('aria-label','View ' + (item.store.StoreName || 'location'));
+name.className = 'location-row-name';
+name.textContent = item.store.StoreName || 'Unnamed location';
+meta.className = 'location-row-meta';
+meta.textContent = [item.store.City,item.store.StoreType].filter(Boolean).join(' · ');
+directions.className = 'location-row-directions';
+directions.textContent = 'Directions';
+directions.href = 'https://www.google.com/maps/dir/?api=1&destination=' +
+String(item.store.Latitude).trim() + ',' + String(item.store.Longitude).trim();
+directions.target = '_blank';
+directions.rel = 'noopener noreferrer';
+row.append(name,meta,directions);
+row.classList.toggle('is-active',row.dataset.storeId === selectedStoreId);
+list.appendChild(row);
+});
+list.scrollTop = previousScroll;
+}
+
+function highlightResultRow(storeId){
+document.querySelectorAll('#locationsList .location-row').forEach(function(row){
+var selected = Boolean(storeId && row.dataset.storeId === storeId);
+row.classList.toggle('is-active',selected);
+if(selected && !document.getElementById('filter-panel').classList.contains('is-detail')){
+row.scrollIntoView({block:'nearest'});
+}
+});
+}
+
+function updateAreaControls(){
+var control = document.getElementById('areaControl');
+control.hidden = !areaPrompt && (!activeArea || !isMobileFiltersLayout());
+document.getElementById('searchAreaBtn').hidden = !areaPrompt;
+document.getElementById('areaCount').hidden = !activeArea || areaPrompt;
+document.getElementById('areaCount').textContent = currentFilteredMarkers.length + ' in this area ·';
+document.getElementById('showAllMapBtn').hidden = !activeArea;
+var panel = document.getElementById('areaPanel');
+panel.hidden = !activeArea;
+document.getElementById('areaStatus').textContent = activeArea ?
+currentFilteredMarkers.length + ' in this area' : '';
+}
+
+function captureAreaBounds(){
+var bounds = map.getBounds();
+var area = {
+west:Math.max(-180,bounds.getWest()),
+south:Math.max(-90,bounds.getSouth()),
+east:Math.min(180,bounds.getEast()),
+north:Math.min(90,bounds.getNorth())
+};
+return area.west < area.east && area.south < area.north ? area : null;
+}
+
+function parseAreaBounds(value){
+if(!value){ return null; }
+var parts = value.split(',');
+if(parts.length !== 4 || parts.some(function(part){
+return !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(part);
+})){ return null; }
+var numbers = parts.map(Number);
+var west = numbers[0], south = numbers[1], east = numbers[2], north = numbers[3];
+if(!numbers.every(Number.isFinite) || west < -180 || east > 180 ||
+south < -90 || north > 90 || west >= east || south >= north){ return null; }
+return {west:west,south:south,east:east,north:north};
+}
+
+function initializeAreaControls(){
+function showAreaPrompt(){
+if(!urlStateReady){ return; }
+areaPrompt = true;
+updateAreaControls();
+}
+map.on('dragend',showAreaPrompt);
+markerCluster.on('clusterclick',showAreaPrompt);
+var container = map.getContainer();
+function noteZoomIntent(){
+userZoomIntent = true;
+setTimeout(function(){ userZoomIntent = false; },1200);
+}
+container.addEventListener('wheel',noteZoomIntent,{passive:true});
+container.addEventListener('dblclick',noteZoomIntent,true);
+container.addEventListener('keydown',function(event){
+if(['+','=','-','_','Add','Subtract'].includes(event.key)){
+noteZoomIntent();
+}
+},true);
+container.addEventListener('touchstart',function(event){
+if(event.touches.length > 1){ noteZoomIntent(); }
+},{passive:true});
+container.addEventListener('click',function(event){
+if(event.target.closest('.leaflet-control-zoom-in,.leaflet-control-zoom-out')){
+noteZoomIntent();
+}
+},true);
+map.on('zoomend',function(){
+if(userZoomIntent){ userZoomIntent = false; showAreaPrompt(); }
+});
+document.getElementById('searchAreaBtn').addEventListener('click',function(){
+if(selectedStoreId){ setSelectedStore(null); }
+activeArea = captureAreaBounds();
+areaPrompt = false;
+applyFilters();
+});
+function showAll(){
+activeArea = null;
+areaPrompt = false;
+applyFilters();
+}
+document.getElementById('showAllMapBtn').addEventListener('click',showAll);
+document.getElementById('showAllPanelBtn').addEventListener('click',showAll);
+document.getElementById('detailShowAllBtn').addEventListener('click',showAll);
+}
+
 function applyFilters(focusTarget){
 var selections = getFilterSelections();
 ensureAutoExpansion(selections,focusTarget && focusTarget.group);
 
-var filteredMarkers = pageScopeMarkers.filter(function(item){
+var userFiltered = pageScopeMarkers.filter(function(item){
 var state = stateNameMap[item.store.State];
 var category = item.store.StoreType;
 var stateMatch = selections.states.length === 0 || selections.states.includes(state);
@@ -2867,11 +3312,20 @@ return itemMatchesBrand(item,brand);
 });
 return stateMatch && categoryMatch && brandMatch;
 });
+var filteredMarkers = activeArea ? userFiltered.filter(function(item){
+var point = item.marker.getLatLng();
+return point.lng >= activeArea.west && point.lng <= activeArea.east &&
+point.lat >= activeArea.south && point.lat <= activeArea.north;
+}) : userFiltered;
 
 window.renderMarkers(filteredMarkers);
 updateStats(filteredMarkers);
 renderFilterSections(selections,focusTarget);
 updateMobileFilterButton(selections);
+updateResultsList(filteredMarkers);
+updateAreaControls();
+updateSelectedStoreView();
+if(urlStateReady){ syncUrlState(); }
 return filteredMarkers;
 }
 
@@ -2943,10 +3397,12 @@ return String(value || '')
 
 function getSearchScore(item,query){
 var store = item.store;
+var id = String(store.ID).trim();
 var name = normalizeSearchText(store.StoreName);
 var city = normalizeSearchText(store.City);
 var zip = normalizeSearchText(store.PostalCode);
 var address = normalizeSearchText(store.Address);
+if(id && id === query){ return -1; }
 if(name === query || city === query || zip === query || address === query){ return 0; }
 if(name.startsWith(query)){ return 1; }
 if(city.startsWith(query) || zip.startsWith(query)){ return 2; }
@@ -3002,7 +3458,7 @@ button.setAttribute('role','option');
 name.className = 'search-result-name';
 name.textContent = item.store.StoreName || 'Unnamed location';
 meta.className = 'search-result-meta';
-meta.textContent = (zipCity || '-') + ' · ' + (item.store.Address || '-');
+meta.textContent = 'ID: ' + String(item.store.ID).trim() + ' · ' + (zipCity || '-') + ' · ' + (item.store.Address || '-');
 button.appendChild(name);
 button.appendChild(meta);
 results.appendChild(button);
@@ -3043,7 +3499,23 @@ replaceFilterDimension('.brandCheckbox',compatibleBrand || (targetBrands.length 
 }
 }
 
+function panDesktopStoreIntoVisibleMap(item,animate){
+var mapRect = map.getContainer().getBoundingClientRect();
+var panelRect = document.getElementById('filter-panel').getBoundingClientRect();
+var panelRight = document.body.classList.contains('desktop-panel-collapsed') ? 0 :
+Math.max(0,panelRect.right - mapRect.left);
+var visibleCenterX = (panelRight + mapRect.width) / 2;
+var offset = visibleCenterX - mapRect.width / 2;
+var point = map.project(item.marker.getLatLng(),map.getZoom());
+var center = map.unproject(point.subtract(L.point(offset,0)),map.getZoom());
+map.panTo(center,{animate:animate});
+}
+
 function focusSearchTarget(item){
+if(!isMobileFiltersLayout()){
+panDesktopStoreIntoVisibleMap(item,true);
+return;
+}
 if(isClusterMode){
 markerCluster.zoomToShowLayer(item.marker,function(){
 setTimeout(function(){ item.marker.openPopup(); },80);
@@ -3057,6 +3529,8 @@ setTimeout(function(){ marker.openPopup(); },300);
 }
 
 function selectSearchResult(item){
+activeArea = null;
+areaPrompt = false;
 adjustFiltersForSearchTarget(item);
 var filtered = applyFilters();
 hideSearchResults();
@@ -3066,8 +3540,16 @@ setMobileFiltersOpen(false);
 setMobileSearchOpen(false);
 }
 if(filtered.includes(item)){
-focusSearchTarget(item);
+selectStore(item);
 }
+}
+
+var viewportSyncTimer = null;
+function syncMapSizeAfterViewportChange(){
+clearTimeout(viewportSyncTimer);
+viewportSyncTimer = setTimeout(function(){
+requestAnimationFrame(function(){ map.invalidateSize({pan:false}); });
+},80);
 }
 
 function setMobileSearchOpen(open){
@@ -3077,6 +3559,7 @@ return;
 var control = document.getElementById('searchControl');
 var input = document.getElementById('locationSearch');
 control.classList.toggle('is-search-open',Boolean(open));
+document.body.classList.toggle('mobile-search-open',Boolean(open));
 document.getElementById('openSearchBtn').setAttribute('aria-expanded',open ? 'true' : 'false');
 if(open){
 setMobileFiltersOpen(false);
@@ -3086,6 +3569,7 @@ hideSearchResults();
 input.value = '';
 input.blur();
 }
+requestAnimationFrame(syncMapSizeAfterViewportChange);
 }
 
 function initializeSearch(){
@@ -3141,9 +3625,48 @@ if(!isMobileFiltersLayout()){
 return;
 }
 mobileFiltersOpen = Boolean(open);
+document.body.classList.toggle('mobile-filters-open',mobileFiltersOpen);
 document.getElementById('filter-panel').style.display = mobileFiltersOpen ? 'block' : 'none';
 document.getElementById('openFilterBtn').style.display = 'block';
 document.getElementById('openFilterBtn').setAttribute('aria-expanded',mobileFiltersOpen ? 'true' : 'false');
+}
+
+function setDesktopPanelCollapsed(collapsed){
+if(isMobileFiltersLayout()){ return; }
+document.body.classList.toggle('desktop-panel-collapsed',Boolean(collapsed));
+document.getElementById('filter-panel').style.display = collapsed ? 'none' : 'block';
+document.getElementById('openFilterBtn').style.display = collapsed ? 'block' : 'none';
+requestAnimationFrame(function(){
+map.invalidateSize({pan:false});
+if(!collapsed && selectedStoreId){
+var selected = findScopedStore(selectedStoreId);
+if(selected){ panDesktopStoreIntoVisibleMap(selected,false); }
+}
+});
+}
+
+function initializeDesktopPanel(){
+var list = document.getElementById('locationsList');
+function viewRow(row){
+var storeId = row.dataset.storeId;
+var item = pageScopeMarkers.find(function(candidate){
+return String(candidate.store.ID).trim() === storeId;
+});
+if(item && currentFilteredMarkers.includes(item)){ selectStore(item); }
+}
+list.addEventListener('click',function(event){
+if(event.target.closest('.location-row-directions')){ return; }
+var row = event.target.closest('.location-row');
+if(row){ viewRow(row); }
+});
+list.addEventListener('keydown',function(event){
+if(event.target.closest('.location-row-directions')){ return; }
+var row = event.target.closest('.location-row');
+if(row && (event.key === 'Enter' || event.key === ' ')){
+event.preventDefault();
+viewRow(row);
+}
+});
 }
 
 function initializeMobileFilters(){
@@ -3152,36 +3675,250 @@ var closeButton = document.getElementById('closeFilterBtn');
 var wasMobile = isMobileFiltersLayout();
 openButton.setAttribute('aria-controls','filter-panel');
 openButton.addEventListener('click',function(e){
-if(!isMobileFiltersLayout()){ return; }
 e.stopPropagation();
+if(isMobileFiltersLayout()){
 setMobileFiltersOpen(!mobileFiltersOpen);
+}else{
+setDesktopPanelCollapsed(false);
+}
 });
 closeButton.addEventListener('click',function(){
-if(isMobileFiltersLayout()){ setMobileFiltersOpen(false); }
+if(isMobileFiltersLayout()){
+setMobileFiltersOpen(false);
+}else{
+setDesktopPanelCollapsed(true);
+}
 });
 map.on('click',function(){
 if(isMobileFiltersLayout()){ setMobileFiltersOpen(false); }
 });
 window.addEventListener('resize',function(){
+syncMapSizeAfterViewportChange();
 var mobile = isMobileFiltersLayout();
 if(mobile === wasMobile){ return; }
 wasMobile = mobile;
 if(mobile){
+document.body.classList.remove('desktop-panel-collapsed');
 setMobileFiltersOpen(false);
 setMobileSearchOpen(false);
 }else{
 document.getElementById('searchControl').classList.remove('is-search-open');
+document.body.classList.remove('mobile-search-open','mobile-filters-open');
 hideSearchResults();
 document.getElementById('filter-panel').style.display = 'block';
 openButton.style.display = 'none';
 }
+if(!mobile){
+suppressPopupSelection = true;
+map.closePopup();
+suppressPopupSelection = false;
+}
+updateSelectedStoreView();
+if(selectedStoreId){
+var selected = findScopedStore(selectedStoreId);
+if(selected){
+if(mobile){
+focusSearchTarget(selected);
+}else{
+requestAnimationFrame(function(){ panDesktopStoreIntoVisibleMap(selected,false); });
+}
+}
+}
+updateResultsList(currentFilteredMarkers);
+updateAreaControls();
 var count = document.getElementById('showingCount');
 updateShowingCount(Number(count.dataset.shown),Number(count.dataset.total));
 updateMobileFilterButton(getFilterSelections());
 });
+if(window.visualViewport){
+window.visualViewport.addEventListener('resize',syncMapSizeAfterViewportChange);
+}
 if(wasMobile){
 setMobileFiltersOpen(false);
 }
+}
+
+function shareUrl(){
+var url = new URL(window.location.href);
+var params = new URLSearchParams();
+var selections = getFilterSelections();
+selections.states.slice().sort().forEach(function(value){ params.append('state',value); });
+selections.categories.slice().sort().forEach(function(value){ params.append('type',value); });
+if(mapView.mode === 'overview'){
+selections.brands.slice().sort().forEach(function(value){ params.append('brand',value); });
+}
+if(activeArea){
+params.set('bbox',[activeArea.west,activeArea.south,activeArea.east,activeArea.north].map(function(value){
+return value.toFixed(6);
+}).join(','));
+}
+if(selectedStoreId){ params.set('id',selectedStoreId); }
+var center = map.getCenter();
+params.set('lat',center.lat.toFixed(6));
+params.set('lng',center.lng.toFixed(6));
+params.set('z',String(map.getZoom()));
+url.search = params.toString();
+return url;
+}
+
+function syncUrlState(){
+if(!urlStateReady){ return; }
+var url = shareUrl();
+history.replaceState(history.state,'',url.pathname + url.search + url.hash);
+}
+
+function restoreMapView(params){
+var values = ['lat','lng','z'].map(function(key){ return params.get(key); });
+if(values.some(function(value){ return value === null || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value); })){
+return;
+}
+var lat = Number(values[0]);
+var lng = Number(values[1]);
+var zoom = Number(values[2]);
+if(!Number.isFinite(lat) || !Number.isFinite(lng) || !Number.isFinite(zoom) ||
+Math.abs(lat) > 90 || Math.abs(lng) > 180 || zoom < 0 || zoom > 19){
+return;
+}
+map.setView([lat,lng],zoom,{animate:false});
+}
+
+function showShareFeedback(text,detailMode){
+var button = document.getElementById(detailMode ? 'detailShareBtn' : 'shareViewBtn');
+var feedback = document.getElementById(detailMode ? 'detailShareFeedback' : 'shareFeedback');
+clearTimeout(button.feedbackTimer);
+if(isMobileFiltersLayout() && !detailMode){
+feedback.hidden = true;
+button.textContent = text;
+}else{
+button.textContent = detailMode ? 'Share' : 'Share view';
+feedback.textContent = text;
+feedback.hidden = false;
+}
+button.feedbackTimer = setTimeout(function(){
+button.textContent = detailMode ? 'Share' : 'Share view';
+feedback.hidden = true;
+feedback.textContent = '';
+},3000);
+}
+
+async function copyShareUrl(url,detailMode){
+try{
+if(navigator.clipboard && navigator.clipboard.writeText){
+await navigator.clipboard.writeText(url);
+}else{
+var field = document.createElement('textarea');
+field.value = url;
+field.style.position = 'fixed';
+field.style.opacity = '0';
+document.body.appendChild(field);
+field.select();
+try{
+if(!document.execCommand('copy')){ throw new Error('Copy unavailable'); }
+}finally{
+field.remove();
+}
+}
+showShareFeedback(isMobileFiltersLayout() ? 'Link copied' :
+'Share link copied to clipboard. You can send it to anyone.',detailMode);
+}catch(error){
+showShareFeedback(isMobileFiltersLayout() ? 'Unable to copy link' :
+'Could not copy link. Please try again.',detailMode);
+}
+}
+
+function initializeUrlState(){
+var params = new URLSearchParams(window.location.search);
+var selectedStates = new Set(params.getAll('state').filter(function(value){
+return Object.prototype.hasOwnProperty.call(stateCount,value);
+}));
+var selectedTypes = new Set(params.getAll('type').filter(function(value){
+return Object.prototype.hasOwnProperty.call(categoryCount,value);
+}));
+var selectedBrands = new Set(mapView.mode === 'overview' ? params.getAll('brand').filter(function(value){
+return BRAND_CONFIG.some(function(brand){ return brand.slug === value; });
+}) : []);
+document.querySelectorAll('.stateCheckbox').forEach(function(cb){ cb.checked = selectedStates.has(cb.value); });
+document.querySelectorAll('.categoryCheckbox').forEach(function(cb){ cb.checked = selectedTypes.has(cb.value); });
+if(mapView.mode === 'overview'){
+document.querySelectorAll('.brandCheckbox').forEach(function(cb){ cb.checked = selectedBrands.has(cb.value); });
+}
+activeArea = parseAreaBounds(params.get('bbox'));
+applyFilters();
+var requestedId = params.get('id');
+var target = requestedId && pageScopeMarkers.find(function(item){
+return String(item.store.ID).trim() === requestedId;
+});
+if(target){
+activeArea = null;
+areaPrompt = false;
+adjustFiltersForSearchTarget(target);
+if(!applyFilters().includes(target)){ target = null; }
+}
+urlStateReady = true;
+map.on('popupopen',function(e){
+var storeId = e.popup._source && e.popup._source.locationStoreId;
+var item = storeId && findScopedStore(storeId);
+if(!item){ return; }
+if(!isMobileFiltersLayout()){
+suppressPopupSelection = true;
+map.closePopup();
+suppressPopupSelection = false;
+selectStore(item);
+return;
+}
+setSelectedStore(storeId);
+});
+map.on('popupclose',function(e){
+var storeId = e.popup._source && e.popup._source.locationStoreId;
+if(!suppressPopupSelection && isMobileFiltersLayout() && storeId && selectedStoreId === storeId){
+setSelectedStore(null);
+}
+});
+map.on('moveend zoomend',syncUrlState);
+if(target){
+var targetId = String(target.store.ID).trim();
+// Let the initial mobile zoom finish before revealing a direct-link marker.
+function revealDirectTarget(){
+if(selectedStoreId !== targetId){ return; }
+if(map._animatingZoom){
+map.once('zoomend',revealDirectTarget);
+return;
+}
+map.setView(target.marker.getLatLng(),16,{animate:false});
+focusSearchTarget(target);
+}
+setSelectedStore(targetId);
+if(isMobileFiltersLayout()){
+setTimeout(revealDirectTarget,600);
+}else{
+map.setView(target.marker.getLatLng(),16,{animate:false});
+panDesktopStoreIntoVisibleMap(target,false);
+}
+}else{
+restoreMapView(params);
+}
+syncUrlState();
+document.getElementById('detailBackBtn').addEventListener('click',function(){ setSelectedStore(null); });
+document.getElementById('detailShareBtn').addEventListener('click',function(){
+copyShareUrl(shareUrl().href,true);
+});
+document.getElementById('shareViewBtn').addEventListener('click',async function(){
+var url = shareUrl().href;
+if(!isMobileFiltersLayout()){
+await copyShareUrl(url);
+return;
+}
+if(navigator.share){
+try{
+await navigator.share({url:url});
+showShareFeedback('Shared');
+return;
+}catch(error){
+if(error && error.name === 'AbortError'){ return; }
+}
+}
+await copyShareUrl(url);
+});
 }
 
 applyViewTitle();
@@ -3198,6 +3935,9 @@ renderFilterSections(initialSelections,null);
 applyFilters();
 initializeSearch();
 initializeMobileFilters();
+initializeDesktopPanel();
+initializeUrlState();
+initializeAreaControls();
 
 fetch('/Germany_border_sehr_hoch.geo.json')
 .then(response => response.json())
