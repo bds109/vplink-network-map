@@ -5,7 +5,9 @@ import { readFileSync } from 'node:fs';
 import { planCatalog, catalogOperations } from './catalog.mjs';
 import { atomicStatement, guardPlan, publishedSource } from './sync.mjs';
 
-const base = JSON.parse(execFileSync('python3', ['scripts/gallery-sync/read-map-catalog.py', 'VPL门店地图信息.csv', 'index.html'], { encoding: 'utf8' }));
+const parsed = JSON.parse(execFileSync('python3', ['scripts/gallery-sync/read-map-catalog.py', 'VPL门店地图信息.csv', 'index.html'], { encoding: 'utf8' }));
+// Mutation tests use a fixed synthetic catalog, independent of future production counts/IDs.
+const base = { ...parsed, valid: 20, stores: Array.from({ length: 20 }, (_, i) => ({ ...parsed.stores[0], id: String(10001 + i), mapId: String(10001 + i), name: `Isolation store ${i}` })) };
 function existing(data = base) {
   const ops = catalogOperations(data, planCatalog([], data));
   const columns = ops[0].sql.match(/stores\(([^)]+)\)/)[1].split(',');
@@ -37,17 +39,18 @@ print(json.dumps({'rows':[dict(r) for r in db.execute('SELECT * FROM stores ORDE
 `], { input: JSON.stringify({ old, stmt, mutate, fail }), encoding: 'utf8' }));
 }
 
-test('current production parser and planner: 120 stores, flags, no diff', () => {
-  assert.equal(base.valid, 120); assert.equal(base.invalidRows.length, 0);
-  assert.equal(base.stores.filter(s => s.dojo).length, 60);
-  assert.equal(base.stores.filter(s => s.geekbar).length, 50);
-  assert.equal(atomicStatement(existing(), base, guardPlan(existing(), base)), null);
+test('production parser validates current data without freezing future counts or flags', () => {
+  assert.ok(parsed.valid > 0); assert.equal(parsed.invalidRows.length, 0);
+  assert.equal(parsed.valid, parsed.stores.length);
+  assert.equal(new Set(parsed.stores.map(s => s.id)).size, parsed.valid);
+  assert.ok(parsed.stores.every(s => [0, 1].includes(s.dojo) && [0, 1].includes(s.geekbar)));
+  assert.equal(atomicStatement(existing(parsed), parsed, guardPlan(existing(parsed), parsed)), null);
 });
 test('SQLite add + modify + remove atomically; preserve photo ownership and customer', () => {
   const data = copy(base), old = existing(), removed = data.stores.shift().id;
   data.stores[0].name += ' updated'; data.stores.push({ ...data.stores[1], id: '987654', mapId: '987654' });
   const result = apply(old, data);
-  assert.equal(result.changes, 3); assert.equal(result.rows.length, 121); assert.ok(result.protected);
+  assert.equal(result.changes, 3); assert.equal(result.rows.length, base.stores.length + 1); assert.ok(result.protected);
   assert.equal(result.rows.find(s => s.id === removed).map_present, 0);
   assert.equal(result.rows.find(s => s.id === removed).catalog_active, 1); // existing Gallery contract uses map_present AND active
   assert.equal(catalogOperations(data, guardPlan(result.rows, data)).length, 0);
