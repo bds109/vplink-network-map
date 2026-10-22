@@ -1,0 +1,67 @@
+name: Gallery catalog sync
+on:
+  push:
+    branches: [main]
+    paths: ['VPL门店地图信息.csv']
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6 * * *'
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: gallery-production-catalog
+  cancel-in-progress: false
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Isolated regression tests (no network)
+        run: node --test scripts/gallery-sync/sync.test.mjs
+      - name: Synchronize published catalog via Cloudflare control plane
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/gallery-sync/sync.mjs
+      - name: Run summary and failure alert
+        if: always()
+        shell: bash
+        run: |
+          echo '## Gallery catalog sync' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Gallery application requests: 0. Cloudflare calls recorded separately in artifact.' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f gallery-sync-evidence/result.json ]; then
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            python3 -m json.tool gallery-sync-evidence/result.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ '${{ job.status }}' != 'success' ]; then
+            echo '::error::Gallery catalog sync FAILED. Production source or D1 state needs review; safe retry is workflow_dispatch on main.'
+          fi
+      - name: Persistent failure alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          title='[Gallery sync] Production catalog synchronization failed'
+          issue=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$issue" ]; then
+            gh issue comment "$issue" --body "Sync failed: $url . Review the run artifact, then retry workflow_dispatch on main. No Gallery application requests were made."
+          else
+            gh issue create --title "$title" --body "Sync failed: $url . Review the run artifact, then retry workflow_dispatch on main. No Gallery application requests were made."
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: gallery-catalog-sync-${{ github.run_id }}-${{ github.run_attempt }}
+          path: gallery-sync-evidence/
+          if-no-files-found: warn
+          retention-days: 30
