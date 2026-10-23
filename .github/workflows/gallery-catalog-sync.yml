@@ -2,8 +2,16 @@ name: Gallery catalog sync
 on:
   push:
     branches: [main]
-    paths: ['VPL门店地图信息.csv', 'map-data-source.json']
-  page_build:
+    paths:
+      - 'VPL门店地图信息.csv'
+      - 'map-data-source.json'
+      - 'index.html'
+      - 'scripts/gallery-sync/read-map-catalog.py'
+      - 'scripts/gallery-sync/catalog.mjs'
+      - 'scripts/gallery-sync/sync.mjs'
+      - 'scripts/gallery-sync/source.mjs'
+      - 'scripts/gallery-sync/association.mjs'
+      - 'scripts/gallery-sync/normalize-source.py'
   workflow_dispatch:
   schedule:
     - cron: '23 6 * * *'
@@ -23,12 +31,20 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: main
+          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
       - name: Isolated regression tests (no network)
-        run: node --test scripts/gallery-sync/sync.test.mjs scripts/gallery-sync/source.test.mjs
+        run: node --test scripts/gallery-sync/sync.test.mjs scripts/gallery-sync/source.test.mjs scripts/gallery-sync/pages-ready.test.mjs
+      - name: Verify Pages publication is ready (read only)
+        id: pages_ready
+        timeout-minutes: 4
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/gallery-sync/pages-ready.mjs
       - name: Synchronize published catalog via Cloudflare control plane
+        if: ${{ success() && steps.pages_ready.outputs.ready == 'true' }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -39,6 +55,12 @@ jobs:
         run: |
           echo '## Gallery catalog sync' >> "$GITHUB_STEP_SUMMARY"
           echo 'Gallery application requests: 0. Cloudflare calls recorded separately in artifact.' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f gallery-sync-evidence/pages-ready.json ]; then
+            echo '### Pages-ready gate' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            python3 -m json.tool gallery-sync-evidence/pages-ready.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ -f gallery-sync-evidence/result.json ]; then
             echo '```json' >> "$GITHUB_STEP_SUMMARY"
             python3 -m json.tool gallery-sync-evidence/result.json >> "$GITHUB_STEP_SUMMARY"
