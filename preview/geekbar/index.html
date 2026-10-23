@@ -1782,10 +1782,120 @@ height:100px !important;
 }
 }
 
+/* Map / Store Gallery shell. Map controls keep their existing coordinate space. */
+body{font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+.view-navigation{position:absolute;inset:0 0 auto;z-index:11000;height:64px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 24px;background:#102231;color:#fff}
+.view-brand{font-size:16px;letter-spacing:.06em;font-weight:700;min-width:0}
+.view-tabs{display:flex;border:1px solid #ffffff40;border-radius:9px;padding:3px;gap:3px;flex-shrink:0}
+.view-tabs button{border:0;border-radius:6px;padding:9px 16px;background:transparent;color:#c0cfdb;font:inherit;font-size:13px;cursor:pointer}
+.view-tabs button[aria-pressed=true]{background:#fff;color:#102231}
+.performance-link{color:#c0cfdb;font-size:12px;text-decoration:underline;max-width:180px}
+.performance-link[aria-disabled=true]{opacity:.65;text-decoration:none;cursor:not-allowed}
+#mapViewSurface{position:absolute;inset:64px 0 0;overflow:hidden}
+#mapViewSurface #map{height:100%;width:100%}
+#mapViewSurface #filter-panel{max-height:calc(100dvh - 104px)}
+#mapViewSurface #mapFloatingTitle{display:none!important}
+#storeGallery{position:absolute;inset:64px 0 0;overflow:auto;overscroll-behavior:contain;background:#f5f7fa;color:#1e293b}
+#storeGallery[hidden],#mapViewSurface[hidden]{display:none!important}
+.store-gallery-main{max-width:1440px;margin:auto;padding:28px 32px 48px;box-sizing:border-box}
+.store-gallery-heading{display:flex;align-items:center;gap:24px;margin-bottom:22px}
+.store-gallery-heading strong{font-size:25px;letter-spacing:.06em}
+.store-gallery-heading div{border-left:1px solid #cbd5e1;padding-left:24px}
+.store-gallery-heading h1{font-size:22px;font-weight:500;line-height:1.3;margin:0}
+.store-gallery-heading p{font-size:10px;letter-spacing:.16em;color:#64748b;margin:5px 0 0}
+.store-gallery-filters{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.store-gallery-filters label{position:relative;flex:1;min-width:140px}
+.store-gallery-filters label>span{position:absolute;left:14px;top:5px;font-size:10px;color:#64748b;pointer-events:none}
+.store-gallery-filters select{box-sizing:border-box;width:100%;height:48px;appearance:none;-webkit-appearance:none;padding:16px 40px 0 14px;border:1px solid #dce3ec;border-radius:9px;background:#fff;color:#1e293b;font:inherit;font-size:13px;transition:background-color 180ms,border-color 180ms,box-shadow 180ms}
+.store-gallery-filters label::after{content:'';position:absolute;right:16px;top:19px;width:7px;height:7px;transform:rotate(45deg);border-right:1.7px solid #64748b;border-bottom:1.7px solid #64748b;pointer-events:none}
+.store-gallery-filters select:hover{border-color:#9aabba;background:#fcfdff}
+.store-gallery-filters select:focus{outline:2px solid #668aa540;outline-offset:1px;border-color:#668aa5;box-shadow:0 0 0 3px #668aa510}
+#gallerySummary{font-size:12px;color:#64748b;line-height:1.5;margin-bottom:16px}
+#galleryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.store-gallery-card{position:relative;min-width:0;aspect-ratio:3/5;overflow:hidden;border-radius:5px;background:#202329;color:#fff;isolation:isolate}
+.store-gallery-card .gallery-open{position:absolute;inset:0;width:100%;height:100%;border:0;background:none;cursor:pointer;padding:0;color:inherit;text-align:left;font:inherit}
+.store-gallery-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.store-gallery-card .gallery-second{opacity:0;transition:opacity 250ms ease}
+.store-gallery-card.show-second .gallery-second{opacity:1}
+/* Explicit rows reserve the count slot even when it is hidden; names center inside a two-line row. */
+.store-gallery-card .gallery-caption{position:absolute;inset:auto 0 0;display:grid;grid-template-rows:45px 18px 17px;align-items:center;justify-items:center;text-align:center;gap:5px;padding:24px 16px 58px;background:linear-gradient(180deg,transparent 0%,rgba(5,12,18,.58) 32%,rgba(5,12,18,.9) 68%,rgba(5,12,18,.97) 100%);pointer-events:none}
+.store-gallery-card .gallery-name,.store-gallery-card .gallery-city,.store-gallery-card .gallery-count{min-width:0;max-width:100%;box-sizing:border-box;background:#050c127a;border-radius:3px;padding:0 5px;text-shadow:0 1px 2px #000;overflow-wrap:anywhere}
+.store-gallery-card .gallery-name{grid-row:1;width:100%;max-height:45px;font-size:18px;line-height:22.5px;font-weight:650;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.store-gallery-card .gallery-city{grid-row:2;width:100%;height:18px;font-size:13px;line-height:18px;display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.store-gallery-card .gallery-count{grid-row:3;height:17px;font-size:12px;line-height:17px}
+.gallery-map-button{position:absolute;left:50%;transform:translateX(-50%);bottom:16px;max-width:calc(100% - 24px);white-space:nowrap;min-height:36px;border:1px solid #ffffff70;border-radius:6px;background:#102231dc;color:#fff;padding:8px 12px;font:inherit;font-size:12px;cursor:pointer}
+#galleryMessage{font-size:13px;color:#64748b;line-height:1.6}
+#galleryMore{display:block;margin:24px auto 0;min-height:44px;border:1px solid #9aabba;border-radius:8px;background:white;color:#102231;padding:10px 20px;cursor:pointer;font:inherit;font-size:13px}
+#galleryMore[hidden],.store-gallery-card [hidden]{display:none}
+.store-gallery-viewer{box-sizing:border-box;border:0;margin:0;padding:0;width:100vw;max-width:none;height:100dvh;max-height:none;overflow:hidden;background:#0b141d;color:#edf2f7}
+.store-gallery-viewer::backdrop{background:#0b141d}
+.store-gallery-viewer .viewer{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.store-gallery-viewer .viewer-top{display:flex;align-items:center;justify-content:space-between;min-width:0;gap:24px;padding:22px 32px;border-bottom:1px solid #ffffff0b}
+.store-gallery-viewer .viewer-heading{min-width:0}
+.store-gallery-viewer h2{margin:0 0 5px;font-size:19px;line-height:1.3;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.store-gallery-viewer .viewer-heading p{font-size:13px;line-height:1.4;color:#a2b2c1;margin:0;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.store-gallery-viewer .viewer-actions{display:flex;align-items:center;gap:22px;flex-shrink:0}
+.store-gallery-viewer .viewer-counter{font-size:13px;color:#a2b2c1;white-space:nowrap}
+.store-gallery-viewer button{cursor:pointer;background:#162735b3;color:#fff;border:1px solid #ffffff30;transition:background-color 180ms,border-color 180ms,opacity 180ms}
+.store-gallery-viewer .viewer-close{display:grid;place-items:center;padding:0;line-height:1;border-radius:50%;background:transparent;width:44px;height:44px;font-size:25px}
+.store-gallery-viewer .viewer-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;padding:18px 88px;touch-action:pan-y}
+.store-gallery-viewer .viewer-image{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
+.store-gallery-viewer .viewer-stage button{position:absolute;display:grid;place-items:center;padding:0;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;font-size:27px;line-height:1}
+.store-gallery-viewer .previous{left:24px}.store-gallery-viewer .next{right:24px}
+.store-gallery-viewer button:hover{background-color:#233b4e}
+.view-navigation button:focus-visible,.store-gallery-card button:focus-visible,#galleryMore:focus-visible,.store-gallery-viewer button:focus-visible{outline:2px solid #82baf0;outline-offset:-3px}
+.store-gallery-viewer .viewer-footer{min-width:0;padding:12px 32px max(18px,env(safe-area-inset-bottom));border-top:1px solid #ffffff0b}
+.store-gallery-viewer .viewer-thumbnails{display:flex;gap:10px;overflow-x:auto;max-width:100%;width:max-content;margin:0 auto;padding:5px;position:relative;scrollbar-width:thin;scrollbar-color:#52677a transparent}
+.store-gallery-viewer .viewer-thumb{position:relative;flex:0 0 66px;width:66px;height:72px;min-height:0;overflow:hidden;padding:3px;border:1px solid transparent;border-radius:6px;background:transparent;opacity:.5}
+.store-gallery-viewer .viewer-thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:3px}
+.store-gallery-viewer .viewer-thumb[aria-pressed=true]{border-color:#d8e7f2;background:#ffffff0a;opacity:1}
+.store-gallery-viewer .viewer-context{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;font-size:11px;color:#8ea3b5}
+.store-gallery-viewer .viewer-map{position:static;min-height:44px;font-size:12px}
+.store-gallery-viewer [hidden]{display:none!important}
+@media(min-width:768px) and (max-width:1023px){#galleryGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:767px){
+ .view-navigation{padding:8px 12px;gap:8px;height:64px}.view-brand{font-size:12px;max-width:75px}.view-tabs button{padding:10px 9px;font-size:12px}.performance-link{position:static;background:none;color:#c0cfdb;max-width:70px;padding:0;font-size:9px}
+ .store-gallery-main{padding:18px 12px 32px}.store-gallery-heading{gap:12px;margin-bottom:18px}.store-gallery-heading strong{font-size:20px}.store-gallery-heading div{padding-left:12px}.store-gallery-heading h1{font-size:17px}.store-gallery-heading p{display:none}
+ .store-gallery-filters{gap:8px;margin-bottom:12px}.store-gallery-filters label{min-width:120px}.store-gallery-filters select{height:44px;font-size:13px;border-radius:8px;padding-left:12px}.store-gallery-filters label>span{left:12px}.store-gallery-filters label::after{right:12px;top:17px}
+ #gallerySummary{font-size:11px;margin-bottom:12px}#galleryGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .store-gallery-card .gallery-caption{grid-template-rows:37.5px 15px 15px;padding:18px 10px 52px;gap:4px}.store-gallery-card .gallery-name{max-height:37.5px;font-size:15px;line-height:18.75px}.store-gallery-card .gallery-city,.store-gallery-card .gallery-count{height:15px;font-size:11px;line-height:15px}.store-gallery-card.show-second .gallery-second{opacity:0}
+ .gallery-map-button{bottom:12px;padding:8px;font-size:11px;min-height:36px}
+ .store-gallery-viewer .viewer-top{padding:14px 16px;gap:12px}.store-gallery-viewer h2{font-size:15px}.store-gallery-viewer .viewer-heading p{font-size:12px}.store-gallery-viewer .viewer-actions{gap:10px}.store-gallery-viewer .viewer-counter{font-size:12px}.store-gallery-viewer .viewer-close{width:40px;height:40px;min-width:40px}
+ .store-gallery-viewer .viewer-stage{padding:12px 0}.store-gallery-viewer .previous{left:8px}.store-gallery-viewer .next{right:8px}.store-gallery-viewer .viewer-footer{padding:8px 12px max(12px,env(safe-area-inset-bottom))}.store-gallery-viewer .viewer-thumbnails{gap:7px}.store-gallery-viewer .viewer-thumb{flex-basis:48px;width:48px;height:58px}.store-gallery-viewer .viewer-context{font-size:10px;align-items:center}
+}
+@media(prefers-reduced-motion:reduce){.store-gallery-card *,.store-gallery-viewer *,.store-gallery-filters *{transition:none!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 
 <body>
+<header class="view-navigation">
+  <strong class="view-brand" id="viewBrand">VPLINK</strong>
+  <nav class="view-tabs" aria-label="Location view">
+    <button id="mapViewBtn" type="button" aria-pressed="true" aria-controls="mapViewSurface">Map</button>
+    <button id="galleryViewBtn" type="button" aria-pressed="false" aria-controls="storeGallery">Store Gallery</button>
+  </nav>
+  <a id="performanceGalleryLink" class="performance-link" aria-disabled="true" target="_blank" rel="noopener noreferrer" hidden title="TEST PLACEHOLDER — customer link not configured; any configured URL will be public">Performance Gallery · not configured</a>
+</header>
+<section id="storeGallery" aria-label="Store Gallery" hidden>
+  <main class="store-gallery-main">
+    <header class="store-gallery-heading">
+      <strong id="galleryBrandTitle">VPLINK</strong>
+      <div><h1>Store Gallery</h1><p>STORE LOCATION PHOTOS</p></div>
+    </header>
+    <div class="store-gallery-filters" aria-label="Shared Map filters">
+      <label><span>States</span><select id="galleryState" aria-label="States"></select></label>
+      <label><span>Categories</span><select id="galleryType" aria-label="Categories"></select></label>
+      <label id="galleryBrandField" hidden><span>Brands</span><select id="galleryBrand" aria-label="Brands"></select></label>
+    </div>
+    <p id="gallerySummary" aria-live="polite"></p>
+    <div id="galleryGrid"></div>
+    <p id="galleryMessage" role="status"></p>
+    <button id="galleryMore" type="button" hidden>Load more locations</button>
+  </main>
+</section>
+
+<div id="mapViewSurface"></div>
 <div id="previewEnvBadge">
 PREVIEW ENVIRONMENT
 </div>
@@ -2032,6 +2142,14 @@ return {mode:'neutral',brand:null};
 }
 
 var mapView = resolveMapView();
+// Group already-parsed Map UI before Leaflet measures it. The legacy template
+// contains unmatched closing divs; do not let them close a string-injected shell.
+var mapSurface = document.getElementById('mapViewSurface');
+Array.from(document.body.children).forEach(function(node){
+if(node !== mapSurface && node.id !== 'storeGallery' && !node.classList.contains('view-navigation') && node.tagName !== 'SCRIPT'){
+mapSurface.appendChild(node);
+}
+});
 
 var map = L.map('map', {
     zoomControl:false
@@ -3330,6 +3448,7 @@ updateMobileFilterButton(selections);
 updateResultsList(filteredMarkers);
 updateAreaControls();
 updateSelectedStoreView();
+updateStoreGallery(filteredMarkers);
 if(urlStateReady){ syncUrlState(); }
 return filteredMarkers;
 }
@@ -3719,7 +3838,7 @@ map.closePopup();
 suppressPopupSelection = false;
 }
 updateSelectedStoreView();
-if(selectedStoreId){
+if(selectedStoreId && currentView === 'map'){
 var selected = findScopedStore(selectedStoreId);
 if(selected){
 if(mobile){
@@ -3758,6 +3877,7 @@ return value.toFixed(6);
 }).join(','));
 }
 if(selectedStoreId){ params.set('id',selectedStoreId); }
+if(currentView === 'gallery'){ params.set('view','gallery'); }
 var center = map.getCenter();
 params.set('lat',center.lat.toFixed(6));
 params.set('lng',center.lng.toFixed(6));
@@ -3893,7 +4013,9 @@ map.setView(target.marker.getLatLng(),16,{animate:false});
 focusSearchTarget(target);
 }
 setSelectedStore(targetId);
-if(isMobileFiltersLayout()){
+if(currentView === 'gallery'){
+// Restore the selection without opening a hidden Map popup or loading photos.
+}else if(isMobileFiltersLayout()){
 setTimeout(revealDirectTarget,600);
 }else{
 map.setView(target.marker.getLatLng(),16,{animate:false});
@@ -3926,6 +4048,311 @@ await copyShareUrl(url);
 });
 }
 
+var STORE_GALLERY_CONFIG = {"performanceGallery": {"dojo": {"url": null, "status": "test-placeholder"}, "geekbar": {"url": null, "status": "test-placeholder"}}};
+// Runs in the existing CSV completion scope: no parallel catalog or private API.
+var currentView = new URLSearchParams(location.search).get('view') === 'gallery' ? 'gallery' : 'map';
+var galleryItems = [];
+var galleryReady = false;
+var gallerySignature = null;
+var galleryGeneration = 0;
+var galleryCursor = 0;
+var galleryChecking = false;
+var galleryCards = new Map();
+var galleryDialog = null;
+var galleryScroll = 0;
+
+function galleryElement(tag, attrs, ...children) {
+  var node = document.createElement(tag);
+  Object.entries(attrs || {}).forEach(function(pair) {
+    var key = pair[0], value = pair[1];
+    if(key === 'class') node.className = value;
+    else if(key.startsWith('on')) node.addEventListener(key.slice(2).toLowerCase(), value);
+    else if(value !== false && value != null) node.setAttribute(key, String(value));
+  });
+  children.flat().forEach(function(child) { if(child != null) node.append(child); });
+  return node;
+}
+function galleryButton(text, action, cls) {
+  return galleryElement('button', {type:'button', class:cls || '', onClick:action}, text);
+}
+function galleryId(item) { return String(item.store.ID).trim(); }
+function updateGalleryCount(id, entry) {
+  var card = galleryCards.get(id);
+  if(!card) return;
+  var count = card.querySelector('.gallery-count');
+  count.hidden = !entry.complete;
+  count.textContent = entry.complete ? entry.photos.length + (entry.photos.length === 1 ? ' photo' : ' photos') : '';
+}
+function galleryCard(item, entry) {
+  var id = galleryId(item), store = item.store;
+  var card = galleryElement('article', {class:'store-gallery-card', 'data-store-id':id});
+  var open = galleryButton('', function() { openStoreGalleryViewer(item); }, 'gallery-open');
+  open.setAttribute('aria-label', 'View photos of ' + store.StoreName);
+  open.append(galleryElement('img', {src:entry.photos[0], alt:'', decoding:'async'}),
+    galleryElement('span', {class:'gallery-caption'},
+      galleryElement('strong', {class:'gallery-name'}, store.StoreName),
+      galleryElement('span', {class:'gallery-city'}, store.City || ''),
+      galleryElement('span', {class:'gallery-count', hidden:true})));
+  // Sibling buttons, never nested buttons: map action cannot bubble into Viewer.
+  card.append(open, galleryButton('View on Map', function(event) {
+    event.stopPropagation(); galleryToMap(item);
+  }, 'gallery-map-button'));
+  var hovering = false, second, ready = false;
+  var hover = matchMedia('(min-width:768px) and (hover:hover) and (pointer:fine)');
+  card.addEventListener('pointerenter', async function(event) {
+    if(!hover.matches || event.pointerType === 'touch') return;
+    hovering = true;
+    if(ready) { card.classList.add('show-second'); return; }
+    try {
+      var photos = await discoverStorePhotos(id, 2);
+      updateGalleryCount(id, photos);
+      if(!photos.photos[1] || second) return;
+      second = galleryElement('img', {class:'gallery-second', alt:'', decoding:'async'});
+      second.src = photos.photos[1];
+      open.insertBefore(second, open.lastChild);
+      try { await second.decode(); } catch(error) { second.remove(); second = null; return; }
+      ready = true;
+      if(hovering && hover.matches) card.classList.add('show-second');
+    } catch(error) { /* A later intentional hover can retry a timeout. */ }
+  });
+  card.addEventListener('pointerleave', function() { hovering = false; card.classList.remove('show-second'); });
+  galleryCards.set(id, card);
+  updateGalleryCount(id, entry);
+  return card;
+}
+function syncGalleryFilters() {
+  [['galleryState',getStateFilterItems(),getSelectedValues('.stateCheckbox')],
+   ['galleryType',getCategoryFilterItems(),getSelectedValues('.categoryCheckbox')],
+   ['galleryBrand',renderBrandFilter(),getSelectedBrands()]].forEach(function(group) {
+    var select = document.getElementById(group[0]);
+    select.replaceChildren(galleryElement('option', {value:''}, 'All'));
+    group[1].forEach(function(item) { select.append(galleryElement('option', {value:item.value}, item.label)); });
+    if(group[2].length > 1) select.append(galleryElement('option', {value:'__multiple__'}, group[2].length + ' selected'));
+    select.value = group[2].length > 1 ? '__multiple__' : (group[2][0] || '');
+  });
+  document.getElementById('galleryBrandField').hidden = mapView.mode !== 'overview';
+}
+function updateStoreGallery(items) {
+  galleryItems = items;
+  syncGalleryFilters();
+  if(currentView !== 'gallery' || !galleryReady) return;
+  // A hidden Map selection must not override a new Gallery filter on refresh.
+  if(selectedStoreId && !items.some(function(item) { return galleryId(item) === selectedStoreId; })) setSelectedStore(null);
+  var signature = items.map(galleryId).join(',');
+  if(signature === gallerySignature) {
+    updateGallerySummary(); return;
+  }
+  gallerySignature = signature;
+  galleryGeneration++;
+  galleryCursor = 0;
+  galleryChecking = false;
+  galleryCards.clear();
+  document.getElementById('galleryGrid').replaceChildren();
+  document.getElementById('storeGallery').scrollTop = 0;
+  probeGalleryBatch();
+}
+function updateGallerySummary() {
+  document.getElementById('gallerySummary').textContent = galleryItems.length + ' matching locations · ' + galleryCards.size + ' with photos found · ' + galleryCursor + ' checked';
+  var more = document.getElementById('galleryMore');
+  more.hidden = galleryCursor >= galleryItems.length;
+  more.disabled = galleryChecking;
+  more.textContent = galleryChecking ? 'Checking photos…' : 'Load more locations';
+  var message = document.getElementById('galleryMessage');
+  if(!galleryItems.length) message.textContent = 'No matching locations. Change the shared Map filters.';
+  else if(galleryChecking) message.textContent = 'Checking the next locations for store photos…';
+  else if(!galleryCards.size) message.textContent = galleryCursor < galleryItems.length
+    ? 'No photos found in the checked locations. Load more to continue.' : 'No store photos found. All matching locations remain available on the Map.';
+  else message.textContent = galleryCursor < galleryItems.length ? 'More locations can be checked on demand.' : 'All matching locations checked. Locations without photos remain on the Map.';
+}
+async function probeGalleryBatch() {
+  if(galleryChecking || currentView !== 'gallery' || !galleryReady) return;
+  var generation = galleryGeneration, start = galleryCursor;
+  var batch = galleryItems.slice(start, start + 12);
+  galleryChecking = true;
+  updateGallerySummary();
+  var results = new Array(batch.length), cursor = 0;
+  async function worker() {
+    while(cursor < batch.length && generation === galleryGeneration && currentView === 'gallery') {
+      var index = cursor++;
+      try { results[index] = await discoverStorePhotos(galleryId(batch[index]), 1); }
+      catch(error) { results[index] = null; }
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(4,batch.length)}, worker));
+  if(generation !== galleryGeneration || currentView !== 'gallery') return;
+  results.forEach(function(entry, index) {
+    if(entry && entry.photos.length) document.getElementById('galleryGrid').append(galleryCard(batch[index], entry));
+  });
+  galleryCursor = start + batch.length;
+  galleryChecking = false;
+  updateGallerySummary();
+  if(results.some(function(entry) { return entry === null; })) {
+    document.getElementById('galleryMessage').textContent = 'Some photo availability checks could not be verified. Unknown totals are not shown.';
+    var retry = galleryButton('Retry photo checks', function() {
+      batch.forEach(function(item) { if(storePhotoCache[galleryId(item)]) storePhotoCache[galleryId(item)].failedAt = 0; });
+      gallerySignature = null; updateStoreGallery(galleryItems);
+    });
+    document.getElementById('galleryMessage').append(' ', retry);
+  }
+}
+function setStoreView(view, push) {
+  var wasReady = urlStateReady;
+  urlStateReady = false;
+  var changed = currentView !== view;
+  if(currentView === 'gallery') galleryScroll = document.getElementById('storeGallery').scrollTop;
+  currentView = view;
+  document.body.classList.toggle('gallery-active',view === 'gallery');
+  document.getElementById('mapViewSurface').hidden = view === 'gallery';
+  document.getElementById('storeGallery').hidden = view !== 'gallery';
+  document.getElementById('mapViewBtn').setAttribute('aria-pressed',String(view === 'map'));
+  document.getElementById('galleryViewBtn').setAttribute('aria-pressed',String(view === 'gallery'));
+  if(view === 'gallery') {
+    suppressPopupSelection = true; map.closePopup(); suppressPopupSelection = false;
+    updateStoreGallery(galleryItems);
+    document.getElementById('storeGallery').scrollTop = galleryScroll;
+  } else {
+    // Invalidate after display is restored, before positioning an ID target.
+    map.invalidateSize({pan:false});
+    if(changed) { galleryGeneration++; galleryChecking = false; }
+    if(changed && push && selectedStoreId) {
+      var selected = findScopedStore(selectedStoreId);
+      if(selected) focusSearchTarget(selected);
+    }
+  }
+  urlStateReady = wasReady;
+  if(push && changed && urlStateReady) {
+    var url = shareUrl(); history.pushState(null,'',url.pathname + url.search + url.hash);
+  }
+  if(urlStateReady) syncUrlState();
+}
+function galleryToMap(item) {
+  if(!pageScopeMarkers.includes(item)) return;
+  if(galleryDialog) galleryDialog.close();
+  // Preserve the Gallery history entry until the complete Map target is ready.
+  urlStateReady = false;
+  // The existing Search path owns filter conflict replacement and brand isolation.
+  setStoreView('map',false);
+  map.stop(); map.setView(item.marker.getLatLng(),16,{animate:false});
+  selectSearchResult(item);
+  urlStateReady = true;
+  var url = shareUrl(); history.pushState(null,'',url.pathname + url.search + url.hash);
+  document.getElementById('mapViewBtn').focus({preventScroll:true});
+}
+function openStoreGalleryViewer(item) {
+  if(galleryDialog || !pageScopeMarkers.includes(item)) return;
+  var trigger = document.activeElement, id = galleryId(item), store = item.store;
+  var entry = storePhotoCache[id], index = 0, start;
+  var image = galleryElement('img', {class:'viewer-image', alt:store.StoreName});
+  var counter = galleryElement('span', {class:'viewer-counter', 'aria-live':'polite'});
+  var close = galleryButton('×', function() { dialog.close(); }, 'viewer-close');
+  close.setAttribute('aria-label','Close viewer');
+  var previous = galleryButton('‹',function() { change(-1); },'previous');
+  previous.setAttribute('aria-label','Previous photo');
+  var next = galleryButton('›',function() { change(1); },'next');
+  next.setAttribute('aria-label','Next photo');
+  var stage = galleryElement('div',{class:'viewer-stage'},image,previous,next);
+  var strip = galleryElement('nav',{class:'viewer-thumbnails','aria-label':'Store photos'});
+  var status = galleryElement('span',{},'Loading photos…');
+  var mapButton = galleryButton('View on Map',function(event) { event.stopPropagation(); galleryToMap(item); },'viewer-map');
+  var dialog = galleryElement('dialog',{class:'store-gallery-viewer','aria-label':store.StoreName + ' photos'},
+    galleryElement('div',{class:'viewer'},
+      galleryElement('div',{class:'viewer-top'},
+        galleryElement('div',{class:'viewer-heading'},galleryElement('h2',{},store.StoreName),galleryElement('p',{},store.City || '')),
+        galleryElement('div',{class:'viewer-actions'},counter,close)),stage,
+      galleryElement('div',{class:'viewer-footer'},strip,
+        galleryElement('div',{class:'viewer-context'},status,mapButton))));
+  var thumbs = [];
+  function change(delta) { index = (index + delta + entry.photos.length) % entry.photos.length; render(); }
+  function render() {
+    image.src = entry.photos[index]; image.alt = store.StoreName + ' · photo ' + (index + 1);
+    counter.textContent = (index + 1) + ' / ' + (entry.complete ? entry.photos.length : '…');
+    previous.hidden = next.hidden = entry.photos.length < 2;
+    while(thumbs.length < entry.photos.length) {
+      var i = thumbs.length;
+      var thumb = galleryButton('',(function(n) { return function() { index = n; render(); }; })(i),'viewer-thumb');
+      thumb.setAttribute('aria-label','View photo ' + (i + 1));
+      thumb.append(galleryElement('img',{src:entry.photos[i],alt:'',loading:'lazy',decoding:'async'}));
+      thumbs.push(thumb); strip.append(thumb);
+    }
+    thumbs.forEach(function(thumb,i) { thumb.setAttribute('aria-pressed',String(i === index)); });
+    if(dialog.open && thumbs[index]) strip.scrollTo({left:Math.max(0,thumbs[index].offsetLeft-strip.clientWidth/2+thumbs[index].clientWidth/2),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+    status.textContent = (stateNameMap[store.State] || store.State || '') + (entry.complete ? ' · Store photos' : ' · Checking remaining photos…');
+  }
+  async function discover() {
+    try {
+      while(dialog.open && !entry.complete) {
+        entry = await discoverStorePhotos(id,entry.photos.length+1);
+        if(dialog.open) render();
+      }
+      updateGalleryCount(id,entry);
+    } catch(error) {
+      if(!dialog.open) return;
+      status.replaceChildren(entry.photos.length + ' photos loaded · total unverified. ',galleryButton('Retry',function() { entry.failedAt=0; discover(); }));
+    }
+  }
+  stage.addEventListener('touchstart',function(event) { start = {x:event.changedTouches[0].clientX,y:event.changedTouches[0].clientY}; },{passive:true});
+  stage.addEventListener('touchend',function(event) {
+    if(!start) return;
+    var dx=event.changedTouches[0].clientX-start.x, dy=event.changedTouches[0].clientY-start.y;
+    if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.5) change(dx<0?1:-1);
+    start=null;
+  },{passive:true});
+  dialog.addEventListener('keydown',function(event) {
+    if(event.key==='ArrowRight'||event.key==='ArrowLeft') { event.preventDefault(); change(event.key==='ArrowRight'?1:-1); }
+  });
+  dialog.addEventListener('close',function() {
+    dialog.remove(); galleryDialog=null;
+    if(currentView==='gallery' && trigger && trigger.isConnected) trigger.focus({preventScroll:true});
+  },{once:true});
+  document.body.append(dialog); galleryDialog=dialog; render(); dialog.showModal(); close.focus(); discover();
+}
+function restoreStoreViewHistory() {
+  if(galleryDialog) galleryDialog.close();
+  var params=new URLSearchParams(location.search);
+  urlStateReady=false;
+  galleryGeneration++; galleryChecking=false;
+  currentView=params.get('view')==='gallery'?'gallery':'map';
+  suppressPopupSelection=true; map.closePopup(); suppressPopupSelection=false;
+  selectedStoreId=null;
+  [['state','.stateCheckbox'],['type','.categoryCheckbox'],['brand','.brandCheckbox']].forEach(function(group) {
+    if(group[0]==='brand' && mapView.mode!=='overview') return;
+    document.querySelectorAll(group[1]).forEach(function(cb) { cb.checked=params.getAll(group[0]).includes(cb.value); });
+  });
+  activeArea=parseAreaBounds(params.get('bbox')); areaPrompt=false;
+  applyFilters();
+  var item=findScopedStore(params.get('id'));
+  if(item) { activeArea=null; adjustFiltersForSearchTarget(item); applyFilters(); setSelectedStore(galleryId(item)); }
+  restoreMapView(params);
+  setStoreView(params.get('view')==='gallery'?'gallery':'map',false);
+  if(item && currentView==='map') { map.setView(item.marker.getLatLng(),16,{animate:false}); focusSearchTarget(item); }
+  urlStateReady=true; syncUrlState();
+}
+function initializeStoreGallery() {
+  var label=mapView.mode==='brand'? 'VPLINK × '+mapView.brand.label.toUpperCase():'VPLINK';
+  document.getElementById('viewBrand').textContent=label;
+  document.getElementById('galleryBrandTitle').textContent=mapView.mode==='brand'?mapView.brand.label.toUpperCase():'VPLINK';
+  var performance=document.getElementById('performanceGalleryLink');
+  performance.hidden=mapView.mode!=='brand';
+  if(mapView.mode==='brand') {
+    var config=STORE_GALLERY_CONFIG.performanceGallery[mapView.brand.slug];
+    // URLs in public HTML are public information. Only approved URLs belong here.
+    if(config && config.url && /^https:\/\//.test(config.url)) {
+      performance.href=config.url; performance.removeAttribute('aria-disabled'); performance.textContent='Performance Gallery ↗';
+    }
+  }
+  [['galleryState','.stateCheckbox'],['galleryType','.categoryCheckbox'],['galleryBrand','.brandCheckbox']].forEach(function(group) {
+    document.getElementById(group[0]).addEventListener('change',function(event) {
+      if(event.target.value==='__multiple__') return;
+      replaceFilterDimension(group[1],event.target.value); applyFilters();
+    });
+  });
+  document.getElementById('mapViewBtn').addEventListener('click',function() { setStoreView('map',true); });
+  document.getElementById('galleryViewBtn').addEventListener('click',function() { setStoreView('gallery',true); });
+  document.getElementById('galleryMore').addEventListener('click',probeGalleryBatch);
+  window.addEventListener('popstate',restoreStoreViewHistory);
+  setStoreView(currentView,false);
+}
+
 applyViewTitle();
 pageScopeMarkers = getPageScopeMarkers();
 window.pageScopeMarkers = pageScopeMarkers;
@@ -3941,7 +4368,10 @@ applyFilters();
 initializeSearch();
 initializeMobileFilters();
 initializeDesktopPanel();
+initializeStoreGallery();
 initializeUrlState();
+galleryReady = true;
+updateStoreGallery(currentFilteredMarkers);
 initializeAreaControls();
 
 fetch('/Germany_border_sehr_hoch.geo.json')
@@ -4107,70 +4537,76 @@ data.dataset.index = index;
 let currentPhotos = [];
 let currentPhotoIndex = 0;
 
-const storePhotoCache = {};
-
-async function loadStorePhotos(data){
-
-const storeId =
-data.dataset.storeid;
-
-if(storePhotoCache[storeId]){
-
-data.dataset.photos =
-JSON.stringify(storePhotoCache[storeId]);
-
-return;
-
+// Shared Map / Store Gallery discovery. Only a requested prefix is probed.
+// No initial-load scan; opening a Viewer explicitly requests the full sequence.
+const storePhotoCache = Object.create(null);
+const photoProbeQueue = [];
+let activePhotoProbes = 0;
+function probeStorePhoto(url) {
+  return new Promise((resolve, reject) => {
+    photoProbeQueue.push({ url, resolve, reject });
+    drainPhotoProbes();
+  });
+}
+function drainPhotoProbes() {
+  while (activePhotoProbes < 4 && photoProbeQueue.length) {
+    const job = photoProbeQueue.shift();
+    activePhotoProbes++;
+    const image = new Image();
+    let settled = false;
+    const finish = (exists, error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      image.onload = image.onerror = null;
+      activePhotoProbes--;
+      if (error) job.reject(error); else job.resolve(exists);
+      drainPhotoProbes();
+    };
+    const timer = setTimeout(() => finish(false, new Error('Photo request timed out')), 12000);
+    image.onload = () => finish(true);
+    image.onerror = async () => {
+      // Image.onerror also means 403/429/network failure, not necessarily absence.
+      // Only a readable 404/410 can confirm the first gap and an exact total.
+      try {
+        const response = await fetch(job.url, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+        if (response.status === 404 || response.status === 410) finish(false);
+        else finish(false, new Error('Photo availability unverified'));
+      } catch (error) { finish(false, new Error('Photo availability unverified')); }
+    };
+    image.src = job.url;
+  }
+}
+async function discoverStorePhotos(storeId, limit = Infinity) {
+  const id = String(storeId).trim();
+  if (!/^[1-9][0-9]*$/.test(id)) throw new Error('Invalid store ID');
+  const entry = storePhotoCache[id] || (storePhotoCache[id] = { photos: [], complete: false, pending: null, failedAt: 0 });
+  // A hover, card batch and Map carousel may request the same ID concurrently.
+  while (!entry.complete && entry.photos.length < limit) {
+    if (entry.failedAt && Date.now() - entry.failedAt < 30000) throw new Error('Photo availability unverified');
+    if (!entry.pending) {
+      const url = getStorePhotoUrl(id, entry.photos.length + 1);
+      entry.pending = probeStorePhoto(url).then(exists => {
+        if (exists) entry.photos.push(url); else entry.complete = true;
+      }).catch(error => { entry.failedAt = Date.now(); throw error; })
+        .finally(() => { entry.pending = null; });
+    }
+    await entry.pending;
+  }
+  return entry;
+}
+async function loadStorePhotos(data) {
+  try {
+    const entry = await discoverStorePhotos(data.dataset.storeid);
+    data.dataset.photos = JSON.stringify(entry.photos);
+    return entry;
+  } catch (error) {
+    // A timeout is not a missing photo and must not poison the cache.
+    data.dataset.photos = JSON.stringify(storePhotoCache[data.dataset.storeid]?.photos || []);
+    return null;
+  }
 }
 
-const photos = [];
-
-function checkImage(url){
-
-return new Promise(function(resolve){
-
-const img = new Image();
-
-img.onload = function(){
-resolve(true);
-};
-
-img.onerror = function(){
-resolve(false);
-};
-
-img.src = url + '?v=' + Date.now();
-
-});
-
-}
-
-for(let i=1;i<=20;i++){
-
-const url =
-getStorePhotoUrl(storeId,i);
-
-const exists =
-await checkImage(url);
-
-if(exists){
-
-photos.push(url);
-
-}else{
-
-break;
-
-}
-
-}
-
-storePhotoCache[storeId] = photos;
-
-data.dataset.photos =
-JSON.stringify(photos);
-
-}
 
 async function openPhoto(img){
 
@@ -4191,8 +4627,9 @@ JSON.parse(
 data.dataset.photos
 );
 
+if(!currentPhotos.length){ return; }
 currentPhotoIndex =
-parseInt(data.dataset.index) || 0;
+Math.min(parseInt(data.dataset.index) || 0,currentPhotos.length - 1);
 
 document.getElementById(
 'photoModal'
