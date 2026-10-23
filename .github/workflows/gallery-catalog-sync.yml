@@ -2,12 +2,14 @@ name: Gallery catalog sync
 on:
   push:
     branches: [main]
-    paths: ['VPL门店地图信息.csv']
+    paths: ['VPL门店地图信息.csv', 'map-data-source.json']
+  page_build:
   workflow_dispatch:
   schedule:
     - cron: '23 6 * * *'
 permissions:
   contents: read
+  pages: read
   issues: write
 concurrency:
   group: gallery-production-catalog
@@ -25,10 +27,11 @@ jobs:
         with:
           node-version: '22'
       - name: Isolated regression tests (no network)
-        run: node --test scripts/gallery-sync/sync.test.mjs
+        run: node --test scripts/gallery-sync/sync.test.mjs scripts/gallery-sync/source.test.mjs
       - name: Synchronize published catalog via Cloudflare control plane
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/gallery-sync/sync.mjs
       - name: Run summary and failure alert
         if: always()
