@@ -4424,7 +4424,9 @@ function initializeStoreGallery() {
   // No Performance tab for the public neutral map; internal routes expose
   // only their own already-password-protected Performance destination.
   var enabled=!!(config && config.url && config.status==='password-protected' &&
-    config.url.startsWith('https://gallery.vpl-gmbh.com/'));
+    (config.url.startsWith('https://gallery.vpl-gmbh.com/') ||
+      (location.pathname.startsWith('/preview/') &&
+       config.url==='https://vplink-performance-preview-20261024.steve-zhou.workers.dev/overview')));
   performance.hidden=!enabled;
   if(enabled) {
     performance.href=config.url;
