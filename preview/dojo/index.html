@@ -1882,6 +1882,11 @@ body{font-family:Arial,Helvetica,sans-serif;overflow:hidden}
 .store-gallery-main{padding:0 20px 42px;max-width:1440px}
 .store-gallery-heading{display:none!important}
 .store-gallery-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0 12px}
+.store-gallery-search{position:relative;display:flex;align-items:center;flex:1 1 240px;min-width:185px;max-width:350px;height:40px;box-sizing:border-box;border:1px solid #dee5ec;border-radius:6px;background:#fff;color:#7b8da0}
+.store-gallery-search svg{position:absolute;left:12px;top:11px;width:17px;height:17px;pointer-events:none}
+.store-gallery-search input{width:100%;height:100%;box-sizing:border-box;border:0;border-radius:6px;outline:none;background:transparent;color:#203548;font:inherit;font-size:14px;padding:0 12px 0 37px}
+.store-gallery-search input::placeholder{color:#8999a8;opacity:1}
+.store-gallery-search:focus-within{outline:2px solid #80a5bb;outline-offset:2px}
 .store-gallery-filters{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:0;min-width:0}
 .store-gallery-filters label{display:flex;align-items:center;flex:0 1 auto;min-width:0;height:40px;box-sizing:border-box;padding-left:12px;border:1px solid #dee5ec;border-radius:6px;background:#fff;position:relative}
 .store-gallery-filters label>span{display:block;position:static;color:#34495c;font-size:13px;font-weight:700;white-space:nowrap;pointer-events:none}
@@ -1910,6 +1915,8 @@ body{font-family:Arial,Helvetica,sans-serif;overflow:hidden}
  #storeGallery{inset:54px 0 0}
  .store-gallery-main{padding:0 11px 28px}
  .store-gallery-toolbar{display:block;padding:9px 0 0}
+ .store-gallery-search{max-width:none;min-width:0;width:100%;height:40px;margin-bottom:8px}
+ .store-gallery-search input{font-size:16px}
  .store-gallery-filters{display:flex;flex-wrap:wrap;gap:8px}
  .store-gallery-filters label{flex:1 1 calc(50% - 4px);height:40px;padding-left:9px;min-width:0}
  .store-gallery-filters label>span{font-size:12px;left:auto}
@@ -1935,6 +1942,10 @@ body{font-family:Arial,Helvetica,sans-serif;overflow:hidden}
 <section id="storeGallery" aria-label="Store Gallery" hidden>
   <main class="store-gallery-main">
     <div class="store-gallery-toolbar">
+      <label class="store-gallery-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m15.4 15.4 5 5"></path></svg>
+        <input id="gallerySearch" type="search" placeholder="Search name, city, postcode or ID" aria-label="Search gallery locations" autocomplete="off" spellcheck="false">
+      </label>
       <div class="store-gallery-filters" aria-label="Shared Map filters">
         <label><span>States</span><select id="galleryState" aria-label="States"></select></label>
         <label><span>Categories</span><select id="galleryType" aria-label="Categories"></select></label>
@@ -4105,6 +4116,8 @@ var STORE_GALLERY_CONFIG = {"performanceGallery": {"dojo": {"url": null, "status
 // Runs in the existing CSV completion scope: no parallel catalog or private API.
 var currentView = new URLSearchParams(location.search).get('view') === 'gallery' ? 'gallery' : 'map';
 var galleryItems = [];
+var gallerySearchResults = [];
+var gallerySearchTimer = null;
 var galleryReady = false;
 var gallerySignature = null;
 var galleryGeneration = 0;
@@ -4187,11 +4200,17 @@ function syncGalleryFilters() {
 }
 function updateStoreGallery(items) {
   galleryItems = items;
+  var query = normalizeSearchText(document.getElementById('gallerySearch').value);
+  // Reuse the Map search matching algorithm on the already-scoped Gallery
+  // collection; never expand beyond Map filters or the current brand.
+  gallerySearchResults = query ? items.filter(function(item) {
+    return Number.isFinite(getSearchScore(item,query));
+  }) : items;
   syncGalleryFilters();
   if(currentView !== 'gallery' || !galleryReady) return;
   // A hidden Map selection must not override a new Gallery filter on refresh.
   if(selectedStoreId && !items.some(function(item) { return galleryId(item) === selectedStoreId; })) setSelectedStore(null);
-  var signature = items.map(galleryId).join(',');
+  var signature = gallerySearchResults.map(galleryId).join(',');
   if(signature === gallerySignature) {
     updateGallerySummary(); return;
   }
@@ -4205,22 +4224,24 @@ function updateStoreGallery(items) {
   probeGalleryBatch();
 }
 function updateGallerySummary() {
-  document.getElementById('gallerySummary').textContent = galleryItems.length + ' matching locations · ' + galleryCards.size + ' with photos found · ' + galleryCursor + ' checked';
+  document.getElementById('gallerySummary').textContent = gallerySearchResults.length + ' matching locations · ' + galleryCards.size + ' with photos found · ' + galleryCursor + ' checked';
   var more = document.getElementById('galleryMore');
-  more.hidden = galleryCursor >= galleryItems.length;
+  more.hidden = galleryCursor >= gallerySearchResults.length;
   more.disabled = galleryChecking;
   more.textContent = galleryChecking ? 'Checking photos…' : 'Load more locations';
   var message = document.getElementById('galleryMessage');
-  if(!galleryItems.length) message.textContent = 'No matching locations. Change the shared Map filters.';
+  if(!gallerySearchResults.length) message.textContent = document.getElementById('gallerySearch').value.trim()
+    ? 'No locations match this search. Try another name, city, postcode or ID.'
+    : 'No matching locations. Change the shared Map filters.';
   else if(galleryChecking) message.textContent = 'Checking the next locations for store photos…';
-  else if(!galleryCards.size) message.textContent = galleryCursor < galleryItems.length
+  else if(!galleryCards.size) message.textContent = galleryCursor < gallerySearchResults.length
     ? 'No photos found in the checked locations. Load more to continue.' : 'No store photos found. All matching locations remain available on the Map.';
-  else message.textContent = galleryCursor < galleryItems.length ? 'More locations can be checked on demand.' : 'All matching locations checked. Locations without photos remain on the Map.';
+  else message.textContent = galleryCursor < gallerySearchResults.length ? 'More locations can be checked on demand.' : 'All matching locations checked. Locations without photos remain on the Map.';
 }
 async function probeGalleryBatch() {
   if(galleryChecking || currentView !== 'gallery' || !galleryReady) return;
   var generation = galleryGeneration, start = galleryCursor;
-  var batch = galleryItems.slice(start, start + 12);
+  var batch = gallerySearchResults.slice(start, start + 12);
   galleryChecking = true;
   updateGallerySummary();
   var results = new Array(batch.length), cursor = 0;
@@ -4405,6 +4426,12 @@ function initializeStoreGallery() {
   });
   document.getElementById('mapViewBtn').addEventListener('click',function() { setStoreView('map',true); });
   document.getElementById('galleryViewBtn').addEventListener('click',function() { setStoreView('gallery',true); });
+  document.getElementById('gallerySearch').addEventListener('input',function() {
+    clearTimeout(gallerySearchTimer);
+    gallerySearchTimer = setTimeout(function() {
+      updateStoreGallery(galleryItems);
+    },160);
+  });
   document.getElementById('galleryMore').addEventListener('click',probeGalleryBatch);
   window.addEventListener('popstate',restoreStoreViewHistory);
   setStoreView(currentView,false);
