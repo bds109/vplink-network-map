@@ -4257,7 +4257,11 @@ function setStoreView(view, push) {
   document.body.classList.toggle('gallery-active',view === 'gallery');
   document.getElementById('mapViewSurface').hidden = view === 'gallery';
   document.getElementById('storeGallery').hidden = view !== 'gallery';
-  document.getElementById('mapViewBtn').setAttribute('aria-pressed',String(view === 'map'));
+  var mapTab=document.getElementById('mapViewBtn');
+  mapTab.setAttribute('aria-pressed',String(view === 'map'));
+  mapTab.textContent=view === 'gallery' ? 'Map ↗' : 'Map';
+  mapTab.setAttribute('aria-label',view === 'gallery' ? 'Open Map in a new tab' : 'Map');
+  mapTab.title=view === 'gallery' ? 'Open Map in a new tab' : 'Map';
   document.getElementById('galleryViewBtn').setAttribute('aria-pressed',String(view === 'gallery'));
   if(view === 'gallery') {
     suppressPopupSelection = true; map.closePopup(); suppressPopupSelection = false;
@@ -4278,18 +4282,17 @@ function setStoreView(view, push) {
   }
   if(urlStateReady) syncUrlState();
 }
+function openGalleryMapTab(item) {
+  if(item && !pageScopeMarkers.includes(item)) return;
+  // Keep current Preview route and filters; leave original Gallery tab and
+  // photo viewer unchanged.
+  var url = shareUrl();
+  url.searchParams.delete('view');
+  if(item) url.searchParams.set('id',galleryId(item));
+  window.open(url.href,'_blank','noopener,noreferrer');
+}
 function galleryToMap(item) {
-  if(!pageScopeMarkers.includes(item)) return;
-  if(galleryDialog) galleryDialog.close();
-  // Preserve the Gallery history entry until the complete Map target is ready.
-  urlStateReady = false;
-  // The existing Search path owns filter conflict replacement and brand isolation.
-  setStoreView('map',false);
-  map.stop(); map.setView(item.marker.getLatLng(),16,{animate:false});
-  selectSearchResult(item);
-  urlStateReady = true;
-  var url = shareUrl(); history.pushState(null,'',url.pathname + url.search + url.hash);
-  document.getElementById('mapViewBtn').focus({preventScroll:true});
+  openGalleryMapTab(item);
 }
 function openStoreGalleryViewer(item) {
   if(galleryDialog || !pageScopeMarkers.includes(item)) return;
@@ -4404,7 +4407,10 @@ function initializeStoreGallery() {
       replaceFilterDimension(group[1],event.target.value); applyFilters();
     });
   });
-  document.getElementById('mapViewBtn').addEventListener('click',function() { setStoreView('map',true); });
+  document.getElementById('mapViewBtn').addEventListener('click',function() {
+    if(currentView === 'gallery') { openGalleryMapTab(null); return; }
+    setStoreView('map',true);
+  });
   document.getElementById('galleryViewBtn').addEventListener('click',function() { setStoreView('gallery',true); });
   document.getElementById('galleryMore').addEventListener('click',probeGalleryBatch);
   window.addEventListener('popstate',restoreStoreViewHistory);
