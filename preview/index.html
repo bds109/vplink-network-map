@@ -4257,11 +4257,7 @@ function setStoreView(view, push) {
   document.body.classList.toggle('gallery-active',view === 'gallery');
   document.getElementById('mapViewSurface').hidden = view === 'gallery';
   document.getElementById('storeGallery').hidden = view !== 'gallery';
-  var mapTab=document.getElementById('mapViewBtn');
-  mapTab.setAttribute('aria-pressed',String(view === 'map'));
-  mapTab.textContent=view === 'gallery' ? 'Map ↗' : 'Map';
-  mapTab.setAttribute('aria-label',view === 'gallery' ? 'Open Map in a new tab' : 'Map');
-  mapTab.title=view === 'gallery' ? 'Open Map in a new tab' : 'Map';
+  document.getElementById('mapViewBtn').setAttribute('aria-pressed',String(view === 'map'));
   document.getElementById('galleryViewBtn').setAttribute('aria-pressed',String(view === 'gallery'));
   if(view === 'gallery') {
     suppressPopupSelection = true; map.closePopup(); suppressPopupSelection = false;
@@ -4407,10 +4403,7 @@ function initializeStoreGallery() {
       replaceFilterDimension(group[1],event.target.value); applyFilters();
     });
   });
-  document.getElementById('mapViewBtn').addEventListener('click',function() {
-    if(currentView === 'gallery') { openGalleryMapTab(null); return; }
-    setStoreView('map',true);
-  });
+  document.getElementById('mapViewBtn').addEventListener('click',function() { setStoreView('map',true); });
   document.getElementById('galleryViewBtn').addEventListener('click',function() { setStoreView('gallery',true); });
   document.getElementById('galleryMore').addEventListener('click',probeGalleryBatch);
   window.addEventListener('popstate',restoreStoreViewHistory);
