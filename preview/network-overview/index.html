@@ -1865,30 +1865,82 @@ body{font-family:Arial,Helvetica,sans-serif;overflow:hidden}
 }
 @media(prefers-reduced-motion:reduce){.store-gallery-card *,.store-gallery-viewer *,.store-gallery-filters *{transition:none!important;scroll-behavior:auto!important}}
 
+
+/* Gallery-first Preview UI: single compact header, one-row filters, immediate photos. */
+.view-navigation{height:60px;justify-content:space-between;padding:0 24px;gap:20px;background:#fff;color:#102231;border-bottom:1px solid #e4e9ef}
+.view-brand{font-size:20px;letter-spacing:.09em;font-weight:800;white-space:nowrap}
+.view-tabs{display:flex;align-items:stretch;height:100%;gap:28px;border:0;padding:0;border-radius:0}
+.view-tabs button,.view-tabs a{position:relative;display:flex;align-items:center;padding:0;border:0;border-radius:0;background:transparent;color:#647589;font-family:inherit;font-weight:600;font-size:13px;text-decoration:none;white-space:nowrap}
+.view-tabs button[aria-pressed=true]{background:transparent;color:#102231;font-weight:750}
+.view-tabs button[aria-pressed=true]::after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:2px;background:#102231}
+.view-tabs a[aria-disabled=true]{color:#9da8b4;cursor:not-allowed}
+.view-tabs a:not([aria-disabled=true]){color:#102231}
+.view-tabs :is(button,a):focus-visible{outline:2px solid #446c8b;outline-offset:4px}
+#mapViewSurface{inset:60px 0 0}
+#mapViewSurface #filter-panel{max-height:calc(100dvh - 100px)}
+#storeGallery{inset:60px 0 0;background:#fff}
+.store-gallery-main{padding:0 20px 42px;max-width:1440px}
+.store-gallery-heading{display:none!important}
+.store-gallery-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0 12px}
+.store-gallery-filters{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:0;min-width:0}
+.store-gallery-filters label{display:flex;align-items:center;flex:0 1 auto;min-width:0;height:40px;box-sizing:border-box;padding-left:12px;border:1px solid #dee5ec;border-radius:6px;background:#fff;position:relative}
+.store-gallery-filters label>span{display:block;position:static;color:#34495c;font-size:13px;font-weight:700;white-space:nowrap;pointer-events:none}
+.store-gallery-filters select{flex:1;min-width:85px;width:113px;height:38px;box-sizing:border-box;padding:0 26px 0 8px;border:0!important;outline:0;background:transparent;color:#60778c;font-size:13px;box-shadow:none!important;border-radius:5px;text-overflow:ellipsis}
+.store-gallery-filters label:nth-child(2) select{width:134px}
+.store-gallery-filters label:nth-child(3) select{width:115px}
+.store-gallery-filters label::after{right:12px;top:15px;width:7px;height:7px}
+.store-gallery-filters label:focus-within{outline:2px solid #80a5bb;outline-offset:2px}
+.store-gallery-meta{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0;white-space:nowrap;color:#72859a;font-size:12px}
+#galleryBrandTitle{font-size:11px;font-weight:700;letter-spacing:.02em;color:#485f72}
+#galleryBrandTitle:not([hidden])::after{content:" · "}
+#gallerySummary{font-size:12px;margin:0;color:#72859a;white-space:normal;text-align:right}
+#galleryGrid{margin:0}
+@media(max-width:960px) and (min-width:768px){
+ .store-gallery-toolbar{align-items:flex-start;flex-wrap:wrap}
+ .store-gallery-meta{justify-content:flex-start}
+}
+@media(max-width:767px){
+ .view-navigation{height:54px;padding:0 12px;gap:12px}
+ .view-brand{font-size:14px;letter-spacing:.07em;max-width:none}
+ .view-tabs{gap:13px;min-width:0}
+ .view-tabs button,.view-tabs a{font-size:11.5px;padding:0}
+ #mapViewSurface{inset:54px 0 0}
+ #mapViewSurface #filter-panel{max-height:calc(100dvh - 94px)}
+ #storeGallery{inset:54px 0 0}
+ .store-gallery-main{padding:0 11px 28px}
+ .store-gallery-toolbar{display:block;padding:9px 0 0}
+ .store-gallery-filters{display:flex;flex-wrap:wrap;gap:8px}
+ .store-gallery-filters label{flex:1 1 calc(50% - 4px);height:40px;padding-left:9px;min-width:0}
+ .store-gallery-filters label>span{font-size:12px;left:auto}
+ .store-gallery-filters select{min-width:0;width:100%!important;height:38px;font-size:12px;padding:0 19px 0 6px}
+ .store-gallery-filters label::after{right:9px;top:15px;width:6px;height:6px}
+ .store-gallery-meta{justify-content:flex-start;gap:5px;margin:8px 0 9px;font-size:11px;white-space:normal}
+ #gallerySummary{font-size:11px;text-align:left;margin:0}
+ #galleryBrandTitle{font-size:11px}
+}
+
 </style>
 </head>
 
 <body>
 <header class="view-navigation">
   <strong class="view-brand" id="viewBrand">VPLINK</strong>
-  <nav class="view-tabs" aria-label="Location view">
+  <nav class="view-tabs" aria-label="Main views">
     <button id="mapViewBtn" type="button" aria-pressed="true" aria-controls="mapViewSurface">Map</button>
-    <button id="galleryViewBtn" type="button" aria-pressed="false" aria-controls="storeGallery">Store Gallery</button>
+    <button id="galleryViewBtn" type="button" aria-pressed="false" aria-controls="storeGallery">Gallery</button>
+    <a id="performanceGalleryLink" class="performance-link" aria-disabled="true" tabindex="-1" target="_blank" rel="noopener noreferrer" title="Performance sign-in has not been approved for public navigation">Performance</a>
   </nav>
-  <a id="performanceGalleryLink" class="performance-link" aria-disabled="true" target="_blank" rel="noopener noreferrer" hidden title="TEST PLACEHOLDER — customer link not configured; any configured URL will be public">Performance Gallery · not configured</a>
 </header>
 <section id="storeGallery" aria-label="Store Gallery" hidden>
   <main class="store-gallery-main">
-    <header class="store-gallery-heading">
-      <strong id="galleryBrandTitle">VPLINK</strong>
-      <div><h1>Store Gallery</h1><p>STORE LOCATION PHOTOS</p></div>
-    </header>
-    <div class="store-gallery-filters" aria-label="Shared Map filters">
-      <label><span>States</span><select id="galleryState" aria-label="States"></select></label>
-      <label><span>Categories</span><select id="galleryType" aria-label="Categories"></select></label>
-      <label id="galleryBrandField" hidden><span>Brands</span><select id="galleryBrand" aria-label="Brands"></select></label>
+    <div class="store-gallery-toolbar">
+      <div class="store-gallery-filters" aria-label="Shared Map filters">
+        <label><span>States</span><select id="galleryState" aria-label="States"></select></label>
+        <label><span>Categories</span><select id="galleryType" aria-label="Categories"></select></label>
+        <label id="galleryBrandField" hidden><span>Brands</span><select id="galleryBrand" aria-label="Brands"></select></label>
+      </div>
+      <div class="store-gallery-meta"><span id="galleryBrandTitle" hidden></span><p id="gallerySummary" aria-live="polite"></p></div>
     </div>
-    <p id="gallerySummary" aria-live="polite"></p>
     <div id="galleryGrid"></div>
     <p id="galleryMessage" role="status"></p>
     <button id="galleryMore" type="button" hidden>Load more locations</button>
@@ -4330,14 +4382,19 @@ function restoreStoreViewHistory() {
 function initializeStoreGallery() {
   var label=mapView.mode==='brand'? 'VPLINK × '+mapView.brand.label.toUpperCase():'VPLINK';
   document.getElementById('viewBrand').textContent=label;
-  document.getElementById('galleryBrandTitle').textContent=mapView.mode==='brand'?mapView.brand.label.toUpperCase():'VPLINK';
+  var scopeLabel=document.getElementById('galleryBrandTitle');
+  scopeLabel.textContent=mapView.mode==='brand'?mapView.brand.label.toUpperCase():'';
+  scopeLabel.hidden=mapView.mode!=='brand';
   var performance=document.getElementById('performanceGalleryLink');
-  performance.hidden=mapView.mode!=='brand';
   if(mapView.mode==='brand') {
     var config=STORE_GALLERY_CONFIG.performanceGallery[mapView.brand.slug];
-    // URLs in public HTML are public information. Only approved URLs belong here.
-    if(config && config.url && /^https:\/\//.test(config.url)) {
-      performance.href=config.url; performance.removeAttribute('aria-disabled'); performance.textContent='Performance Gallery ↗';
+    // Private customer paths must not be placed in public Map HTML.
+    // Only a separately approved public sign-in URL may enable this tab.
+    if(config && config.url && /^https:\/\//.test(config.url) && config.status==='public-login-approved') {
+      performance.href=config.url;
+      performance.removeAttribute('aria-disabled');
+      performance.removeAttribute('tabindex');
+      performance.title='Open Performance';
     }
   }
   [['galleryState','.stateCheckbox'],['galleryType','.categoryCheckbox'],['galleryBrand','.brandCheckbox']].forEach(function(group) {
