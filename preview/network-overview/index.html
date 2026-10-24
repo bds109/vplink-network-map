@@ -1873,6 +1873,7 @@ body{font-family:Arial,Helvetica,sans-serif;overflow:hidden}
 .view-tabs button[aria-pressed=true]{background:transparent;color:#102231;font-weight:750}
 .view-tabs button[aria-pressed=true]::after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:2px;background:#102231}
 .view-tabs a[aria-disabled=true]{color:#9da8b4;cursor:not-allowed}
+#performanceGalleryLink[hidden]{display:none!important}
 .view-tabs a:not([aria-disabled=true]){color:#102231}
 .view-tabs :is(button,a):focus-visible{outline:2px solid #446c8b;outline-offset:4px}
 #mapViewSurface{inset:60px 0 0}
@@ -4110,7 +4111,7 @@ await copyShareUrl(url);
 });
 }
 
-var STORE_GALLERY_CONFIG = {"performanceGallery": {"dojo": {"url": null, "status": "test-placeholder"}, "geekbar": {"url": null, "status": "test-placeholder"}}};
+var STORE_GALLERY_CONFIG = {"performanceGallery":{"overview":{"url":"https://gallery.vpl-gmbh.com/admin","status":"password-protected"},"dojo":{"url":null,"status":"not-configured"},"geekbar":{"url":null,"status":"not-configured"}}};
 // Runs in the existing CSV completion scope: no parallel catalog or private API.
 var currentView = new URLSearchParams(location.search).get('view') === 'gallery' ? 'gallery' : 'map';
 var galleryItems = [];
@@ -4418,16 +4419,18 @@ function initializeStoreGallery() {
   scopeLabel.textContent=mapView.mode==='brand'?mapView.brand.label.toUpperCase():'';
   scopeLabel.hidden=mapView.mode!=='brand';
   var performance=document.getElementById('performanceGalleryLink');
-  if(mapView.mode==='brand') {
-    var config=STORE_GALLERY_CONFIG.performanceGallery[mapView.brand.slug];
-    // Private customer paths must not be placed in public Map HTML.
-    // Only a separately approved public sign-in URL may enable this tab.
-    if(config && config.url && /^https:\/\//.test(config.url) && config.status==='public-login-approved') {
-      performance.href=config.url;
-      performance.removeAttribute('aria-disabled');
-      performance.removeAttribute('tabindex');
-      performance.title='Open Performance';
-    }
+  var scope=mapView.mode==='overview' ? 'overview' : (mapView.mode==='brand' ? mapView.brand.slug : null);
+  var config=scope && STORE_GALLERY_CONFIG.performanceGallery[scope];
+  // No Performance tab for the public neutral map; internal routes expose
+  // only their own already-password-protected Performance destination.
+  var enabled=!!(config && config.url && config.status==='password-protected' &&
+    config.url.startsWith('https://gallery.vpl-gmbh.com/'));
+  performance.hidden=!enabled;
+  if(enabled) {
+    performance.href=config.url;
+    performance.removeAttribute('aria-disabled');
+    performance.removeAttribute('tabindex');
+    performance.title='Open Performance sign-in in a new tab';
   }
   [['galleryState','.stateCheckbox'],['galleryType','.categoryCheckbox'],['galleryBrand','.brandCheckbox']].forEach(function(group) {
     document.getElementById(group[0]).addEventListener('change',function(event) {
