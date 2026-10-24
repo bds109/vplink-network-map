@@ -1926,29 +1926,6 @@ body{font-family:Arial,Helvetica,sans-serif;overflow:hidden}
  #galleryBrandTitle{font-size:11px}
 }
 
-
-/* Approved masonry gallery: intrinsic photo ratios, stable shortest-column flow. */
-#galleryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:start}
-.gallery-masonry-column{display:flex;flex-direction:column;gap:12px;min-width:0}
-.store-gallery-card{position:relative;aspect-ratio:auto;min-height:0;width:100%;background:#fff;color:#203548;border:1px solid #e1e8ef;border-radius:7px;overflow:hidden}
-.store-gallery-card .gallery-open{position:relative;inset:auto;display:block;height:auto;width:100%;color:inherit}
-.store-gallery-card .gallery-photo-media{display:block;position:relative;width:100%;overflow:hidden;background:#e5eaf0}
-.store-gallery-card .gallery-photo-media img{position:relative;inset:auto;display:block;width:100%;height:auto;object-fit:contain}
-.store-gallery-card .gallery-photo-media img.gallery-second{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.store-gallery-card .gallery-caption{position:relative;inset:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:11px 12px 3px;background:none;color:#203548}
-.store-gallery-card .gallery-name{grid-row:auto;height:auto;max-height:none;font-size:15px;line-height:1.3;white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.store-gallery-card .gallery-city,.store-gallery-card .gallery-count{grid-row:auto;height:auto;font-size:12px;line-height:1.4;color:#63768a}
-.store-gallery-card .gallery-map-button{position:relative;left:auto;bottom:auto;transform:none;display:block;max-width:none;width:calc(100% - 24px);height:auto;min-height:38px;margin:10px 12px 12px;border:0;border-radius:5px;background:#102231;color:white}
-@media(min-width:768px) and (max-width:1023px){#galleryGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:767px){
- #galleryGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
- .gallery-masonry-column{gap:8px}
- .store-gallery-card .gallery-caption{padding:9px 8px 1px;gap:3px}
- .store-gallery-card .gallery-name{height:auto;max-height:none;font-size:13px;line-height:1.3}
- .store-gallery-card .gallery-city,.store-gallery-card .gallery-count{height:auto;font-size:11px;line-height:1.3}
- .store-gallery-card .gallery-map-button{left:auto;bottom:auto;transform:none;width:calc(100% - 16px);max-width:none;margin:9px 8px 10px;min-height:38px;font-size:11px}
-}
-
 </style>
 </head>
 
@@ -4144,10 +4121,8 @@ var gallerySignature = null;
 var galleryGeneration = 0;
 var galleryCursor = 0;
 var galleryChecking = false;
+var galleryAutoLoadScheduled = false;
 var galleryCards = new Map();
-var galleryColumns = [];
-var galleryColumnCount = 0;
-var galleryAutoLoadTick = false;
 var galleryDialog = null;
 var galleryScroll = 0;
 
@@ -4178,8 +4153,7 @@ function galleryCard(item, entry) {
   var card = galleryElement('article', {class:'store-gallery-card', 'data-store-id':id});
   var open = galleryButton('', function() { openStoreGalleryViewer(item); }, 'gallery-open');
   open.setAttribute('aria-label', 'View photos of ' + store.StoreName);
-  open.append(galleryElement('span', {class:'gallery-photo-media'},
-      galleryElement('img', {src:entry.photos[0], alt:'', decoding:'async', loading:'lazy'})),
+  open.append(galleryElement('img', {src:entry.photos[0], alt:'', decoding:'async'}),
     galleryElement('span', {class:'gallery-caption'},
       galleryElement('strong', {class:'gallery-name'}, store.StoreName),
       galleryElement('span', {class:'gallery-city'}, store.City || ''),
@@ -4200,7 +4174,7 @@ function galleryCard(item, entry) {
       if(!photos.photos[1] || second) return;
       second = galleryElement('img', {class:'gallery-second', alt:'', decoding:'async'});
       second.src = photos.photos[1];
-      open.querySelector('.gallery-photo-media').append(second);
+      open.insertBefore(second, open.lastChild);
       try { await second.decode(); } catch(error) { second.remove(); second = null; return; }
       ready = true;
       if(hovering && hover.matches) card.classList.add('show-second');
@@ -4223,49 +4197,6 @@ function syncGalleryFilters() {
   });
   document.getElementById('galleryBrandField').hidden = mapView.mode !== 'overview';
 }
-function galleryDesiredColumns() {
-  return window.innerWidth <= 767 ? 2 : (window.innerWidth <= 1023 ? 3 : 4);
-}
-function galleryResetColumns() {
-  var grid=document.getElementById('galleryGrid');
-  galleryColumnCount=galleryDesiredColumns();
-  galleryColumns=[];
-  for(var i=0;i<galleryColumnCount;i++) {
-    galleryColumns.push(galleryElement('div',{class:'gallery-masonry-column'}));
-  }
-  grid.replaceChildren(...galleryColumns);
-}
-function galleryAppendMasonryCard(card) {
-  if(!galleryColumns.length) galleryResetColumns();
-  var shortest=galleryColumns[0];
-  for(var i=1;i<galleryColumns.length;i++){
-    if(galleryColumns[i].getBoundingClientRect().height < shortest.getBoundingClientRect().height) {
-      shortest=galleryColumns[i];
-    }
-  }
-  shortest.append(card);
-}
-function galleryReflowColumns() {
-  if(currentView !== 'gallery' || galleryColumnCount === galleryDesiredColumns()) return;
-  var cards=Array.from(galleryCards.values());
-  galleryResetColumns();
-  cards.forEach(galleryAppendMasonryCard);
-}
-function galleryMaybeAutoLoad() {
-  if(currentView !== 'gallery' || !galleryReady || galleryChecking || galleryCursor >= gallerySearchResults.length) return;
-  var panel=document.getElementById('storeGallery');
-  // Near the bottom, continue checking the next bounded batch. Also fills an
-  // initially short Gallery without requiring manual clicks.
-  if(panel.scrollHeight - panel.scrollTop - panel.clientHeight <= 480) probeGalleryBatch();
-}
-function galleryScheduleAutoLoad() {
-  if(galleryAutoLoadTick) return;
-  galleryAutoLoadTick=true;
-  requestAnimationFrame(function(){
-    galleryAutoLoadTick=false;
-    galleryMaybeAutoLoad();
-  });
-}
 function updateStoreGallery(items) {
   galleryItems = items;
   var query = normalizeSearchText(document.getElementById('gallerySearch').value);
@@ -4287,7 +4218,7 @@ function updateStoreGallery(items) {
   galleryCursor = 0;
   galleryChecking = false;
   galleryCards.clear();
-  galleryResetColumns();
+  document.getElementById('galleryGrid').replaceChildren();
   document.getElementById('storeGallery').scrollTop = 0;
   updateGallerySummary();
   probeGalleryBatch();
@@ -4300,8 +4231,21 @@ function updateGallerySummary() {
     : 'No matching locations. Change the shared Map filters.';
   else if(galleryChecking) message.textContent = 'Checking the next locations for store photos…';
   else if(!galleryCards.size) message.textContent = galleryCursor < gallerySearchResults.length
-    ? 'Looking for store photos…' : 'No store photos found. All matching locations remain available on the Map.';
-  else message.textContent = galleryCursor < gallerySearchResults.length ? 'Scroll to explore more photos.' : 'All matching locations checked. Locations without photos remain on the Map.';
+    ? 'Searching for store photos…' : 'No store photos found. All matching locations remain available on the Map.';
+  else message.textContent = galleryCursor < gallerySearchResults.length ? 'Scroll to explore more locations.' : 'All matching locations checked. Locations without photos remain on the Map.';
+}
+function maybeAutoLoadGallery() {
+  if(currentView !== 'gallery' || !galleryReady || galleryChecking || galleryCursor >= gallerySearchResults.length) return;
+  var panel = document.getElementById('storeGallery');
+  if(panel.scrollHeight - panel.scrollTop - panel.clientHeight <= 400) probeGalleryBatch();
+}
+function scheduleGalleryAutoLoad() {
+  if(galleryAutoLoadScheduled) return;
+  galleryAutoLoadScheduled = true;
+  requestAnimationFrame(function() {
+    galleryAutoLoadScheduled = false;
+    maybeAutoLoadGallery();
+  });
 }
 async function probeGalleryBatch() {
   if(galleryChecking || currentView !== 'gallery' || !galleryReady || galleryCursor >= gallerySearchResults.length) return;
@@ -4320,7 +4264,7 @@ async function probeGalleryBatch() {
   await Promise.all(Array.from({length:Math.min(4,batch.length)}, worker));
   if(generation !== galleryGeneration || currentView !== 'gallery') return;
   results.forEach(function(entry, index) {
-    if(entry && entry.photos.length) galleryAppendMasonryCard(galleryCard(batch[index], entry));
+    if(entry && entry.photos.length) document.getElementById('galleryGrid').append(galleryCard(batch[index], entry));
   });
   galleryCursor = start + batch.length;
   galleryChecking = false;
@@ -4333,7 +4277,7 @@ async function probeGalleryBatch() {
     });
     document.getElementById('galleryMessage').append(' ', retry);
   }
-  galleryScheduleAutoLoad();
+  scheduleGalleryAutoLoad();
 }
 function setStoreView(view, push) {
   var wasReady = urlStateReady;
@@ -4349,9 +4293,8 @@ function setStoreView(view, push) {
   if(view === 'gallery') {
     suppressPopupSelection = true; map.closePopup(); suppressPopupSelection = false;
     updateStoreGallery(galleryItems);
-    galleryReflowColumns();
     document.getElementById('storeGallery').scrollTop = galleryScroll;
-    galleryScheduleAutoLoad();
+    scheduleGalleryAutoLoad();
   } else {
     // Invalidate after display is restored, before positioning an ID target.
     map.invalidateSize({pan:false});
@@ -4500,8 +4443,7 @@ function initializeStoreGallery() {
       updateStoreGallery(galleryItems);
     },160);
   });
-  document.getElementById('storeGallery').addEventListener('scroll',galleryScheduleAutoLoad,{passive:true});
-  window.addEventListener('resize',function(){ galleryReflowColumns(); galleryScheduleAutoLoad(); },{passive:true});
+  document.getElementById('storeGallery').addEventListener('scroll',scheduleGalleryAutoLoad,{passive:true});
   window.addEventListener('popstate',restoreStoreViewHistory);
   setStoreView(currentView,false);
 }
