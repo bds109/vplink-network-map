@@ -1,0 +1,26 @@
+<header class="view-navigation">
+  <strong class="view-brand" id="viewBrand">VPLINK</strong>
+  <nav class="view-tabs" aria-label="Main views">
+    <button id="mapViewBtn" type="button" aria-pressed="true" aria-controls="mapViewSurface">Map</button>
+    <button id="galleryViewBtn" type="button" aria-pressed="false" aria-controls="storeGallery">Gallery</button>
+    <a id="performanceGalleryLink" class="performance-link" aria-disabled="true" tabindex="-1" target="_blank" rel="noopener noreferrer" title="Performance sign-in has not been approved for public navigation">Performance</a>
+  </nav>
+</header>
+<section id="storeGallery" aria-label="Store Gallery" hidden>
+  <main class="store-gallery-main">
+    <div class="store-gallery-toolbar">
+      <label class="store-gallery-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m15.4 15.4 5 5"></path></svg>
+        <input id="gallerySearch" type="search" placeholder="Search name, city, postcode or ID" aria-label="Search gallery locations" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="store-gallery-filters" aria-label="Shared Map filters">
+        <label><span>States</span><select id="galleryState" aria-label="States"></select></label>
+        <label><span>Categories</span><select id="galleryType" aria-label="Categories"></select></label>
+        <label id="galleryBrandField" hidden><span>Brands</span><select id="galleryBrand" aria-label="Brands"></select></label>
+      </div>
+      <div class="store-gallery-meta"><span id="galleryBrandTitle" hidden></span><p id="gallerySummary" aria-live="polite"></p></div>
+    </div>
+    <div id="galleryGrid"></div>
+    <p id="galleryMessage" role="status"></p>
+  </main>
+</section>

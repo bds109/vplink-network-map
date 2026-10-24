@@ -2568,70 +2568,7 @@ data.dataset.index = index;
 let currentPhotos = [];
 let currentPhotoIndex = 0;
 
-const storePhotoCache = {};
-
-async function loadStorePhotos(data){
-
-const storeId =
-data.dataset.storeid;
-
-if(storePhotoCache[storeId]){
-
-data.dataset.photos =
-JSON.stringify(storePhotoCache[storeId]);
-
-return;
-
-}
-
-const photos = [];
-
-function checkImage(url){
-
-return new Promise(function(resolve){
-
-const img = new Image();
-
-img.onload = function(){
-resolve(true);
-};
-
-img.onerror = function(){
-resolve(false);
-};
-
-img.src = url + '?v=' + Date.now();
-
-});
-
-}
-
-for(let i=1;i<=20;i++){
-
-const url =
-getStorePhotoUrl(storeId,i);
-
-const exists =
-await checkImage(url);
-
-if(exists){
-
-photos.push(url);
-
-}else{
-
-break;
-
-}
-
-}
-
-storePhotoCache[storeId] = photos;
-
-data.dataset.photos =
-JSON.stringify(photos);
-
-}
+/* STORE_PHOTOS_LOGIC */
 
 async function openPhoto(img){
 
@@ -2652,8 +2589,9 @@ JSON.parse(
 data.dataset.photos
 );
 
+if(!currentPhotos.length){ return; }
 currentPhotoIndex =
-parseInt(data.dataset.index) || 0;
+Math.min(parseInt(data.dataset.index) || 0,currentPhotos.length - 1);
 
 document.getElementById(
 'photoModal'

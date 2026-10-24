@@ -9,6 +9,7 @@ from validate_locations import configured_brands, validate_or_exit
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "scripts" / "map_template.html"
 BRAND_CONFIG_SOURCE = ROOT / "scripts" / "brand_config.json"
+GALLERY_CONFIG_SOURCE = ROOT / "scripts" / "store_gallery_config.json"
 CANDIDATE_CSV = ROOT / "VPL门店地图信息.csv"
 PREVIEW_DIR = ROOT / "preview"
 PREVIEW_DATA = PREVIEW_DIR / "data" / "locations.csv"
@@ -1266,6 +1267,7 @@ updateMobileFilterButton(selections);
 updateResultsList(filteredMarkers);
 updateAreaControls();
 updateSelectedStoreView();
+updateStoreGallery(filteredMarkers);
 if(urlStateReady){ syncUrlState(); }
 return filteredMarkers;
 }
@@ -1655,7 +1657,7 @@ map.closePopup();
 suppressPopupSelection = false;
 }
 updateSelectedStoreView();
-if(selectedStoreId){
+if(selectedStoreId && currentView === 'map'){
 var selected = findScopedStore(selectedStoreId);
 if(selected){
 if(mobile){
@@ -1694,6 +1696,7 @@ return value.toFixed(6);
 }).join(','));
 }
 if(selectedStoreId){ params.set('id',selectedStoreId); }
+if(currentView === 'gallery'){ params.set('view','gallery'); }
 var center = map.getCenter();
 params.set('lat',center.lat.toFixed(6));
 params.set('lng',center.lng.toFixed(6));
@@ -1829,7 +1832,9 @@ map.setView(target.marker.getLatLng(),16,{animate:false});
 focusSearchTarget(target);
 }
 setSelectedStore(targetId);
-if(isMobileFiltersLayout()){
+if(currentView === 'gallery'){
+// Restore the selection without opening a hidden Map popup or loading photos.
+}else if(isMobileFiltersLayout()){
 setTimeout(revealDirectTarget,600);
 }else{
 map.setView(target.marker.getLatLng(),16,{animate:false});
@@ -1862,6 +1867,7 @@ await copyShareUrl(url);
 });
 }
 
+/* STORE_GALLERY_LOGIC */
 applyViewTitle();
 pageScopeMarkers = getPageScopeMarkers();
 window.pageScopeMarkers = pageScopeMarkers;
@@ -1877,7 +1883,10 @@ applyFilters();
 initializeSearch();
 initializeMobileFilters();
 initializeDesktopPanel();
+initializeStoreGallery();
 initializeUrlState();
+galleryReady = true;
+updateStoreGallery(currentFilteredMarkers);
 initializeAreaControls();
 """
 
@@ -1918,6 +1927,14 @@ return {{mode:'neutral',brand:null}};
 }}
 
 var mapView = resolveMapView();
+// Group already-parsed Map UI before Leaflet measures it. The legacy template
+// contains unmatched closing divs; do not let them close a string-injected shell.
+var mapSurface = document.getElementById('mapViewSurface');
+Array.from(document.body.children).forEach(function(node){{
+if(node !== mapSurface && node.id !== 'storeGallery' && !node.classList.contains('view-navigation') && node.tagName !== 'SCRIPT'){{
+mapSurface.appendChild(node);
+}}
+}});
 
 """
 
@@ -1939,7 +1956,13 @@ def build_page(brands: list[dict[str, str]], *, preview: bool, noindex: bool) ->
             "<title>VPL Germany Network Map</title>\n" + PREVIEW_META,
             "private-page title",
         )
-    html = replace_once(html, "</style>", PREVIEW_CSS + "\n</style>", "style end")
+    gallery_css = (ROOT / "scripts/store_gallery.css").read_text(encoding="utf-8")
+    html = replace_once(html, "</style>", PREVIEW_CSS + "\n" + gallery_css + "\n</style>", "style end")
+    # Embed sources: generated static HTML needs no new runtime service or path.
+    gallery_markup = (ROOT / "scripts/store_gallery.html").read_text(encoding="utf-8")
+    html = replace_once(html, '<body>', '<body>\n' + gallery_markup + '\n<div id="mapViewSurface"></div>', "gallery shell")
+    html = replace_once(html, '/* STORE_PHOTOS_LOGIC */',
+                        (ROOT / "scripts/store_photos.js").read_text(encoding="utf-8"), "shared photo discovery")
     html = replace_once(
         html,
         '<button id="openFilterBtn">',
@@ -1987,8 +2010,20 @@ def build_page(brands: list[dict[str, str]], *, preview: bool, noindex: bool) ->
 
     filter_logic_start = html.index('function applyFilters(){')
     filter_logic_end = html.index("\nfetch('/Germany_border_sehr_hoch.geo.json')", filter_logic_start)
-    html = html[:filter_logic_start] + FILTER_LOGIC + html[filter_logic_end:]
+    gallery_config = json.loads(GALLERY_CONFIG_SOURCE.read_text(encoding="utf-8"))
+    for entry in gallery_config["performanceGallery"].values():
+        if entry["url"] is not None and not entry["url"].startswith("https://"):
+            raise ValueError("Performance Gallery URL must be approved HTTPS or null")
+    config_json = json.dumps(gallery_config, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+    gallery_logic = "var STORE_GALLERY_CONFIG = " + config_json + ";\n"
+    gallery_logic += (ROOT / "scripts/store_gallery.js").read_text(encoding="utf-8")
+    logic = replace_once(FILTER_LOGIC, '/* STORE_GALLERY_LOGIC */', gallery_logic, "gallery logic")
+    html = html[:filter_logic_start] + logic + html[filter_logic_end:]
     return "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
+
+
+def gallery_config_for_preview():
+    return json.loads(GALLERY_CONFIG_SOURCE.read_text(encoding="utf-8"))["performanceGallery"]
 
 
 def build_preview() -> None:
@@ -2014,7 +2049,19 @@ def build_preview() -> None:
     for relative_target in targets:
         target = PREVIEW_DIR / relative_target
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(page, encoding="utf-8")
+        # Each public route embeds only its own already-approved destination.
+        scope = relative_target.parts[0] if len(relative_target.parts) > 1 else None
+        scope = "overview" if scope == "network-overview" else scope
+        scoped = {"performanceGallery": {
+            key: entry if key == scope else {"url": None, "status": "not-configured"}
+            for key, entry in gallery_config_for_preview().items()
+        }}
+        # Preview-only destination; leave shared/Production configuration unchanged.
+        if scope == "overview":
+            scoped["performanceGallery"]["overview"]["url"] = "https://vplink-performance-preview-20261024.steve-zhou.workers.dev/overview"
+        full_config = json.dumps({"performanceGallery": gallery_config_for_preview()}, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+        scoped_config = json.dumps(scoped, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+        target.write_text(page.replace("var STORE_GALLERY_CONFIG = " + full_config + ";", "var STORE_GALLERY_CONFIG = " + scoped_config + ";"), encoding="utf-8")
 
 
 if __name__ == "__main__":

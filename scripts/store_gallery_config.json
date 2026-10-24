@@ -1,0 +1,16 @@
+{
+  "performanceGallery": {
+    "overview": {
+      "url": "https://gallery.vpl-gmbh.com/admin",
+      "status": "password-protected"
+    },
+    "dojo": {
+      "url": "https://gallery.vpl-gmbh.com/b/dojo-cc90RPwjNQfqBU",
+      "status": "password-protected"
+    },
+    "geekbar": {
+      "url": "https://gallery.vpl-gmbh.com/b/geekbar-5332kWheCbER1n",
+      "status": "password-protected"
+    }
+  }
+}
