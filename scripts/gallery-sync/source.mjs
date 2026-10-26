@@ -17,20 +17,20 @@ export function validateSource(value, sha256) {
   return value;
 }
 export function validateFilename(filename) {
-  if (typeof filename !== 'string' || !filename.trim() || filename.length > 240 || /[\x00-\x1f\x7f/\\]/.test(filename) || !/\.csv$/i.test(filename)) throw new Error('INVALID_ORIGINAL_FILENAME');
+  if (typeof filename !== 'string' || !filename.trim() || filename.length > 240 || /[\x00-\x1f\x7f/\\]/.test(filename) || !/\.(csv|xlsx)$/i.test(filename)) throw new Error('INVALID_ORIGINAL_FILENAME');
   return filename;
 }
-export function prepareSource(original, runtime, filename) {
-  const record = prepareAssociation(original, runtime, validateFilename(filename), randomUUID());
+export function prepareSource(original, runtime, filename, options) {
+  const record = prepareAssociation(original, runtime, validateFilename(filename), randomUUID(), options);
   return { schemaVersion: 1, ...record };
 }
 export const publicSource = ({ schemaVersion, csvSha256, dataVersion }) => validateSource({ schemaVersion, csvSha256, dataVersion }, csvSha256);
 // This only writes provenance. It never copies/replaces the production CSV or publishes anything.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  if (process.argv.length !== 3) throw new Error('Usage: node scripts/gallery-sync/source.mjs /path/to/original-upload.csv');
+  if (![3, 4].includes(process.argv.length)) throw new Error('Usage: node scripts/gallery-sync/source.mjs /path/to/original-upload.csv|xlsx [worksheet]');
   if (existsSync(SOURCE)) throw new Error('Existing provenance must be deliberately archived/removed before replacement');
   const original = process.argv[2];
-  const source = prepareSource(readFileSync(original), readFileSync(CSV), basename(original));
+  const source = prepareSource(readFileSync(original), readFileSync(CSV), basename(original), { worksheet: process.argv[3] });
   const directory = '.pi/map-data-sources'; mkdirSync(directory, { recursive: true, mode: 0o700 });
   const privateFile = join(directory, source.dataVersion + '.json');
   writeFileSync(privateFile, JSON.stringify(source, null, 2) + '\n', { flag: 'wx', mode: 0o600 });

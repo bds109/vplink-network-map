@@ -21,7 +21,7 @@ export async function registerSource(record, query, { original, runtime } = {}) 
   return id;
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  if (process.argv.length !== 4 || !process.env.CLOUDFLARE_API_TOKEN) throw new Error('Requires separately approved D1 write access: register-source.mjs /private/source-record.json /actual/original.csv');
+  if (process.argv.length !== 4 || !process.env.CLOUDFLARE_API_TOKEN) throw new Error('Requires separately approved D1 write access: register-source.mjs /private/source-record.json /actual/original.csv|xlsx');
   const record = JSON.parse(readFileSync(process.argv[2], 'utf8'));
   const original = readFileSync(process.argv[3]), runtime = readFileSync(CSV);
   if (basename(process.argv[3]) !== record.originalFilename) throw new Error('SOURCE_FILENAME_MISMATCH');
